@@ -9,6 +9,18 @@ module.exports = {
         reqPwd:'要输入密码！',
         error0: '账号或者密码错误！',
         success:'登录成功!'
-        },
+    },
+    paper: {
+        paperName: '试卷名',
+        paperScore: '试卷总分',
+        paperDuration:'考试时长',
+    },
+    topic: {
+        Single: '单选题',
+        Multiple: '多选题',
+        Truefalse: '判断题',
+        Fill: '填空题',
+        Answer:'简答题',
+    }
    
 }

@@ -76,7 +76,7 @@ export default {
           index: "tabs",
           title: "课程管理",
         },
-        {
+       /*  {
           icon: "el-icon-apple",
           index: "3",
           title: "试题管理",
@@ -104,16 +104,11 @@ export default {
               title: "文件上传",
             },
           ],
-        },
-        {
+        }, */
+           {
           icon: "el-icon-apple",
-          index: "icon",
-          title: "试卷管理",
-        },
-        {
-          icon: "el-icon-pie-chart",
-          index: "charts",
-          title: "问答管理",
+          index: "exampaper",
+          title: "创建试卷",
         },
         {
           icon: "el-icon-apple",
@@ -146,11 +141,7 @@ export default {
             },
           ],
         },
-        {
-          icon: "el-icon-apple",
-          index: "exampaper",
-          title: "创建试卷",
-        },
+     
          {
           icon: "el-icon-apple",
           index: "/donate",

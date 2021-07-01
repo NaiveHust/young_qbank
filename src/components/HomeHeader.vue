@@ -1,13 +1,39 @@
 <template>
-  <div class="header">
+  <el-row type="flex" class="header" justify="space-between" >
     <!-- 折叠按钮 -->
-    <div class="collapse-btn" @click="collapseChage">
-      <i v-if="!collapse" class="el-icon-s-fold"></i>
-      <i v-else class="el-icon-s-unfold"></i>
-    </div>
-    <div class="logo">试题库系统</div>
-    <div class="header-right">
-      <div class="header-user-con">
+    <el-col :xs="10" :sm="10" :md="8" :lg="6" :xl="6">
+      <div class="header-left">
+        <div class="collapse-btn" @click="collapseChage">
+          <i v-if="!collapse" class="el-icon-s-fold"></i>
+          <i v-else class="el-icon-s-unfold"></i>
+        </div>
+        <div class="logo">试题库系统</div>
+      </div>
+    </el-col>
+
+    <el-col :span="1" class="hidden-md-and-down" style="border: 3px solid rgb(7, 115, 216);">
+      <div></div>
+    </el-col>
+
+    <el-col :xs="14" :sm="14" :md="16" :lg="6" :xl="6" >
+      <div class="header-right">
+        <!-- 切换语言 -->
+        <el-dropdown
+          split-button
+          type="primary"
+          @command="switchLanguage"
+          style="width:50%"
+        >
+          {{ $t("login.lang") }}
+
+          <template #dropdown >
+            <el-dropdown-menu>
+              <el-dropdown-item command="cn">简体中文</el-dropdown-item>
+              <el-dropdown-item command="en">English</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+
+        </el-dropdown>
         <!-- 消息中心 -->
         <div class="btn-bell">
           <el-tooltip
@@ -31,7 +57,7 @@
             {{ username }}
             <i class="el-icon-caret-bottom"></i>
           </span>
-          <template #dropdown>
+          <template #dropdown >
             <el-dropdown-menu>
               <a
                 href="https://github.com/lin-xin/vue-manage-system"
@@ -46,8 +72,8 @@
           </template>
         </el-dropdown>
       </div>
-    </div>
-  </div>
+    </el-col>
+  </el-row>
 </template>
 <script>
 export default {
@@ -79,6 +105,9 @@ export default {
     collapseChage() {
       this.$store.commit("hadndleCollapse", !this.collapse);
     },
+    switchLanguage(command) {
+      this.$i18n.locale = command ? command : this.$i18n.locale;
+    },
   },
   mounted() {
     if (document.body.clientWidth < 1200) {
@@ -89,12 +118,11 @@ export default {
 </script>
 <style scoped>
 .header {
-    position: relative;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    font-size: 22px;
-    color: #fff;
+  width: 100%;
+  height: 100%;
+  
+  font-size: auto;
+  color: #fff;
 }
 .collapse-btn {
   float: left;
@@ -102,22 +130,30 @@ export default {
   padding: 0 21px;
   /*鼠标悬浮样式*/
   cursor: pointer;
-  /*指定元素行盒的最小高度*/
-  line-height: 70px;
+  height: 100%;
+  border: 3px solid rgb(7, 115, 216);
 }
-.header .logo {
+.logo {
   float: left;
-  width: 250px;
-  line-height: 70px;
+  height: 100%;
+  line-height: 350%;
+  border: 3px solid rgb(7, 115, 216);
 }
 .header-right {
-  float: right;
-  padding-right: 50px;
-}
-.header-user-con {
+  height: 100%;
+  width: 100%;
   display: flex;
-  height: 70px;
   align-items: center;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  border: 3px solid rgb(7, 115, 216);
+}
+.header-left{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  border: 3px solid rgb(7, 115, 216);
 }
 .btn-fullscreen {
   transform: rotate(45deg);
@@ -127,6 +163,7 @@ export default {
 .btn-bell,
 .btn-fullscreen {
   position: relative;
+  
   width: 30px;
   height: 30px;
   text-align: center;
@@ -147,9 +184,12 @@ export default {
   color: #fff;
 }
 .user-name {
-  margin-left: 10px;
+  
+  border: 3px solid rgb(7, 115, 216);
+  
 }
 .user-avator {
+  
   margin-left: 20px;
 }
 .user-avator img {
@@ -159,10 +199,19 @@ export default {
   border-radius: 50%;
 }
 .el-dropdown-link {
-    color: #fff;
-    cursor: pointer;
+ 
+  border: 3px solid rgb(7, 115, 216);
+  color: #fff;
+  cursor: pointer;
 }
 .el-dropdown-menu__item {
-    text-align: center; 
+
+ 
+  text-align: center;
+}
+.el-icon-s-unfold,
+.el-icon-s-fold {
+  height: 100%;
+  line-height: 350%;
 }
 </style>

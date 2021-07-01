@@ -16,9 +16,8 @@
       <!-- :xs="8" :sm="8" :md="6" :lg="4" :xl="4"  -->
       <div style="  
       height: 100%;
-      width: 15%;
-      position: relative;
-     
+      width: auto;
+      position: relative;   
       "
       >
         <Sidebar></Sidebar>
@@ -28,8 +27,7 @@
       <div 
      style="height: 100%;
        width: 100%;
-       flex: 1
-      
+       flex: 1;
         ">
         <div class="workspace">
           <div style="height: 5%">

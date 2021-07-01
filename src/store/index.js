@@ -1,16 +1,35 @@
 import { createStore } from 'vuex'
-
+import exampaper from './paper'
 export default createStore({
     state: {
+        //路由便签列表
         tagsList: [
-            
+
         ],
-       // current:,
-        collapse: false
+        
+
+        //可用的题目对象
+        //值为i18n中的键名
+        //暂时没用
+        typeOptions: [
+            "single",
+            "multiply",
+            "truefalse",
+            "fill",
+            "answer",
+        ],
+        // current:,
+        collapse: false,
+        order: 0,
+        currentOrder:0,
     },
     mutations: {
+        showTem(state) {
+            console.log('store');
+            console.log(state.sTem);
+        },
         //删除1个index序号的tag
-        delTagsItem( state,data) {
+        delTagsItem(state, data) {
             state
                 .tagsList
                 .splice(data.index, 1);
@@ -57,8 +76,14 @@ export default createStore({
         // 侧边栏折叠
         hadndleCollapse(state, data) {
             state.collapse = data;
-        }
+        },
+       
+
+
     },
     actions: {},
-    modules: {}
+    modules: {
+        paper:exampaper,
+
+    }
 })
