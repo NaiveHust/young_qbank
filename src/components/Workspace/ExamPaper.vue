@@ -188,7 +188,7 @@
 
 <script>
 import Single from "../topic/Single";
-import Multiply from "../topic/Multiple";
+import Multiple from "../topic/Multiple";
 import Answer from "../topic/Answer";
 import Fill from "../topic/Fill";
 import Truefalse from "../topic/TrueFalse";
@@ -209,7 +209,7 @@ export default {
   },
   components: {
     Single,
-    Multiply,
+    Multiple,
     Answer,
     Fill,
     Truefalse,

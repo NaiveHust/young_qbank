@@ -20,6 +20,8 @@
       <el-form-item label="题干信息">
         <el-input
           type="textarea"
+          style="width:50vw;"
+           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题干信息"
           v-model="singles.question"
@@ -27,35 +29,52 @@
         </el-input>
       </el-form-item>
 
-      <el-scrollbar style="height:50vh">
+      <el-scrollbar class="single-ones">
         <el-radio-group v-model="singles.answer">
           <div
-            v-for="choice in singles.choice"
-            :key="choice.name"
+            v-for="item in singles.choice"
+            :key="item.name"
             class="single-one"
           >
-
-            
-            <el-radio-button :label="choice.name"> </el-radio-button>
+            <el-radio-button :label="item.name"> </el-radio-button>
             <el-input
-              v-model="choice.content"
+              v-model="item.content"
               style="width: 40vw"
               type="textarea"
+              resize="none"
               :autosize="{ minRows: 2, maxRows: 4 }"
             >
             </el-input>
-            <el-button type="primary" @click="deleteChoice(choice.name)">
-              删除
-            </el-button>
+
+             <el-button
+                    class="el-icon-delete"
+                    @click.stop="delItem(item.order)"
+                    style="float: right"
+                  >
+                  </el-button>
             
           </div>
         </el-radio-group>
       </el-scrollbar>
 
-      <el-form-item>
-        <el-button type="primary" @click="addChoice(currentOrder)">添加选项</el-button>
+        <el-form-item>
+        <el-button type="primary" @click="addItem()">添加选项</el-button>
         <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
       </el-form-item>
+
+         <el-form-item label="答案解析">
+        <el-input
+          type="textarea"
+          style="width:50vw;"
+           resize="none"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          placeholder="请输入题目解析"
+          v-model="singles.explain"
+        >
+        </el-input>
+      </el-form-item>
+
+    
     </el-form>
   </div>
 </template>
@@ -81,11 +100,32 @@ export default {
     },
   },
   methods: {
-    deleteChoice(name) {
-      console.log(name);
+    delItem(order) {
+      this.$store.commit('delTopicItem',{
+      //题型键名
+        tType:"Single",
+        //题条键名
+        iType:"choice",
+        tOrder:this.currentOrder,
+        iOrder:order,
+      });
+      
     },
-    addChoice(order) {
-      this.$store.commit('addSingleItem',order);
+    addItem() {
+      let i = !this.singles.choice?0:this.singles.choice.length;
+      this.$store.commit('addTopicItem',{
+        //题型键名
+        tType:"Single",
+        //题条键名
+        iType:"choice",
+        tOrder:this.currentOrder,
+        content:{
+                order:i+1,
+                name: String.fromCharCode(65 + i),
+                content: '',
+            }
+      }
+      );
     },
    
   },
@@ -110,8 +150,8 @@ export default {
 }
 .single-one {
   width: 100%;
-  height: 8vh;
-  margin-bottom: 2vh;
+  height: 7vh;
+  margin-bottom: 1vh;
   display: flex;
   flex-wrap: nowrap;
   border: 3px solid rgb(7, 115, 216);

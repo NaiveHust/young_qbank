@@ -18,76 +18,81 @@
 
       <!-- 题目 -->
       <el-scrollbar class="fill-ones">
-        <div
-          v-for="(blank, index) in fills.question"
+
+        <el-row
+          v-for="(item, index) in fills.question"
           :key="index"
           class="fill-one"
         >
-          <!-- head -->
+
+        <el-col :span="12">
+           <!-- head -->
           <el-input
             type="textarea"
-            style="width: 15vw; height: 8vh"
+            style=" width: 15vw;"
             resize="none"
             :autosize="{ minRows: 1, maxRows: 2 }"
-            v-model="blank.head"
+            v-model="item.head"
           >
           </el-input>
-
-          <el-form-item
-            style="width: 5vw; height: 8vh"
-            :label="'第' + blank.order + '空'"
-          >
-          </el-form-item>
-          <!-- tail -->
+            {{'第' + item.order + '空'}}
+              <!-- tail -->
           <el-input
             type="textarea"
             resize="none"
-            style="width: 15vw; height: 8vh"
+            style=" width: 15vw;"
             :autosize="{ minRows: 1, maxRows: 2 }"
-            v-model="blank.tail"
+            v-model="item.tail"
           >
           </el-input>
-
-          <!-- answer -->
-
-          <el-form-item
-            style="width: 5vw; height: 8vh"
-            label="答案"
-          ></el-form-item>
-          <el-input
+          
+        </el-col>
+          <el-col :span="8">
+                <!-- answer -->
+            答案
+             <el-input
             type="textarea"
             resize="none"
-            style="width: 20vw"
+            style=" width: 15vw;"
             :autosize="{ minRows: 1, maxRows: 2 }"
-            v-model="blank.answer"
+            v-model="item.answer"
           >
           </el-input>
-        </div>
+          </el-col>
+
+      
+        <el-col :span="4">
+           <el-button
+                    class="el-icon-delete"
+                    @click.stop="delItem(item.order)"
+                    style="float: right"
+                  >
+                  </el-button>
+        </el-col>
+
+        
+
+        </el-row>
       </el-scrollbar>
 
-      <!-- 答案 -->
-      <!--  <el-scrollbar style="height: 30vh">
-        <el-form-item v-for="(answer, index) in fills.answer" 
-         style="width:20vw"
-        :key="index">
-
-          <el-input 
-           type="textarea"
-          
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          v-model="answer.content">
-            <template #prepend>第{{ answer.order }}空</template>
-          </el-input>
-          
-        </el-form-item>
-      </el-scrollbar> -->
-
       <el-form-item>
-        <el-button type="primary" @click="addFill(currentOrder)"
+        <el-button type="primary" @click="addItem(currentOrder)"
           >添加填空</el-button
         >
-        <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
       </el-form-item>
+
+      <el-form-item label="答案解析">
+        <el-input
+          type="textarea"
+          style="width: 50vw"
+          resize="none"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          placeholder="请输入题目解析"
+          v-model="fills.explain"
+        >
+        </el-input>
+      </el-form-item>
+
     </el-form>
   </div>
 </template>
@@ -110,11 +115,31 @@ export default {
     },
   },
   methods: {
-    deleteFill(name) {
-      console.log(name);
+    delItem(order) {
+       this.$store.commit('delTopicItem',{
+      //题型键名
+        tType:"Fill",
+        //题条键名
+        iType:"question",
+        tOrder:this.currentOrder,
+        iOrder:order,
+      });
     },
-    addFill(order) {
-      this.$store.commit("addFillItem", order);
+    addItem(order) {
+      let i = !this.fills.question?0:this.fills.question.length;
+      this.$store.commit("addTopicItem", {
+        //题型键名
+        tType:"Fill",
+        //题条键名
+        iType:"question",
+        tOrder:order,
+        content:{
+                order:i+1,
+                head: '',
+                tail: '',
+                answer: "",
+            }
+      });
     },
   },
   created() {
@@ -141,7 +166,7 @@ export default {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
-  justify-content: space-between;
+  align-items: center;
   border: 3px solid rgb(7, 115, 216);
 }
 .fill-info {
