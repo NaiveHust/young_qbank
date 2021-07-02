@@ -249,8 +249,13 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             question: "",
-                            
-                            answer: [],
+                            subQ: [
+                                {
+                                    order: 1,
+                                    content: "",
+                                    answer: "",
+                                }
+                            ],
                             explain: "",
                         });
                     }
