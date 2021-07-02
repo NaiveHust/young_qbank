@@ -21,7 +21,7 @@ export default createStore({
         // current:,
         collapse: false,
         order: 0,
-        currentOrder:0,
+       
     },
     mutations: {
         showTem(state) {

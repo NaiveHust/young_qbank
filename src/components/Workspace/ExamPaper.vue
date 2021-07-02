@@ -5,22 +5,22 @@
       <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
         <div class="paper-main-info">
           <el-form
-            :model="form"
+            :model="paperInfo"
             ref="form"
             label-width="80px"
             :inline="true"
             size="small"
           >
             <el-form-item :label="$t('paper.paperName')">
-              <el-input v-model="form.paperName"></el-input>
+              <el-input v-model="paperInfo.name"></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperScore')">
-              <el-input v-model="form.paperScore"></el-input>
+              <el-input v-model.number="paperInfo.score" type="number"></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperDuration')">
-              <el-input v-model="form.paperDuration"></el-input>
+              <el-input v-model="paperInfo.duration"></el-input>
             </el-form-item>
 
             <!-- <el-form-item>
@@ -30,17 +30,18 @@
           </el-form>
         </div>
       </el-col>
+      <!-- 工具栏 -->
       <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
         <div class="paper-bar">
           <el-button type="primary" @click="dialogVisible = true"
             >添加题目</el-button
           >
           <el-button type="primary" icon="el-icon-search">搜索</el-button>
-          <el-button type="primary"
+          <el-button type="primary" @click="finishPaper()"
             >完成<i class="el-icon-upload el-icon--right"></i
           ></el-button>
         </div>
-        <!-- 添加题目区 -->
+        <!-- 对话窗 添加题目区 -->
         <el-dialog
           title="添加题目"
           v-model="dialogVisible"
@@ -60,15 +61,23 @@
                     v-for="type in typeList"
                     :label="$i18n.messages[$i18n.locale].topic[type.name]"
                     :key="type.key"
+                    class="dialog-left-one"
                   >
-                    <el-input
-                      v-model.number="type.num"
-                      type="number"
-                    ></el-input>
-                    <el-button @click.prevent="deleteType(type)"
+
+                    <el-input style="width: 12vw;" v-model.number="type.num" type="number">
+                       <template #prepend>数目:</template>
+                    </el-input>
+
+                    <el-input style="width: 12vw;" v-model.number="type.score" type="number">
+                      <template #prepend>分值:</template>
+                    </el-input>
+
+                    <el-button  @click.prevent="deleteType(type)"
                       >删除</el-button
                     >
+
                   </el-form-item>
+
                 </el-scrollbar>
               </el-col>
 
@@ -115,7 +124,7 @@
       <!-- 试卷大纲显示 -->
       <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4" :offset="0">
         <div class="paper-outline-view">
-          <el-scrollbar style="height: 80vh">
+          <el-scrollbar style="height: 75vh">
             <transition-group>
               <ul
                 class="item"
@@ -136,22 +145,34 @@
                 {{
                   type.name
                 }}
-                {{type.order}}
-                {{type.num}}
+                {{
+                  type.order
+                }}
+                {{
+                  type.num
+                }}
 
                 <li
                   v-for="(topic, index) in paperContent[type.name].topic"
                   :key="index"
                   style="height: 5vh; border: 3px solid rgb(167, 15, 98)"
-                  @click="editTopic(type.name,topic.order)"
+                  @click="editTopic(type.name, topic.order)"
                 >
                   第{{ topic.order }}题
+
+                  <el-button
+                    class="el-icon-delete"
+                    @click.stop="deleteTopic(type.name, topic.order)"
+                    style="float: right"
+                  >
+                  </el-button>
                 </li>
               </ul>
             </transition-group>
           </el-scrollbar>
         </div>
       </el-col>
+
       <!-- 试卷内容编辑 -->
       <el-col :xs="16" :sm="16" :md="18" :lg="20" :xl="20" :offset="0">
         <div class="paper-edit">
@@ -206,10 +227,12 @@ export default {
         .slice(0)
         .sort((a, b) => a.order - b.order);
     },
+    paperInfo(){
+      return this.$store.state.paper.paperContent.Info;
+    },
     paperContent() {
       return this.$store.state.paper.paperContent;
     },
-   
   },
   created() {
     this.div = document.createElement("div");
@@ -261,17 +284,26 @@ export default {
         name: name,
         order: index,
         num: 0,
+        //此为全局默认分数，可被全局覆盖
+        score:5,
       });
     },
+
     saveType() {
       this.$store.commit("saveType");
       this.dialogVisible = false;
     },
-    editTopic(name,order) {
+    editTopic(name, order) {
       this.editCom = name;
-      this.$store.commit('setOrder',order);
+      this.$store.commit("setOrder", order);
       console.log(name);
     },
+    deleteTopic(typeName, order) {
+      this.$store.commit("deleteTopic", { typeName, order });
+    },
+    finishPaper(){
+      this.$store.commit("finishPaper");
+    }
   },
 };
 </script>
@@ -339,6 +371,11 @@ export default {
   height: 100%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
+}
+.dialog-left-one{
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
 }
 
 .type-view .el-form-item {

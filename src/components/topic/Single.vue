@@ -2,11 +2,12 @@
   <!-- 单选题 -->
   <div class="single">
     <el-form
+      v-if="singles"
       :model="singles"
       ref="form"
       label-width="80px"
       :inline="false"
-      size="normal"
+      
     >
       <el-row>
         <el-form-item :label="'第' + singles.order + '题'">
@@ -47,7 +48,6 @@
               删除
             </el-button>
             
-
           </div>
         </el-radio-group>
       </el-scrollbar>
@@ -87,13 +87,7 @@ export default {
     addChoice(order) {
       this.$store.commit('addSingleItem',order);
     },
-    finishTopic() {
-      console.log('单选题代理对象:');
-      console.log(this.sContent);
-      //currentOrder 是题型中的局部序号
-      this.$store.commit('saveTopic','Single',this.sContent,this.currentOrder);
-      
-    },
+   
   },
   created() {
     console.log("created!");
