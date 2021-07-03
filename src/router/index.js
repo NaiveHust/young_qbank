@@ -4,6 +4,12 @@ import Login from '../components/Login/Login';
 import Notfound from '../components/404';
 import ExamPaper from '../components/Workspace/ExamPaper'
 import Welcome from '../components/Workspace/Welcome'
+import QsBank from '../components/Workspace/QsBank'
+import PpBank from '../components/Workspace/PpBank'
+import MarkPaper from '../components/Workspace/MarkPaper'
+import TakeExam from '../components/Workspace/TakeExam'
+import ManageUser from '../components/Workspace/ManageUser'
+
 const routes = [
     {
         path: '/',
@@ -24,36 +30,71 @@ const routes = [
                 path: "/welcome",
                 name: "Welcome",
                 meta: {
-                    title: '欢迎！'
+                    title: '欢迎！',
+                    requireAuth: true,
+                    roles: ['student', 'teacher', 'manager'],
                 },
                 component:Welcome,
             },
             {
-                path: "/table",
-                name: "BaseTable",
+                path: "/manageuser",
+                name: "ManageUser",
                 meta: {
-                    title: '表格'
+                    title: '用户管理',
+                    requireAuth: true,
+                    roles: ['manager'],
                 },
-                component: () => import(
-                    /* webpackChunkName: "table" */
-                    "../components/BaseTable.vue")
-            }, {
-                path: "/tabs",
-                name: "Tabs",
-                meta: {
-                    title: 'tab标签'
-                },
-                component: () => import(
-                    /* webpackChunkName: "tabs" */
-                    "../components/Tabs.vue")
+                component: ManageUser,
             },
             {
                 path: "/exampaper",
                 name: "ExamPaper",
                 meta: {
-                    title: '创建试卷'
+                    title: '创建试卷',
+                    requireAuth: true,
+                    roles: ['teacher',],
                 },
                 component: ExamPaper,
+            },
+            {
+                path: "/qsbank",
+                name: "QsBank",
+                meta: {
+                    title: '题库管理',
+                    requireAuth: true,
+                    roles: ['teacher', 'manager'],
+                },
+                component: QsBank,
+            },
+            {
+                path: "/ppbank",
+                name: "PpBank",
+                meta: {
+                    title: '试卷管理',
+                    requireAuth: true,
+                    roles: ['teacher', 'manager'],
+                },
+                component: PpBank,
+            },
+            {
+                path: "/markpaper",
+                name: "MarkPaper",
+                meta: {
+                    title: '我要阅卷',
+                    requireAuth: true,
+                    roles: ['teacher',],
+                },
+                component: MarkPaper,
+            },
+            {
+                path: "/takeexam",
+                name: "TakeExam",
+                meta: {
+                    title: '我的考试',
+                    requireAuth: true,
+                    roles: ['student',],
+                },
+                component: TakeExam,
             }
         ]
     },
@@ -102,5 +143,48 @@ const router = createRouter({
         next();
     }
 }); */
+router.beforeEach((to, from, next) => {
+    console.log('上一个页面：', from)
+    console.log('下一个页面：', to)
+   // let userToken = localStorage.getItem('userToken');
+    //let role = localStorage.getItem('role');
+    let userType = localStorage.getItem('young-user-type');
+    if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
+       // console.log('main-token：', userToken)
+        if (userType) { // 判断本地是否存在token
+            if (to.meta.roles.length !== 0) {
+                for (let i = 0; i < to.meta.roles.length; i++) {
+                    if (userType === to.meta.roles[i]) {
+                        next()
+                        break
+                    } else if (i === to.meta.roles.length - 1) {
+                        next({
+                            path: '/Error'
+                        })
+                    }
+                }
+            } else {
+                next()
+            }
+        } else {
+            next({
+                path: '/Login'
+            })
+        }
+    } else {
+        next()
+    }
+    /* 如果本地存在token,则不允许直接跳转到登录页面 */
+    /* if (to.fullPath === '/Login') {
+        if (userToken) {
+            next({
+                path: from.fullPath
+            })
+        } else {
+            next()
+        }
+    } */
+})
+
 export default router;
 

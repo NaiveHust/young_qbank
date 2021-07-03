@@ -9,7 +9,7 @@
       :inline="false"
       class="fill-form"
     >
-      <el-row>
+      <el-row v-if="inPaper">
         <el-form-item :label="'第' + fills.order + '题'"> </el-form-item>
         <el-form-item label="分值">
           <el-input v-model.number="fills.score" type="number"></el-input>
@@ -25,11 +25,11 @@
           class="fill-one"
         >
 
-        <el-col :span="12">
+        
            <!-- head -->
           <el-input
             type="textarea"
-            style=" width: 15vw;"
+            style=" width: 30%;"
             resize="none"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.head"
@@ -40,35 +40,35 @@
           <el-input
             type="textarea"
             resize="none"
-            style=" width: 15vw;"
+            style=" width: 30%;"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.tail"
           >
           </el-input>
           
-        </el-col>
-          <el-col :span="8">
+        
+          
                 <!-- answer -->
             答案
              <el-input
             type="textarea"
             resize="none"
-            style=" width: 15vw;"
+            style=" width: 30%;"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.answer"
           >
           </el-input>
-          </el-col>
+          
 
       
-        <el-col :span="4">
+        
            <el-button
                     class="el-icon-delete"
                     @click.stop="delItem(item.order)"
-                    style="float: right"
+                    style="width:10%;float: right;"
                   >
                   </el-button>
-        </el-col>
+        
 
         
 
@@ -105,6 +105,9 @@ export default {
     };
   },
   computed: {
+     inPaper() {
+      return this.$store.state.paper.inPaper;
+    },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
@@ -160,8 +163,8 @@ export default {
   border: 3px solid rgb(216, 7, 52);
 }
 .fill-one {
-  width: 70vw;
-  height: 8vh;
+  width: 95%;
+  height: 20%;
   margin-bottom: 2vh;
   display: flex;
   flex-wrap: nowrap;

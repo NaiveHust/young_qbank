@@ -1,7 +1,10 @@
 import { createStore } from 'vuex'
 import exampaper from './paper'
+import question from './question'
 export default createStore({
     state: {
+        //用户类型
+        userType: localStorage.getItem('young-user-type'),
         //路由便签列表
         tagsList: [
 
@@ -77,13 +80,16 @@ export default createStore({
         hadndleCollapse(state, data) {
             state.collapse = data;
         },
-       
+        setUserType(state,type) {
+            state.userType = type;
+        }
 
 
     },
     actions: {},
     modules: {
-        paper:exampaper,
+        paper: exampaper,
+        qs:question,
 
     }
 })

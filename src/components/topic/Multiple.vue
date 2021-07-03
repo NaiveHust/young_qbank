@@ -8,7 +8,7 @@
       label-width="80px"
       :inline="false"
     >
-      <el-row>
+      <el-row v-if="inPaper">
         <el-form-item :label="'第' + multiples.order + '题'"> </el-form-item>
         <el-form-item label="分值">
           <el-input v-model.number="multiples.score" type="number"></el-input>
@@ -18,7 +18,7 @@
       <el-form-item label="题干信息">
         <el-input
           type="textarea"
-          style="width: 50vw"
+          style="width: 80%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题干信息"
@@ -28,31 +28,6 @@
       </el-form-item>
 
       <el-scrollbar class="multiple-ones">
-        <!--   <el-radio-group v-model="multiples.answer">
-          <div
-            v-for="item in multiples.choice"
-            :key="item.name"
-            class="multiple-one"
-          >
-            <el-radio-button :label="item.name"> </el-radio-button>
-            <el-input
-              v-model="item.content"
-              style="width: 40vw"
-              type="textarea"
-              resize="none"
-              :autosize="{ minRows: 2, maxRows: 4 }"
-            >
-            </el-input>
-
-             <el-button
-                    class="el-icon-delete"
-                    @click.stop="delItem(item.order)"
-                    style="float: right"
-                  >
-                  </el-button>
-            
-          </div>
-        </el-radio-group> -->
         <el-checkbox-group v-model="multiples.answer">
           <div
            v-for="item in multiples.choice"
@@ -88,7 +63,7 @@
       <el-form-item label="答案解析">
         <el-input
           type="textarea"
-          style="width: 50vw"
+          style="width: 80%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目解析"
@@ -106,6 +81,9 @@ export default {
     return {};
   },
   computed: {
+     inPaper() {
+      return this.$store.state.paper.inPaper;
+    },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },

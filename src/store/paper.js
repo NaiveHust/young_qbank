@@ -6,31 +6,7 @@ const exampaper = {
         topicList: [
 
         ],
-        //题型模板
-        sTem: {
-            order: 1,
-            score: 5,
-            question: "",
-            choice: [
-                {
-                    name: "A",
-                    content: "",
-                },
-                {
-                    name: "B",
-                    content: "",
-                },
-                {
-                    name: "C",
-                    content: "",
-                },
-                {
-                    name: "D",
-                    content: "",
-                },
-            ],
-            answer: "",
-        },
+     
         //题型列表
         /* 
         {
@@ -84,7 +60,7 @@ const exampaper = {
         }
         ,
         currentOrder: 0,
-
+        inPaper:false,
 
     },
 
@@ -168,6 +144,7 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: deScore,
+                            level:0,
                             question: "",
                             choice: [
                                 {
@@ -200,6 +177,7 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: 5,
+                            level: 0,
                             question: [
                                 {
                                     order: 1,
@@ -216,6 +194,7 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: deScore,
+                            level: 0,
                             question: "",
                             choice: [
                                 {
@@ -248,6 +227,7 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: deScore,
+                            level: 0,
                             question: "",
                             subQ: [
                                 {
@@ -264,6 +244,7 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: deScore,
+                            level: 0,
                             question: "",
                             answer: true,
                             explain: "",
@@ -334,6 +315,10 @@ const exampaper = {
             console.log(state.paperContent);
             console.log(JSON.stringify(state.paperContent));
         },
+        setInPaper(state, boolVal) {
+            state.inPaper = boolVal;
+            console.log('在试卷中编辑:',state.inPaper);
+        }
     },
     actions: {
 

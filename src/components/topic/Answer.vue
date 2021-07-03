@@ -9,7 +9,7 @@
       :inline="false"
       
     >
-      <el-row>
+      <el-row v-if="inPaper">
         <el-form-item :label="'第' + answers.order + '题'">
         </el-form-item>
         <el-form-item label="分值">
@@ -20,7 +20,7 @@
       <el-form-item label="题干信息">
         <el-input
           type="textarea"
-          style="width:50vw;"
+          style="width:80%;"
            resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题干信息"
@@ -100,6 +100,9 @@ export default {
     };
   },
   computed: {
+     inPaper() {
+      return this.$store.state.paper.inPaper;
+    },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
