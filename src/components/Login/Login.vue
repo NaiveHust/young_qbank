@@ -1,6 +1,5 @@
 <template>
   <div class="login-wrap">
-
     <el-row style="height: 15%">
       <Header></Header>
     </el-row>
@@ -11,12 +10,11 @@
 
       <el-col :span="14" class="hidden-md-and-down">
         <el-carousel style="height: 80%" pause-on-hover>
-
-          <el-carousel-item v-for="img in images" :key="img" class="login-img" >
-            <el-image  
-              :src=img 
-              :fit="scale-down"
-              style = "height:100%;"
+          <el-carousel-item v-for="img in images" :key="img" class="login-img">
+            <el-image
+              :src="img"
+              fit="scale - down"
+              style="height: 100%"
             ></el-image>
           </el-carousel-item>
         </el-carousel>
@@ -52,6 +50,17 @@
           </div>
           <!-- mid -->
           <div class="login-mid">
+            <el-form-item>
+              <el-select v-model="userType" placeholder="身份">
+                <el-option
+                  v-for="(item, index) in loginType"
+                  :key="index"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
             <el-form-item prop="username">
               <el-input
                 v-model="param.username"
@@ -101,10 +110,10 @@
 import Footer from "./Footer";
 import Header from "./Header";
 export default {
-   components: {
-        Footer,
-        Header,
-      },
+  components: {
+    Footer,
+    Header,
+  },
   data() {
     var validateName = (rule, value, callback) => {
       if (value === "") {
@@ -127,11 +136,26 @@ export default {
       }
     };
     return {
-     
+      userType: "",
       param: {
         username: "",
         password: "",
       },
+      loginType: [
+        {
+          label: "学生",
+          value: "student",
+        },
+        {
+          label: "老师",
+          value: "teacher",
+        },
+        {
+          label: "管理员",
+          value: "manager",
+        },
+      ],
+
       rules: {
         username: [
           {
@@ -149,8 +173,11 @@ export default {
       ],
     };
   },
+
   created() {
     this.$store.commit("clearTags");
+    this.userType = localStorage.getItem("young-user-type");
+    this.setUserType();
   },
   methods: {
     submitForm() {
@@ -159,6 +186,9 @@ export default {
         if (valid) {
           this.$message.success("登录成功");
           localStorage.setItem("ms_username", this.param.username);
+          localStorage.setItem("young-user-type", this.userType);
+          this.setUserType();
+          console.log("缓存用户类型", this.userType);
           this.$router.push("/home");
         } else {
           this.$message.error(this.$t("login.error0"));
@@ -168,6 +198,9 @@ export default {
     },
     switchLanguage(command) {
       this.$i18n.locale = command ? command : this.$i18n.locale;
+    },
+    setUserType() {
+      this.$store.commit("setUserType", this.userType);
     },
   },
 };
@@ -225,10 +258,10 @@ export default {
 .login-lang {
   margin-top: 20px;
 }
-.login-img{
+.login-img {
   border: 20px;
   border-color: black;
-  height:100%;
+  height: 100%;
   text-align: center;
 }
 </style>

@@ -64,11 +64,11 @@
                     class="dialog-left-one"
                   >
 
-                    <el-input style="width: 12vw;" v-model.number="type.num" type="number">
+                    <el-input style="width: 12vw;" v-model.number="type.num" type="number" :min="0">
                        <template #prepend>数目:</template>
                     </el-input>
 
-                    <el-input style="width: 12vw;" v-model.number="type.score" type="number">
+                    <el-input style="width: 12vw;" v-model.number="type.score" type="number" :min="0">
                       <template #prepend>分值:</template>
                     </el-input>
 
@@ -188,7 +188,7 @@
 
 <script>
 import Single from "../topic/Single";
-import Multiply from "../topic/Multiple";
+import Multiple from "../topic/Multiple";
 import Answer from "../topic/Answer";
 import Fill from "../topic/Fill";
 import Truefalse from "../topic/TrueFalse";
@@ -209,7 +209,7 @@ export default {
   },
   components: {
     Single,
-    Multiply,
+    Multiple,
     Answer,
     Fill,
     Truefalse,
@@ -237,6 +237,7 @@ export default {
   created() {
     this.div = document.createElement("div");
     document.body.appendChild(this.div);
+    this.$store.commit('setInPaper',true);
   },
   methods: {
     handleDragStart(e, item) {
@@ -278,6 +279,7 @@ export default {
     deleteType(type) {
       this.$store.commit("deleteType", type);
     },
+   
     chooseType(name, index) {
       this.addType({
         index: index,

@@ -6,31 +6,7 @@ const exampaper = {
         topicList: [
 
         ],
-        //题型模板
-        sTem: {
-            order: 1,
-            score: 5,
-            question: "",
-            choice: [
-                {
-                    name: "A",
-                    content: "",
-                },
-                {
-                    name: "B",
-                    content: "",
-                },
-                {
-                    name: "C",
-                    content: "",
-                },
-                {
-                    name: "D",
-                    content: "",
-                },
-            ],
-            answer: "",
-        },
+     
         //题型列表
         /* 
         {
@@ -84,7 +60,7 @@ const exampaper = {
         }
         ,
         currentOrder: 0,
-
+        inPaper:false,
 
     },
 
@@ -104,15 +80,17 @@ const exampaper = {
                 }
             }
             topics.splice(data.order - 1, 1);
+            
+            for (const key in state.typeList) {
+                if (state.typeList[key].name === data.typeName) {
+                    state.typeList[key].num = topics.length;
+                    break;
+                }
+            }
+
             console.log(topics)
         },
-        //添加单个题型
-        /* {
-        index: index,
-        name: name,
-        order: index,
-        num: 0,
-      } */
+        
         addType(state, type) {
             for (const item of state.typeList) {
                 if (item.index === type.index) {
@@ -146,7 +124,10 @@ const exampaper = {
         },
         saveType(state) {
             for (const type in state.typeList) {
+               
+                state.typeList[type].num = state.typeList[type].num < 0 ? 0 : state.typeList[type].num
                 let newN = state.typeList[type].num;
+
                 let key = state.typeList[type].name;
 
                 let oldN = state.paperContent[key].topic.length;
@@ -155,6 +136,7 @@ const exampaper = {
                 console.log('saveType:' + key);
                 console.log('新增:' + addN);
                 //该题型默认分值
+                //所有的order键都是为了将来的的题目，题型拖拽换位
                 let deScore = state.typeList[type].score;
                 for (let i = 0; i < addN; i++) {
                     //单选题
@@ -162,26 +144,32 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: deScore,
+                            level:0,
                             question: "",
                             choice: [
                                 {
+                                    order:1,
                                     name: "A",
                                     content: "",
                                 },
                                 {
+                                    order: 2,
                                     name: "B",
                                     content: "",
                                 },
                                 {
+                                    order: 3,
                                     name: "C",
                                     content: "",
                                 },
                                 {
+                                    order: 4,
                                     name: "D",
                                     content: "",
                                 },
                             ],
                             answer: "",
+                            explain:"",
                         });
                     }
                     //填空题   
@@ -189,6 +177,7 @@ const exampaper = {
                         state.paperContent[key].topic.push({
                             order: oldN + i + 1,
                             score: 5,
+                            level: 0,
                             question: [
                                 {
                                     order: 1,
@@ -197,32 +186,68 @@ const exampaper = {
                                     answer: "",
                                 },
                             ],
+                            explain: "",
                         })
                     }
-                    else {
+                        //多选题
+                    else if(key == "Multiple"){
                         state.paperContent[key].topic.push({
-                            order: ++state.order,
-                            score: 5,
+                            order: oldN + i + 1,
+                            score: deScore,
+                            level: 0,
                             question: "",
                             choice: [
                                 {
+                                    order: 1,
                                     name: "A",
                                     content: "",
                                 },
                                 {
+                                    order: 2,
                                     name: "B",
                                     content: "",
                                 },
                                 {
+                                    order: 3,
                                     name: "C",
                                     content: "",
                                 },
                                 {
+                                    order: 4,
                                     name: "D",
                                     content: "",
                                 },
                             ],
-                            answer: "",
+                            answer: [],
+                            explain: "",
+                        });
+                    }
+                        //简答题
+                    else if (key == "Answer") {
+                        state.paperContent[key].topic.push({
+                            order: oldN + i + 1,
+                            score: deScore,
+                            level: 0,
+                            question: "",
+                            subQ: [
+                                {
+                                    order: 1,
+                                    content: "",
+                                    answer: "",
+                                }
+                            ],
+                            explain: "",
+                        });
+                    }
+                        //判断题
+                    else if (key == "Truefalse") {
+                        state.paperContent[key].topic.push({
+                            order: oldN + i + 1,
+                            score: deScore,
+                            level: 0,
+                            question: "",
+                            answer: true,
+                            explain: "",
                         });
                     }
                 }
@@ -236,29 +261,29 @@ const exampaper = {
             state.currentOrder = order;
         },
         //增加选项
-        addSingleItem(state, order) {
-            /*
-                {
-                  order:0,
-                   question: "",
-                  choice: [],
-                      answer: "",
-                  },
-               */
-            /*{
-            name:'A',
-            content:'',
-            }
+        addTopicItem(state, data) {
+          
+            let aimTopic = state.paperContent[data.tType].topic[data.tOrder - 1];
             
-            */
+            aimTopic[data.iType].push(data.content);
+        },
+        delTopicItem(state,data) {
+            let aimTopic = state.paperContent[data.tType].topic[data.tOrder - 1];
+            let aimItems = aimTopic[data.iType];
+            for (const key in aimItems ) {
+                if (aimItems[key].order > data.iOrder) {     
+                    aimItems[key].order--;
+                    if (aimItems[key].name) {
+                        aimItems[key].name = String.fromCharCode(65 + aimItems[key].order - 1);
+                    }
+                }
+                
+            }
 
-            var aimTopic = state.paperContent.Single.topic[order - 1];
-            var i = aimTopic.choice.length;
+            aimItems.splice(data.iOrder - 1, 1);
+            console.log('删除后的:',aimItems);
 
-            aimTopic.choice.push({
-                name: String.fromCharCode(65 + i),
-                content: '',
-            })
+
         },
         addFillItem(state, order) {
             /*{
@@ -290,6 +315,10 @@ const exampaper = {
             console.log(state.paperContent);
             console.log(JSON.stringify(state.paperContent));
         },
+        setInPaper(state, boolVal) {
+            state.inPaper = boolVal;
+            console.log('在试卷中编辑:',state.inPaper);
+        }
     },
     actions: {
 

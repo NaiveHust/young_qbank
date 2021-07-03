@@ -10,7 +10,7 @@
       unique-opened
       router
     >
-      <template v-for="item in items">
+      <template v-for="item in items.filter(item=>item.roles.indexOf($store.state.userType) > -1)">
         <!-- 多级菜单 -->
         <template v-if="item.subs">
           <el-submenu :index="item.index" :key="item.index">
@@ -65,88 +65,45 @@ export default {
           icon: "el-icon-s-home",
           index: "welcome",
           title: "系统首页",
+          roles:['student','teacher','manager'],
         },
         {
           icon: "el-icon-apple",
-          index: "table",
+          index: "manageuser",
           title: "用户管理",
+          roles:['manager'],
         },
-        {
-          icon: "el-icon-apple",
-          index: "tabs",
-          title: "课程管理",
-        },
-       /*  {
-          icon: "el-icon-apple",
-          index: "3",
-          title: "试题管理",
-          subs: [
-            {
-              index: "form",
-              title: "基本表单",
-            },
-            {
-              index: "3-2",
-              title: "三级菜单",
-              subs: [
-                {
-                  index: "editor",
-                  title: "富文本编辑器",
-                },
-                {
-                  index: "markdown",
-                  title: "markdown编辑器",
-                },
-              ],
-            },
-            {
-              index: "upload",
-              title: "文件上传",
-            },
-          ],
-        }, */
            {
           icon: "el-icon-apple",
           index: "exampaper",
           title: "创建试卷",
+          roles:['teacher',],
         },
+         
         {
           icon: "el-icon-apple",
-          index: "6",
-          title: "待定功能1",
-          subs: [
-            {
-              index: "drag",
-              title: "拖拽列表",
-            },
-            {
-              index: "dialog",
-              title: "拖拽弹框",
-            },
-          ],
+          index: "qsbank",
+          title: "题库管理",
+          roles:['teacher','manager'],
         },
-
-        {
-          icon: "el-icon-apple",
-          index: "7",
-          title: "错误处理",
-          subs: [
-            {
-              index: "permission",
-              title: "权限测试",
-            },
-            {
-              index: "404",
-              title: "404页面",
-            },
-          ],
-        },
-     
          {
           icon: "el-icon-apple",
-          index: "/donate",
-          title: "待定功能3",
-        },
+          index: "ppbank",
+          title: "试卷管理",
+          roles: ['teacher', 'manager'],
+        }, 
+         {
+          icon: "el-icon-apple",
+          index: "markpaper",
+          title: "我要阅卷",
+          roles:['teacher',],
+        },  
+        {
+          icon: "el-icon-apple",
+          index: "takeexam",
+          title: "我的考试",
+          roles:['student',],
+        },    
       ],
     };
   },
