@@ -86,15 +86,15 @@ export default createStore({
           //增加选项
         addTopicItem(state, data) {
 
-            let aimTopic = state.inPaper ?
-                state.paperContent[data.tType].topic[data.tOrder - 1] :
+            let aimTopic = state.paper.inPaper ?
+                state.paper.paperContent[data.tType].topic[data.tOrder - 1] :
                 state.qs.qsBank[state.qs.qsOrder].content;
             aimTopic[data.iType].push(data.content);
 
         },
         delTopicItem(state, data) {
-            let aimTopic = state.inPaper ?
-                state.paperContent[data.tType].topic[data.tOrder - 1] :
+            let aimTopic = state.paper.inPaper ?
+                state.paper.paperContent[data.tType].topic[data.tOrder - 1] :
                 state.qs.qsBank[state.qs.qsOrder].content;
             let aimItems = aimTopic[data.iType];
             for (const key in aimItems) {

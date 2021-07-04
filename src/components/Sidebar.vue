@@ -104,12 +104,6 @@ export default {
           title: "我的考试",
           roles:['student',],
         },
-        {
-          icon: "el-icon-apple",
-          index: "jsontopaper",
-          title: "创建 docx",
-          roles:['teacher',],
-        },
       ],
     };
   },

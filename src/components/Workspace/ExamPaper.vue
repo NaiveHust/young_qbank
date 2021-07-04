@@ -38,12 +38,12 @@
           >
           <el-button type="primary" @click="importTopic()">导入题目</el-button>
           <el-button type="primary" @click="finishPaper()"
-            >完成<i class="el-icon-upload el-icon--right"></i
+            >保存<i class="el-icon-upload el-icon--right"></i
           ></el-button>
         </div>
         <!-- 对话窗 添加题目区 -->
         <el-dialog
-          title="添加题目"
+          title="添加题型"
           v-model="dialogVisible"
           width="80vw"
           center
@@ -244,6 +244,7 @@ export default {
     this.div = document.createElement("div");
     document.body.appendChild(this.div);
     this.$store.commit('setInPaper',true);
+    console.log('ExamPaper created!');
   },
   methods: {
     handleDragStart(e, item) {

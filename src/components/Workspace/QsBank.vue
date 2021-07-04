@@ -162,6 +162,13 @@ export default {
     },
     handleDelete(index, row) {
       console.log("delete", index, row);
+       for (const key in this.qsBank) {
+        if(this.qsBank[key].id === row.id){
+           this.$store.commit('delBankTopic',parseInt(key));
+           console.log('删除',row.type,parseInt(key));
+        }
+      }
+      
     },
   },
  

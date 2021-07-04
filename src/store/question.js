@@ -184,6 +184,12 @@ const question = {
         setQsOrder(state, order) {
             state.qsOrder = order;
         },
+        //删除题库中的某个题目
+        delBankTopic(state,order) {
+            state.qsBank.splice(order, 1);
+        }
+
+
         },
        
     actions: {

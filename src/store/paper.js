@@ -16,6 +16,8 @@ const exampaper = {
         typeList: [
 
         ],
+        //试卷库
+        paperList:[],
         //整张试卷的对象
         paperContent: {
             Info: {
@@ -101,8 +103,8 @@ const exampaper = {
             }
             state.typeList.push(type);
             state.typeList.sort((a, b) => a.index - b.index);
-            console.log('typeList:');
-            console.log(state.typeList);
+            //console.log('typeList:');
+            //console.log(state.typeList);
         },
         //删除单个题型
         deleteType(state, type) {
@@ -293,6 +295,14 @@ const exampaper = {
             console.log('编辑完成后的试卷');
             console.log(state.paperContent);
             console.log(JSON.stringify(state.paperContent));
+            let i = state.paperList.length;
+            state.paperList.push({
+                //id由后端自动生成,目前只是前端模仿生成.
+                id:i,
+                name: state.paperContent.Info.name,
+                json: JSON.stringify(state.paperContent),
+            });
+            console.log('paperList',state.paperList);
         },
         setInPaper(state, boolVal) {
             state.inPaper = boolVal;
@@ -342,7 +352,17 @@ const exampaper = {
             for (const tType of state.typeList) {
                 tType.num = state.paperContent[tType.name].topic.length;
             }
+        },
+        //删除试卷
+        delPaper(state, index) {
+            state.paperList.splice(index, 1);
+        },
+        //改变当前编辑的试卷
+        setCurrentPaper(state,data) {
+            state.paperContent = data;
         }
+
+
     },
     actions: {
 
