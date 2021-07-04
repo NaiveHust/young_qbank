@@ -18,60 +18,48 @@
 
       <!-- 题目 -->
       <el-scrollbar class="fill-ones">
-
         <el-row
           v-for="(item, index) in fills.question"
           :key="index"
           class="fill-one"
         >
-
-        
-           <!-- head -->
+          <!-- head -->
           <el-input
             type="textarea"
-            style=" width: 30%;"
+            style="width: 30%"
             resize="none"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.head"
           >
           </el-input>
-            {{'第' + item.order + '空'}}
-              <!-- tail -->
+          {{ "第" + item.order + "空" }}
+          <!-- tail -->
           <el-input
             type="textarea"
             resize="none"
-            style=" width: 30%;"
+            style="width: 30%"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.tail"
           >
           </el-input>
-          
-        
-          
-                <!-- answer -->
-            答案
-             <el-input
+
+          <!-- answer -->
+          答案
+          <el-input
             type="textarea"
             resize="none"
-            style=" width: 30%;"
+            style="width: 30%"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.answer"
           >
           </el-input>
-          
 
-      
-        
-           <el-button
-                    class="el-icon-delete"
-                    @click.stop="delItem(item.order)"
-                    style="width:10%;float: right;"
-                  >
-                  </el-button>
-        
-
-        
-
+          <el-button
+            class="el-icon-delete"
+            @click.stop="delItem(item.order)"
+            style="width: 10%; float: right"
+          >
+          </el-button>
         </el-row>
       </el-scrollbar>
 
@@ -81,18 +69,29 @@
         >
       </el-form-item>
 
-      <el-form-item label="答案解析">
+      <div style="width: 100%">
+        <span>难度</span>
+        <el-select
+          v-model="fills.level"
+          placeholder="请选择"
+          style="width: 10%"
+        >
+          <el-option label="易" value="易"></el-option>
+          <el-option label="中" value="中"></el-option>
+          <el-option label="难" value="难"></el-option>
+        </el-select>
+
+        <span style="margin-left: 5%">答案解析</span>
         <el-input
           type="textarea"
-          style="width: 50vw"
+          style="width: 60%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目解析"
           v-model="fills.explain"
         >
         </el-input>
-      </el-form-item>
-
+      </div>
     </el-form>
   </div>
 </template>
@@ -105,43 +104,50 @@ export default {
     };
   },
   computed: {
-     inPaper() {
+    inPaper() {
       return this.$store.state.paper.inPaper;
     },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
+    qsOrder() {
+      return this.$store.state.qs.qsOrder;
+    },
     fills() {
-      return this.$store.state.paper.paperContent.Fill.topic[
-        this.currentOrder - 1
-      ];
+      if (this.inPaper) {
+        return this.$store.state.paper.paperContent.Fill.topic[
+          this.currentOrder - 1
+        ];
+      } else {
+        return this.$store.state.qs.qsBank[this.qsOrder].content;
+      }
     },
   },
   methods: {
     delItem(order) {
-       this.$store.commit('delTopicItem',{
-      //题型键名
-        tType:"Fill",
+      this.$store.commit("delTopicItem", {
+        //题型键名
+        tType: "Fill",
         //题条键名
-        iType:"question",
-        tOrder:this.currentOrder,
-        iOrder:order,
+        iType: "question",
+        tOrder: this.currentOrder,
+        iOrder: order,
       });
     },
     addItem(order) {
-      let i = !this.fills.question?0:this.fills.question.length;
+      let i = !this.fills.question ? 0 : this.fills.question.length;
       this.$store.commit("addTopicItem", {
         //题型键名
-        tType:"Fill",
+        tType: "Fill",
         //题条键名
-        iType:"question",
-        tOrder:order,
-        content:{
-                order:i+1,
-                head: '',
-                tail: '',
-                answer: "",
-            }
+        iType: "question",
+        tOrder: order,
+        content: {
+          order: i + 1,
+          head: "",
+          tail: "",
+          answer: "",
+        },
       });
     },
   },

@@ -1,74 +1,90 @@
 <template>
   <div class="qsbank">
     <el-row class="qsbank-north">
-      <!-- 菜单工具栏 -->
-      <el-col :span="16">
-        <div class="north-bar">
-          <div>
-            题型
-            <el-select v-model="viewType" clearable placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+      
+      <el-col :span="14">
+        
+        <el-row style="width: 100%; height: 30%">
+          <!-- 菜单工具栏 -->
+          <div class="north-bar">
+            <div>
+              题型
+              <el-select v-model="viewType" clearable placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <div style="margin-top: 15px">
+              <el-select
+                v-model="searchType"
+                placeholder="搜索类型"
+                clearable
+                style="width: 20%"
               >
-              </el-option>
-            </el-select>
+                <el-option label="题目名称" value="1"></el-option>
+                <el-option label="课程" value="2"></el-option>
+                <el-option label="创建人" value="3"></el-option>
+              </el-select>
+              <el-input
+                placeholder="请输入搜索内容"
+                v-model="searchVal"
+                class="bar-search"
+              >
+                <template #append>
+                  <el-button
+                    icon="el-icon-search"
+                    @click="searchTopic()"
+                  ></el-button>
+                </template>
+              </el-input>
+            </div>
           </div>
-
-          <div style="margin-top: 15px">
-            <el-select
-              v-model="searchType"
-              placeholder="搜索类型"
-              clearable
-              style="width: 20%"
+        </el-row>
+        <el-row>
+          <!-- 题目列表区 -->
+          <div class="south-table">
+            <el-table
+              :data="qsBank"
+              style="width: 100%"
+              height="60vh"
+              :default-sort="{ prop: 'date', order: 'descending' }"
             >
-              <el-option label="题目名称" value="1"></el-option>
-              <el-option label="课程" value="2"></el-option>
-              <el-option label="创建人" value="3"></el-option>
-            </el-select>
-            <el-input
-              placeholder="请输入搜索内容"
-              v-model="searchVal"
-              class="bar-search"
-            >
-              <template #append>
-                <el-button
-                  icon="el-icon-search"
-                  @click="searchTopic()"
-                ></el-button>
-              </template>
-            </el-input>
+              <el-table-column
+                v-for="(head, index) in tableHead"
+                :key="index"
+                :prop="head.prop"
+                :label="head.label"
+                sortable
+              >
+              </el-table-column>
+              <el-table-column label="操作">
+                <template #default="scope">
+                  <el-button
+                    size="mini"
+                    @click="handleEdit(scope.$index, scope.row)"
+                    >编辑</el-button
+                  >
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    @click="handleDelete(scope.$index, scope.row)"
+                    >删除</el-button
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
           </div>
-        </div>
+        </el-row>
       </el-col>
-      <!-- 图表区 -->
-      <el-col :span="8">
-        <div class="north-chart"></div>
-      </el-col>
-    </el-row>
-    <el-row class="qsbank-south">
-      <!-- 显示列表 -->
-      <el-col :span="12">
-        <div class="south-table">
-          <el-table
-            :data="tableData"
-            style="width: 100%"
-            :default-sort="{ prop: 'date', order: 'descending' }"
-          >
-            <el-table-column 
-            v-for="(head,index) in tableHead"
-            :key="index"
-            :prop ="head.name" :label="head.label" sortable>
-            </el-table-column>
-          
-          </el-table>
-        </div>
-      </el-col>
-
-      <!-- 题目显示区 -->
-      <el-col :span="12">
+      <!-- 图表区/题目显示编辑区 -->
+      <el-col :span="10">
+        <!-- <div class="north-chart"></div> -->
         <div class="south-view">
           <component
             :is="viewType"
@@ -118,29 +134,39 @@ export default {
           label: "简答题",
         },
       ],
-      tableHead: [
-        {
-          prop: "name",
-          label: "题目简称",
-        },
-        {
-          prop: "course",
-          label: "所属课程",
-        },
-        {
-          prop: "type",
-          label: "题型",
-        },
-        {
-          prop: "level",
-          label: "题目难度",
-        },
-      ],
+
       viewType: "",
       searchType: "",
     };
   },
+   computed: {
+    tableHead() {
+      return this.$store.state.qs.tableHead;
+    },
+    qsBank() {
+      return this.$store.state.qs.qsBank;
+    },
+  },
+  methods: {
+    handleEdit(index, row) { 
+      console.log("edit:", index, row);
+      
+      for (const key in this.qsBank) {
+        if(this.qsBank[key].id === row.id){
+            this.$store.commit('setQsOrder',parseInt(key));
+            this.viewType =row.type;
+            console.log('编辑',row.type,row.id);
+            break;
+        }
+      }
+    },
+    handleDelete(index, row) {
+      console.log("delete", index, row);
+    },
+  },
+ 
   created() {
+    //题目编辑模式从试卷切换到题库
     this.$store.commit("setInPaper", false);
   },
 };

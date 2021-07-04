@@ -45,17 +45,26 @@
         
       </el-form-item>
 
-      <el-form-item label="答案解析">
+     
+      <div style="width:100%">
+      <span>难度</span>
+      <el-select v-model="truefalse.level" placeholder="请选择" style="width:10%">
+        <el-option label="易" value="易" ></el-option>
+        <el-option label="中" value="中" ></el-option>
+        <el-option label="难" value="难" ></el-option>
+      </el-select>
+
+        <span style="margin-left:5%">答案解析</span>
         <el-input
           type="textarea"
-          style="width: 80%"
+          style="width: 60%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目解析"
           v-model="truefalse.explain"
         >
         </el-input>
-      </el-form-item>
+      </div>
     </el-form>
   </div>
 </template>
@@ -69,14 +78,21 @@ export default {
      inPaper() {
       return this.$store.state.paper.inPaper;
     },
+     qsOrder(){
+      return this.$store.state.qs.qsOrder;
+    },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
-    truefalse() {
-      return this.$store.state.paper.paperContent.Truefalse.topic[
-        this.currentOrder - 1
-      ];
-    },
+     truefalse() {
+      if (this.inPaper) {
+        return this.$store.state.paper.paperContent.Truefalse.topic[
+          this.currentOrder - 1
+        ];
+      } else {
+        return this.$store.state.qs.qsBank[this.qsOrder].content;
+      }
+    }
   },
   methods: {},
   created() {

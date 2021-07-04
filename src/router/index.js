@@ -9,6 +9,7 @@ import PpBank from '../components/Workspace/PpBank'
 import MarkPaper from '../components/Workspace/MarkPaper'
 import TakeExam from '../components/Workspace/TakeExam'
 import ManageUser from '../components/Workspace/ManageUser'
+import JsonToPaper from "../components/Workspace/JsonToPaper";
 
 const routes = [
     {
@@ -95,6 +96,14 @@ const routes = [
                     roles: ['student',],
                 },
                 component: TakeExam,
+            },
+            {
+                path: "/jsontopaper",
+                name: "试卷 docx",
+                meta: {
+                    title: '生成试卷 docx 文件'
+                },
+                component: JsonToPaper
             }
         ]
     },
