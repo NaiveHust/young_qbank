@@ -82,8 +82,36 @@ export default createStore({
         },
         setUserType(state,type) {
             state.userType = type;
-        }
+        },
+          //增加选项
+        addTopicItem(state, data) {
 
+            let aimTopic = state.inPaper ?
+                state.paperContent[data.tType].topic[data.tOrder - 1] :
+                state.qs.qsBank[state.qs.qsOrder].content;
+            aimTopic[data.iType].push(data.content);
+
+        },
+        delTopicItem(state, data) {
+            let aimTopic = state.inPaper ?
+                state.paperContent[data.tType].topic[data.tOrder - 1] :
+                state.qs.qsBank[state.qs.qsOrder].content;
+            let aimItems = aimTopic[data.iType];
+            for (const key in aimItems) {
+                if (aimItems[key].order > data.iOrder) {
+                    aimItems[key].order--;
+                    if (aimItems[key].name) {
+                        aimItems[key].name = String.fromCharCode(65 + aimItems[key].order - 1);
+                    }
+                }
+
+            }
+
+            aimItems.splice(data.iOrder - 1, 1);
+            console.log('删除后的:', aimItems);
+
+
+        },
 
     },
     actions: {},

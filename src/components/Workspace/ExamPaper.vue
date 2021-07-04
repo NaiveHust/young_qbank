@@ -34,9 +34,9 @@
       <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
         <div class="paper-bar">
           <el-button type="primary" @click="dialogVisible = true"
-            >添加题目</el-button
+            >编辑题目</el-button
           >
-          <el-button type="primary" icon="el-icon-search">搜索</el-button>
+          <el-button type="primary" @click="importTopic()">导入题目</el-button>
           <el-button type="primary" @click="finishPaper()"
             >完成<i class="el-icon-upload el-icon--right"></i
           ></el-button>
@@ -117,6 +117,7 @@
             </span>
           </template>
         </el-dialog>
+        <ImportTopic ref="import"></ImportTopic>
       </el-col>
     </el-row>
     <!-- 主区域 -->
@@ -150,6 +151,9 @@
                 }}
                 {{
                   type.num
+                }}
+                 {{
+                  type.score
                 }}
 
                 <li
@@ -192,6 +196,7 @@ import Multiple from "../topic/Multiple";
 import Answer from "../topic/Answer";
 import Fill from "../topic/Fill";
 import Truefalse from "../topic/TrueFalse";
+import ImportTopic from "./ImportTopic"
 export default {
   data() {
     return {
@@ -213,6 +218,7 @@ export default {
     Answer,
     Fill,
     Truefalse,
+    ImportTopic,
   },
   //会有缓存，只有依赖的响应式属性发生变化时，才会重新计算。
   computed: {
@@ -285,7 +291,7 @@ export default {
         index: index,
         name: name,
         order: index,
-        num: 0,
+        num: 1,
         //此为全局默认分数，可被全局覆盖
         score:5,
       });
@@ -300,12 +306,17 @@ export default {
       this.$store.commit("setOrder", order);
       console.log(name);
     },
+    importTopic(){
+      this.$refs.import.dialogVisible=true;
+    },
     deleteTopic(typeName, order) {
       this.$store.commit("deleteTopic", { typeName, order });
     },
+
     finishPaper(){
       this.$store.commit("finishPaper");
     }
+
   },
 };
 </script>
