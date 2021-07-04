@@ -247,28 +247,7 @@
       }
     }
   }
-  // import officegen from 'officegen';
 
-  // var docx = officegen('docx');//word
-  // const fs = require('fs')
-  //
-  // new Vue({
-  //   el: '#app-5',
-  //   data: {
-  //     message: 'Hello Vue.js!'
-  //   },
-  //   methods: {
-  //     jsonToPaper: function () {
-  //       fs.readFile('E:\\HUST\\大三实训\\young_qbank\\src\\json.json', 'utf8', (err, data) => {
-  //         if (err) {
-  //           console.error(err)
-  //           return
-  //         }
-  //         console.log(data)
-  //       })
-  //     }
-  //   }
-  // })
 
 
 </script>

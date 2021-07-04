@@ -9,17 +9,20 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 exports.__esModule = true;
 exports.PaperCreator = void 0;
 var docx_1 = require("docx");
-var PHONE_NUMBER = "07534563401";
-var PROFILE_URL = "https://www.linkedin.com/in/dolan1";
-var EMAIL = "docx@docx.com";
 var PaperCreator = /** @class */ (function () {
     function PaperCreator() {
     }
     PaperCreator.prototype.create = function (jsonStr) {
+        var number = 0;
         var paperObj = JSON.parse(jsonStr);
         var single = paperObj.Single;
         var singleTopic = single.topic;
+        var multiple = paperObj.Multiple;
+        var multipleTopic = multiple.topic;
+        var trueOrFalse = paperObj.Truefalse;
+        var trueOrFalseTopic = trueOrFalse.topic;
         var fillTopic = paperObj.Fill.topic;
+        var answerTopic = paperObj.Answer.topic;
         console.log.apply(console, singleTopic);
         var paper = new docx_1.Document({
             sections: [
@@ -27,36 +30,106 @@ var PaperCreator = /** @class */ (function () {
                     children: __spreadArrays([
                         new docx_1.Paragraph({
                             text: paperObj.Info.name,
-                            heading: docx_1.HeadingLevel.TITLE
+                            heading: docx_1.HeadingLevel.TITLE,
+                            alignment: docx_1.AlignmentType.CENTER
                         }),
                         new docx_1.Paragraph({
-                            text: "选择题",
+                            text: "单选题",
                             heading: docx_1.HeadingLevel.HEADING_1
                         })
                     ], singleTopic
                         .map(function (topic) {
                         var arr = [];
-                        arr.push(new docx_1.Paragraph({
-                            text: topic.question,
-                            heading: docx_1.HeadingLevel.HEADING_1,
-                            children: __spreadArrays(topic.choice
-                                .map(function (c) {
-                                var arr = [];
-                                arr.push(new docx_1.Paragraph({
-                                    text: c.name + ". " + c.content
-                                }));
-                                return arr;
-                            }).reduce(function (prev, curr) { return prev.concat(curr); }, []))
+                        arr.push(
+                        // 小题空一行
+                        new docx_1.Paragraph({
+                            text: " "
                         }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        // 每个单选题的选项
+                        arr.push.apply(arr, topic.choice
+                            .map(function (c) {
+                            var array = [];
+                            array.push(new docx_1.Paragraph({
+                                text: c.name + ". " + c.content
+                            }));
+                            return array;
+                        })
+                            .reduce(function (prev, curr) { return prev.concat(curr); }, []));
                         return arr;
-                    }).reduce(function (prev, curr) { return prev.concat(curr); }, []), [
+                    })
+                        .reduce(function (prev, curr) { return prev.concat(curr); }, []), [
+                        // 大题空两行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }),
+                        new docx_1.Paragraph({
+                            text: " "
+                        }),
                         new docx_1.Paragraph({
                             text: "多选题",
                             heading: docx_1.HeadingLevel.HEADING_1
+                        })
+                    ], multipleTopic
+                        .map(function (topic) {
+                        var arr = [];
+                        arr.push(
+                        // 小题空一行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        // 每个多选题的选项
+                        arr.push.apply(arr, topic.choice
+                            .map(function (c) {
+                            var array = [];
+                            array.push(new docx_1.Paragraph({
+                                text: c.name + ". " + c.content
+                            }));
+                            return array;
+                        })
+                            .reduce(function (prev, curr) { return prev.concat(curr); }, []));
+                        return arr;
+                    })
+                        .reduce(function (prev, curr) { return prev.concat(curr); }, []), [
+                        // 大题空两行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }),
+                        new docx_1.Paragraph({
+                            text: " "
                         }),
                         new docx_1.Paragraph({
                             text: "判断题",
                             heading: docx_1.HeadingLevel.HEADING_1
+                        })
+                    ], trueOrFalseTopic
+                        .map(function (topic) {
+                        var arr = [];
+                        arr.push(
+                        // 小题空一行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        return arr;
+                    })
+                        .reduce(function (prev, curr) { return prev.concat(curr); }, []), [
+                        // 大题空两行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }),
+                        new docx_1.Paragraph({
+                            text: " "
                         }),
                         new docx_1.Paragraph({
                             text: "填空题",
@@ -65,26 +138,64 @@ var PaperCreator = /** @class */ (function () {
                     ], fillTopic
                         .map(function (topic) {
                         var arr = [];
-                        arr.push(new docx_1.Paragraph({
-                            text: "\n",
-                            heading: docx_1.HeadingLevel.HEADING_1,
-                            children: __spreadArrays(topic.question
-                                .map(function (q) {
-                                var arr = [];
-                                arr.push(new docx_1.Paragraph({
-                                    text: q.head + "____" + q.tail
-                                }));
-                                return arr;
-                            }).reduce(function (prev, curr) { return prev.concat(curr); }, []))
+                        arr.push(
+                        // 小题空一行
+                        new docx_1.Paragraph({
+                            text: " "
                         }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "\u7B2C " + ++number + " \u9898 ",
+                            heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        // 每个填空题的每一空
+                        arr.push.apply(arr, topic.question
+                            .map(function (q) {
+                            var array = [];
+                            array.push(new docx_1.Paragraph({
+                                text: q.head + "____" + q.tail
+                            }));
+                            return array;
+                        })
+                            .reduce(function (prev, curr) { return prev.concat(curr); }, []));
                         return arr;
                     }).reduce(function (prev, curr) { return prev.concat(curr); }, []), [
+                        // 大题空两行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }),
+                        new docx_1.Paragraph({
+                            text: " "
+                        }),
                         new docx_1.Paragraph({
                             text: "简答题",
                             heading: docx_1.HeadingLevel.HEADING_1
                         })
-                    ])
-                }
+                    ], answerTopic
+                        .map(function (topic) {
+                        var arr = [];
+                        arr.push(
+                        // 小题空一行
+                        new docx_1.Paragraph({
+                            text: " "
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        // 每个简答题的每一问
+                        arr.push.apply(arr, topic.subQ
+                            .map(function (s) {
+                            var array = [];
+                            array.push(new docx_1.Paragraph({
+                                text: s.content
+                            }));
+                            return array;
+                        })
+                            .reduce(function (prev, curr) { return prev.concat(curr); }, []));
+                        return arr;
+                    })
+                        .reduce(function (prev, curr) { return prev.concat(curr); }, []))
+                },
             ]
         });
         for (var i = 0; i < paperObj.Single.topic.length; i++) {
@@ -92,191 +203,6 @@ var PaperCreator = /** @class */ (function () {
         }
         console.log("OK");
         return paper;
-    };
-    // tslint:disable-next-line: typedef
-    PaperCreator.prototype.create1 = function (_a) {
-        var _this = this;
-        var experiences = _a[0], educations = _a[1], skills = _a[2], achivements = _a[3];
-        var document = new docx_1.Document({
-            sections: [
-                {
-                    children: __spreadArrays([
-                        new docx_1.Paragraph({
-                            text: "Dolan Miu",
-                            heading: docx_1.HeadingLevel.TITLE
-                        }),
-                        this.createContactInfo(PHONE_NUMBER, PROFILE_URL, EMAIL),
-                        this.createHeading("Education")
-                    ], educations
-                        .map(function (education) {
-                        var arr = [];
-                        arr.push(_this.createInstitutionHeader(education.schoolName, education.startDate.year + " - " + education.endDate.year));
-                        arr.push(_this.createRoleText(education.fieldOfStudy + " - " + education.degree));
-                        var bulletPoints = _this.splitParagraphIntoBullets(education.notes);
-                        bulletPoints.forEach(function (bulletPoint) {
-                            arr.push(_this.createBullet(bulletPoint));
-                        });
-                        return arr;
-                    })
-                        .reduce(function (prev, curr) { return prev.concat(curr); }, []), [
-                        this.createHeading("Experience")
-                    ], experiences
-                        .map(function (position) {
-                        var arr = [];
-                        arr.push(_this.createInstitutionHeader(position.company.name, _this.createPositionDateText(position.startDate, position.endDate, position.isCurrent)));
-                        arr.push(_this.createRoleText(position.title));
-                        var bulletPoints = _this.splitParagraphIntoBullets(position.summary);
-                        bulletPoints.forEach(function (bulletPoint) {
-                            arr.push(_this.createBullet(bulletPoint));
-                        });
-                        return arr;
-                    })
-                        .reduce(function (prev, curr) { return prev.concat(curr); }, []), [
-                        this.createHeading("Skills, Achievements and Interests"),
-                        this.createSubHeading("Skills"),
-                        this.createSkillList(skills),
-                        this.createSubHeading("Achievements")
-                    ], this.createAchivementsList(achivements), [
-                        this.createSubHeading("Interests"),
-                        this.createInterests("Programming, Technology, Music Production, Web Design, 3D Modelling, Dancing."),
-                        this.createHeading("References"),
-                        new docx_1.Paragraph("Dr. Dean Mohamedally Director of Postgraduate Studies Department of Computer Science, University College London Malet Place, Bloomsbury, London WC1E d.mohamedally@ucl.ac.uk"),
-                        new docx_1.Paragraph("More references upon request"),
-                        new docx_1.Paragraph({
-                            text: "This CV was generated in real-time based on my Linked-In profile from my personal website www.dolan.bio.",
-                            alignment: docx_1.AlignmentType.CENTER
-                        })
-                    ])
-                }
-            ]
-        });
-        return document;
-    };
-    PaperCreator.prototype.createContactInfo = function (phoneNumber, profileUrl, email) {
-        return new docx_1.Paragraph({
-            alignment: docx_1.AlignmentType.CENTER,
-            children: [
-                new docx_1.TextRun("Mobile: " + phoneNumber + " | LinkedIn: " + profileUrl + " | Email: " + email),
-                new docx_1.TextRun({
-                    text: "Address: 58 Elm Avenue, Kent ME4 6ER, UK",
-                    "break": 1
-                })
-            ]
-        });
-    };
-    PaperCreator.prototype.createHeading = function (text) {
-        return new docx_1.Paragraph({
-            text: text,
-            heading: docx_1.HeadingLevel.HEADING_1,
-            thematicBreak: true
-        });
-    };
-    PaperCreator.prototype.createSubHeading = function (text) {
-        return new docx_1.Paragraph({
-            text: text,
-            heading: docx_1.HeadingLevel.HEADING_2
-        });
-    };
-    PaperCreator.prototype.createInstitutionHeader = function (institutionName, dateText) {
-        return new docx_1.Paragraph({
-            tabStops: [
-                {
-                    type: docx_1.TabStopType.RIGHT,
-                    position: docx_1.TabStopPosition.MAX
-                }
-            ],
-            children: [
-                new docx_1.TextRun({
-                    text: institutionName,
-                    bold: true
-                }),
-                new docx_1.TextRun({
-                    text: "\t" + dateText,
-                    bold: true
-                })
-            ]
-        });
-    };
-    PaperCreator.prototype.createRoleText = function (roleText) {
-        return new docx_1.Paragraph({
-            children: [
-                new docx_1.TextRun({
-                    text: roleText,
-                    italics: true
-                })
-            ]
-        });
-    };
-    PaperCreator.prototype.createBullet = function (text) {
-        return new docx_1.Paragraph({
-            text: text,
-            bullet: {
-                level: 0
-            }
-        });
-    };
-    // tslint:disable-next-line:no-any
-    PaperCreator.prototype.createSkillList = function (skills) {
-        return new docx_1.Paragraph({
-            children: [new docx_1.TextRun(skills.map(function (skill) { return skill.name; }).join(", ") + ".")]
-        });
-    };
-    // tslint:disable-next-line:no-any
-    PaperCreator.prototype.createAchivementsList = function (achivements) {
-        return achivements.map(function (achievement) {
-            return new docx_1.Paragraph({
-                text: achievement.name,
-                bullet: {
-                    level: 0
-                }
-            });
-        });
-    };
-    PaperCreator.prototype.createInterests = function (interests) {
-        return new docx_1.Paragraph({
-            children: [new docx_1.TextRun(interests)]
-        });
-    };
-    PaperCreator.prototype.splitParagraphIntoBullets = function (text) {
-        return text.split("\n\n");
-    };
-    // tslint:disable-next-line:no-any
-    PaperCreator.prototype.createPositionDateText = function (startDate, endDate, isCurrent) {
-        var startDateText = this.getMonthFromInt(startDate.month) + ". " + startDate.year;
-        var endDateText = isCurrent
-            ? "Present"
-            : this.getMonthFromInt(endDate.month) + ". " + endDate.year;
-        return startDateText + " - " + endDateText;
-    };
-    PaperCreator.prototype.getMonthFromInt = function (value) {
-        switch (value) {
-            case 1:
-                return "Jan";
-            case 2:
-                return "Feb";
-            case 3:
-                return "Mar";
-            case 4:
-                return "Apr";
-            case 5:
-                return "May";
-            case 6:
-                return "Jun";
-            case 7:
-                return "Jul";
-            case 8:
-                return "Aug";
-            case 9:
-                return "Sept";
-            case 10:
-                return "Oct";
-            case 11:
-                return "Nov";
-            case 12:
-                return "Dec";
-            default:
-                return "N/A";
-        }
     };
     return PaperCreator;
 }());
