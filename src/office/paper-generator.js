@@ -66,7 +66,7 @@ var PaperCreator = /** @class */ (function () {
                         .map(function (topic) {
                         var arr = [];
                         arr.push(new docx_1.Paragraph({
-                            text: "",
+                            text: "\n",
                             heading: docx_1.HeadingLevel.HEADING_1,
                             children: __spreadArrays(topic.question
                                 .map(function (q) {
