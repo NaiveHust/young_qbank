@@ -1,12 +1,7 @@
 <template>
   <!-- 单选题 -->
   <div class="single">
-    <el-form
-      v-if="singles"
-      :model="singles"
-      label-width="80px"
-      :inline="false"
-    >
+    <el-form v-if="singles" :model="singles" label-width="80px" :inline="false">
       <el-row v-if="inPaper" class="single-info">
         <el-form-item :label="'第' + singles.order + '题'"> </el-form-item>
         <el-form-item label="分值">
@@ -58,15 +53,19 @@
         <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
       </el-form-item>
 
-      <div style="width:100%">
-      <span>难度</span>
-      <el-select v-model="singles.level" placeholder="请选择" style="width:10%">
-        <el-option label="易" value=0 ></el-option>
-        <el-option label="中" value=1 ></el-option>
-        <el-option label="难" value=2 ></el-option>
-      </el-select>
+      <div style="width: 100%">
+        <span>难度</span>
+        <el-select
+          v-model="singles.level"
+          placeholder="请选择"
+          style="width: 10%"
+        >
+          <el-option label="易" value="易"></el-option>
+          <el-option label="中" value="中"></el-option>
+          <el-option label="难" value="难"></el-option>
+        </el-select>
 
-        <span style="margin-left:5%">答案解析</span>
+        <span style="margin-left: 5%">答案解析</span>
         <el-input
           type="textarea"
           style="width: 60%"
@@ -77,7 +76,6 @@
         >
         </el-input>
       </div>
-
     </el-form>
   </div>
 </template>
@@ -93,14 +91,20 @@ export default {
     inPaper() {
       return this.$store.state.paper.inPaper;
     },
-
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
+    qsOrder(){
+      return this.$store.state.qs.qsOrder;
+    },
     singles() {
-      return this.$store.state.paper.paperContent.Single.topic[
-        this.currentOrder - 1
-      ];
+      if (this.inPaper) {
+        return this.$store.state.paper.paperContent.Single.topic[
+          this.currentOrder - 1
+        ];
+      } else {
+        return this.$store.state.qs.qsBank[this.qsOrder].content;
+      }
     },
     sContent() {
       return this.$store.state.paper.sTem;
