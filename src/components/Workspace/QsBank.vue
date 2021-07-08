@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:00:43
- * @LastEditTime: 2021-07-08 10:25:30
+ * @LastEditTime: 2021-07-08 15:24:44
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -104,7 +104,7 @@
               :page-sizes="[5, 10, 20]"
               :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="34"
+              :total="totalCount"
             >
             </el-pagination>
           </div>
@@ -199,6 +199,9 @@ export default {
     editNew() {
       return this.$store.state.qs.editNew;
     },
+    totalCount() {
+      return this.$store.state.qs.totalCount;
+    },
     loading() {
       return this.$store.state.qs.loading;
     },
@@ -240,7 +243,12 @@ export default {
     //保存题目修改
     saveTopic() {
       this.dialogVisible = false;
-      this.$store.commit("saveTopic", this.viewType);
+      //this.$store.commit("saveTopic", this.viewType);
+      this.$store.dispatch("saveTopic", {
+        type: this.viewType,
+        currentPage: this.currentPage,
+        pageSize: this.pageSize,
+      });
       this.$store.commit("setEditNew", false);
     },
     //取消题目,修改
@@ -274,6 +282,7 @@ export default {
     //题目编辑模式从试卷切换到题库
     this.$store.commit("setInPaper", false);
     //从服务器分页获取题目,默认为第一页
+    this.currentPage = 1;
     this.$store.commit("getPageQs", {
       index: this.currentPage,
       size: this.pageSize,

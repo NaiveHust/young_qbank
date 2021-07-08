@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-06 20:05:01
+ * @LastEditTime: 2021-07-08 20:03:34
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -25,7 +25,10 @@
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperDuration')">
-              <el-input v-model="paperInfo.duration"></el-input>
+              <el-input
+                v-model.number="paperInfo.duration"
+                type="number"
+              ></el-input>
             </el-form-item>
 
             <!-- <el-form-item>
@@ -135,7 +138,7 @@
     <!-- 主区域 -->
     <el-row style="height: 90%">
       <!-- 试卷大纲显示 -->
-      <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4" :offset="0">
+      <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4">
         <div class="paper-outline-view">
           <el-scrollbar style="height: 75vh">
             <transition-group>
@@ -327,7 +330,7 @@ export default {
     },
 
     finishPaper() {
-      this.$store.commit("finishPaper");
+      this.$store.dispatch("finishPaper");
     },
   },
 };

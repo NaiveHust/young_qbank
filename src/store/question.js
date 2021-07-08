@@ -1,13 +1,14 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:49:30
- * @LastEditTime: 2021-07-08 11:01:23
+ * @LastEditTime: 2021-07-08 15:26:40
  * @LastEditors: 肖环宇
  * @Description: 
  */
 import { qs } from '../axios';
 import rootStore from './index';
 import { ElMessage } from 'element-plus'
+
 
 const question = {
 
@@ -193,6 +194,8 @@ const question = {
         editNew: false,
         //table加载中？
         loading: false,
+        //总题数
+        totalCount: 0,
     },
 
     mutations: {
@@ -320,22 +323,27 @@ const question = {
         delBankTopic(state, id) {
             // state.qsBank.splice(order, 1);
             //     state.loading = true;
-            qs.get(`question/delete_by_id/${id}`).then(res => {
-                if (res.data === 1) {
-                    ElMessage.success({
-                        message: '删除成功',
-                        type: 'success'
-                    });
-                    console.log('删除了');
-                }
-                else {
-                    ElMessage.error({
-                        message: '删除失败',
-                        type: 'error'
-                    });
-                }
+            state.loading = true;
+            return new Promise(() => {
+
+                qs.get(`question/delete_by_id/${id}`).then(res => {
+                    if (res.data === 1) {
+                        ElMessage.success({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                        console.log('删除了');
+                    }
+                    else {
+                        ElMessage.error({
+                            message: '删除失败',
+                            type: 'error'
+                        });
+                    }
+                })
+
             })
-            //TODO
+
         },
         /**
          * @description: 存储题目到服务器
@@ -385,7 +393,175 @@ const question = {
             //TODO 存储到服务器
             //增
             if (state.editNew) {
-                qs.post('question/add', tempBody,
+                return new Promise(() => {
+                    qs.post('question/add', tempBody,
+                    ).then(res => {
+                        console.log('res', res);
+                        if (res.status == 200) {
+
+                            ElMessage.success({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                        }
+                        else {
+                            ElMessage.error({
+                                message: '保存失败',
+                                type: 'error'
+                            });
+                        }
+                    })
+                })
+
+            }
+            //改
+            else {
+                tempBody.proNo = state.qsBank[state.qsOrder].id;
+                return new Promise(() => {
+                    qs.post('question/update_by_id', tempBody,
+                    ).then(res => {
+                        console.log('res', res);
+                        if (res.data === 1) {
+
+                            ElMessage.success({
+                                message: '保存成功',
+                                type: 'success'
+                            });
+                        }
+                        else {
+                            ElMessage.error({
+                                message: '保存失败',
+                                type: 'error'
+                            });
+                        }
+                    })
+                })
+
+            }
+
+        },
+
+        undoTopic(state) {
+            if (state.editNew) {
+                state.editNew = null;
+            }
+            else {
+                console.log(state.qsBank[state.qsOrder] = state.tempTopic);
+            }
+        },
+
+        /**
+         * @description: 从服务器得到个人题库
+         * @param {*} state
+         * @param {*} data
+         * @return {*}
+         */
+
+        getPageQs(state, data) {
+            qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`,).then(res => {
+                state.qsBank = [];
+                state.totalCount = res.data.totalCount;
+                for (const qs of res.data.list) {
+                    state.qsBank.push(
+                        {
+                            id: qs.proNo,
+                            name: qs.proSimple,
+                            course: qs.proClass,
+                            type: qs.proType,
+                            level: qs.proDif,
+                            content: JSON.parse(qs.proDetail),
+                        })
+                }
+                console.log('qbank', state.qsBank);
+            })
+        },
+
+
+    },
+
+    actions: {
+        async delBankTopic(context, data) {
+            //确保题目删除完成再重新分页加载
+
+            //await context.commit('delBankTopic', data.id);
+            //await context.commit('getPageQs', { index: data.currentPage, size: data.pageSize });
+            context.state.loading = true;
+            await qs.get(`question/delete_by_id/${data.id}`).then(res => {
+                if (res.data === 1) {
+                    ElMessage.success({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    console.log('删除了');
+                }
+                else {
+                    ElMessage.error({
+                        message: '删除失败',
+                        type: 'error'
+                    });
+                }
+            })
+            await qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.currentPage}/${data.pageSize}`,).then(res => {
+                context.state.qsBank = [];
+                context.state.totalCount = res.data.totalCount;
+                for (const qs of res.data.list) {
+                    context.state.qsBank.push(
+                        {
+                            id: qs.proNo,
+                            name: qs.proSimple,
+                            course: qs.proClass,
+                            type: qs.proType,
+                            level: qs.proDif,
+                            content: JSON.parse(qs.proDetail),
+                        })
+                }
+                context.state.loading = false;
+                console.log('qbank', context.state.qsBank);
+            })
+        },
+        async saveTopic(context, data) {
+            let topic = '';
+            if (context.state.editNew) {
+                console.log('新建的题目', context.state.newTopic);
+                topic = context.state.newTopic;
+            } else {
+                console.log('保存的题目.content', context.state.qsBank[context.state.qsOrder].content);
+                topic = context.state.qsBank[context.state.qsOrder].content;
+            }
+            let tempBody = {};
+            //题型的公共部分
+            tempBody.proDetail = JSON.stringify(topic);
+            tempBody.proDif = topic.level;
+            tempBody.proTea = rootStore.state.userInfo.id;
+            tempBody.proAns = topic.explain;
+            tempBody.proType = data.type;
+            if (data.type === "Single") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (data.type == "Multiple") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (data.type == "Answer") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (data.type == "Truefalse") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (data.type == "Fill") {
+                if (topic.question.length > 0) {
+                    tempBody.proSimple = topic.question[0].head.substring(0, 8);
+                }
+                else {
+                    tempBody.proSimple = topic.explain.substring(0, 8);
+                }
+            }
+
+            console.log('body', tempBody);
+
+            //TODO 存储到服务器
+            //增
+            if (context.state.editNew) {
+                await qs.post('question/add', tempBody,
                 ).then(res => {
                     console.log('res', res);
                     if (res.status == 200) {
@@ -405,8 +581,8 @@ const question = {
             }
             //改
             else {
-                tempBody.proNo = state.qsBank[state.qsOrder].id;
-                qs.post('question/update_by_id', tempBody,
+                tempBody.proNo = context.state.qsBank[context.state.qsOrder].id;
+                await qs.post('question/update_by_id', tempBody,
                 ).then(res => {
                     console.log('res', res);
                     if (res.data === 1) {
@@ -424,32 +600,12 @@ const question = {
                     }
                 })
             }
-            // state.newTopic =
-        },
 
-        undoTopic(state) {
-            if (state.editNew) {
-                state.editNew = null;
-            }
-            else {
-                console.log(state.qsBank[state.qsOrder] = state.tempTopic);
-            }
-        },
-
-        /**
-         * @description: 从服务器得到个人题库
-         * @param {*} state
-         * @param {*} data
-         * @return {*}
-         */
-        getQsBank(state, data) {
-            state.qsBank = data;
-        },
-        getPageQs(state, data) {
-            qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`,).then(res => {
-                state.qsBank = [];
-                for (const qs of res.data) {
-                    state.qsBank.push(
+            await qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.currentPage}/${data.pageSize}`,).then(res => {
+                context.state.qsBank = [];
+                context.state.totalCount = res.data.totalCount;
+                for (const qs of res.data.list) {
+                    context.state.qsBank.push(
                         {
                             id: qs.proNo,
                             name: qs.proSimple,
@@ -459,25 +615,11 @@ const question = {
                             content: JSON.parse(qs.proDetail),
                         })
                 }
-                console.log('qbank', state.qsBank);
-                //    state.loading = false;
-
+                context.state.loading = false;
+                console.log('qbank', context.state.qsBank);
             })
         },
 
-
-    },
-
-    actions: {
-        async delBankTopic(context, data) {
-            //确保题目删除完成再重新分页加载
-
-            await context.commit('delBankTopic', data.id);
-
-            context.commit('getPageQs', { index: data.currentPage, size: data.pageSize });
-
-
-        }
     },
     getters: {}
 }

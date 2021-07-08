@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-06 20:05:35
+ * @LastEditTime: 2021-07-08 20:38:36
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -43,13 +43,15 @@
         <div class="north-chart"></div>
       </el-col>
     </el-row>
+
     <el-row class="qsbank-south">
       <!-- 显示列表 -->
       <el-col :span="20">
         <div class="south-table">
           <el-table
             :data="paperList"
-            style="width: 100%"
+            style="width: 100%; height: 60vh"
+            max-height="400"
             :default-sort="{ prop: 'name', order: 'descending' }"
           >
             <el-table-column
@@ -82,6 +84,7 @@
         </div>
       </el-col>
     </el-row>
+
     <el-dialog
       title="试卷编辑"
       v-model="dialogVisible"
@@ -89,17 +92,10 @@
       height="80vh"
       center
       :close-on-click-modal="false"
-      :show-close="false"
+      :show-close="true"
       :before-close="handleClose"
     >
-      <ExamPaper></ExamPaper>
-
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="savePaper()">确 定</el-button>
-        </span>
-      </template>
+      <ExamPaper> </ExamPaper>
     </el-dialog>
   </div>
 </template>
@@ -122,14 +118,11 @@ export default {
           prop: "course",
           label: "所属课程",
         },
-        {
-          prop: "type",
-          label: "题型",
-        },
       ],
       viewType: "",
       dialogVisible: false,
       searchType: "",
+      searchVal: "",
     };
   },
   computed: {
@@ -153,22 +146,27 @@ export default {
             "setCurrentPaper",
             JSON.parse(this.paperList[key].json)
           );
+          this.$store.commit("setEditId", row.id);
           break;
         }
       }
       this.dialogVisible = true;
     },
     handleDelete(index, row) {
-      for (const key in this.paperList) {
-        if (this.paperList[key].id === row.id) {
-          this.$store.commit("delPaper", parseInt(key));
-          break;
-        }
-      }
+      this.$store.dispatch("delPaper", row.id);
+    },
+    handleClose() {
+      this.$store.commit("setEditId", null);
+      this.$store.commit("resetPaper");
+      this.dialogVisible = false;
     },
   },
   created() {
     this.$store.commit("setInPaper", false);
+    this.$store.commit("getPapers", {
+      index: 1,
+      size: 1000,
+    });
   },
 };
 </script>
@@ -184,7 +182,7 @@ export default {
   border: 3px solid rgb(7, 115, 216);
 }
 .qsbank-north {
-  height: 30%;
+  height: 30vh;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
@@ -199,7 +197,7 @@ export default {
   border: 3px solid rgb(7, 115, 216);
 }
 .qsbank-south {
-  height: 70%;
+  height: 70vh;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
