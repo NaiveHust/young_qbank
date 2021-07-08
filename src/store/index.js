@@ -1,15 +1,81 @@
+/*
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 12:35:17
+ * @LastEditTime: 2021-07-08 09:06:19
+ * @LastEditors: 肖环宇
+ * @Description: 
+ */
+
 import { createStore } from 'vuex'
 import exampaper from './paper'
 import question from './question'
+import course from './course'
 export default createStore({
     state: {
         //用户类型
-        userType: localStorage.getItem('young-user-type'),
+        userType: null,
+        userInfo: {},
         //路由便签列表
         tagsList: [
 
         ],
-        
+        items: [
+            {
+                icon: "el-icon-s-home",
+                index: "welcome",
+                title: "系统首页",
+                roles: ["student", "teacher", "admin"],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "manageuser",
+                title: "用户管理",
+                roles: ["admin"],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "teacourse",
+                title: "管理课程",
+                roles: ["teacher"],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "exampaper",
+                title: "创建试卷",
+                roles: ["teacher"],
+            },
+
+            {
+                icon: "el-icon-apple",
+                index: "qsbank",
+                title: "题库管理",
+                roles: ["teacher", "admin"],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "ppbank",
+                title: "试卷管理",
+                roles: ["teacher", "admin"],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "markpaper",
+                title: "我要阅卷",
+                roles: ["teacher"],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "mycourse",
+                title: "我的课程",
+                roles: ["student",],
+            },
+            {
+                icon: "el-icon-apple",
+                index: "takeexam",
+                title: "我的考试",
+                roles: ["student"],
+            },
+        ],
 
         //可用的题目对象
         //值为i18n中的键名
@@ -24,9 +90,17 @@ export default createStore({
         // current:,
         collapse: false,
         order: 0,
-       
+
     },
     mutations: {
+        //保存用户基础信息
+        storeUser(state, data) {
+            state.userInfo.id = data.id;
+            state.userInfo.pwd = data.pwd;
+            state.userInfo.name = data.name;
+            state.userInfo.token = data.token;
+            console.log('登录的用户', state.userInfo);
+        },
         showTem(state) {
             console.log('store');
             console.log(state.sTem);
@@ -80,22 +154,28 @@ export default createStore({
         hadndleCollapse(state, data) {
             state.collapse = data;
         },
-        setUserType(state,type) {
+        setUserType(state, type) {
             state.userType = type;
+            localStorage.setItem('young-user-type', type);
         },
-          //增加选项
+        //增加选项
         addTopicItem(state, data) {
-
             let aimTopic = state.paper.inPaper ?
                 state.paper.paperContent[data.tType].topic[data.tOrder - 1] :
-                state.qs.qsBank[state.qs.qsOrder].content;
+                state.qs.editNew ?
+                    state.qs.newTopic :
+                    state.qs.qsBank[state.qs.qsOrder].content;
+            console.log('目标题目', aimTopic);
             aimTopic[data.iType].push(data.content);
 
         },
         delTopicItem(state, data) {
             let aimTopic = state.paper.inPaper ?
                 state.paper.paperContent[data.tType].topic[data.tOrder - 1] :
+                state.qs.editNew ?
+                state.qs.newTopic :
                 state.qs.qsBank[state.qs.qsOrder].content;
+            console.log('目标题目', aimTopic);
             let aimItems = aimTopic[data.iType];
             for (const key in aimItems) {
                 if (aimItems[key].order > data.iOrder) {
@@ -117,7 +197,8 @@ export default createStore({
     actions: {},
     modules: {
         paper: exampaper,
-        qs:question,
+        qs: question,
+        cs: course,
 
     }
 })

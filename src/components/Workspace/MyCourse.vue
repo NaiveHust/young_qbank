@@ -1,14 +1,14 @@
 <!--
  * @Author: 肖环宇
- * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-06 20:05:35
+ * @Date: 2021-07-05 09:27:09
+ * @LastEditTime: 2021-07-06 19:43:22
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 
 <template>
-  <div class="qsbank">
-    <el-row class="qsbank-north">
+  <div class="mycourse">
+    <el-row class="mycourse-north">
       <!-- 菜单工具栏 -->
       <el-col :span="16">
         <div class="north-bar">
@@ -19,9 +19,8 @@
               clearable
               style="width: 20%"
             >
-              <el-option label="题目名称" value="1"></el-option>
-              <el-option label="课程" value="2"></el-option>
-              <el-option label="创建人" value="3"></el-option>
+              <el-option label="课程名" value="1"></el-option>
+              <el-option label="老师" value="2"></el-option>
             </el-select>
             <el-input
               placeholder="请输入搜索内容"
@@ -43,7 +42,7 @@
         <div class="north-chart"></div>
       </el-col>
     </el-row>
-    <el-row class="qsbank-south">
+    <el-row class="mycourse-south">
       <!-- 显示列表 -->
       <el-col :span="20">
         <div class="south-table">
@@ -105,70 +104,19 @@
 </template>
 
 <script>
-import { jsonToPaper } from "../../office";
-import ExamPaper from "./ExamPaper";
 export default {
-  components: {
-    ExamPaper,
-  },
   data() {
     return {
-      tableHead: [
-        {
-          prop: "name",
-          label: "试卷名称",
-        },
-        {
-          prop: "course",
-          label: "所属课程",
-        },
-        {
-          prop: "type",
-          label: "题型",
-        },
-      ],
-      viewType: "",
-      dialogVisible: false,
-      searchType: "",
+      searchType: "课程名",
     };
   },
   computed: {
-    paperList() {
-      return this.$store.state.paper.paperList;
+    tableHead() {
+      return this.$store.state.cs.tableHead;
     },
-  },
-  methods: {
-    exportPaper(row) {
-      for (const key in this.paperList) {
-        if (this.paperList[key].id === row.id) {
-          jsonToPaper(this.paperList[key].json);
-          break;
-        }
-      }
+    courseList() {
+      return this.$store.state.cs.courseList;
     },
-    handleEdit(index, row) {
-      for (const key in this.paperList) {
-        if (this.paperList[key].id === row.id) {
-          this.$store.commit(
-            "setCurrentPaper",
-            JSON.parse(this.paperList[key].json)
-          );
-          break;
-        }
-      }
-      this.dialogVisible = true;
-    },
-    handleDelete(index, row) {
-      for (const key in this.paperList) {
-        if (this.paperList[key].id === row.id) {
-          this.$store.commit("delPaper", parseInt(key));
-          break;
-        }
-      }
-    },
-  },
-  created() {
-    this.$store.commit("setInPaper", false);
   },
 };
 </script>
@@ -177,13 +125,12 @@ export default {
 .el-input-group__prepend {
   width: 30%;
 }
-.qsbank {
+.mycourse {
   height: 100%;
   width: 100%;
-  overflow: hidden;
   border: 3px solid rgb(7, 115, 216);
 }
-.qsbank-north {
+.mycourse-north {
   height: 30%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
@@ -198,7 +145,7 @@ export default {
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
-.qsbank-south {
+.mycourse-south {
   height: 70%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);

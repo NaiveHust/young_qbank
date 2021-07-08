@@ -1,3 +1,11 @@
+/*
+ * @Author: 肖环宇
+ * @Date: 2021-07-01 19:40:10
+ * @LastEditTime: 2021-07-06 19:41:59
+ * @LastEditors: 肖环宇
+ * @Description: 
+ */
+
 const exampaper = {
 
     namespaced: false,
@@ -17,7 +25,7 @@ const exampaper = {
 
         ],
         //试卷库
-        paperList:[],
+        paperList: [],
         //整张试卷的对象
         paperContent: {
             Info: {
@@ -264,7 +272,7 @@ const exampaper = {
         setOrder(state, order) {
             state.currentOrder = order;
         },
-      
+
         addFillItem(state, order) {
             /*{
                    order: '易',
@@ -298,11 +306,11 @@ const exampaper = {
             let i = state.paperList.length;
             state.paperList.push({
                 //id由后端自动生成,目前只是前端模仿生成.
-                id:i,
+                id: i,
                 name: state.paperContent.Info.name,
                 json: JSON.stringify(state.paperContent),
             });
-            console.log('paperList',state.paperList);
+            console.log('paperList', state.paperList);
         },
         setInPaper(state, boolVal) {
             state.inPaper = boolVal;
@@ -358,7 +366,7 @@ const exampaper = {
             state.paperList.splice(index, 1);
         },
         //改变当前编辑的试卷
-        setCurrentPaper(state,data) {
+        setCurrentPaper(state, data) {
             state.paperContent = data;
         }
 

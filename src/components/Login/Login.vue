@@ -1,10 +1,18 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 12:35:17
+ * @LastEditTime: 2021-07-07 20:26:14
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
   <div class="login-wrap">
-    <el-row style="height: 15%">
+    <el-row style="height: 15vh">
       <Header></Header>
     </el-row>
 
-    <el-row style="height: 70%">
+    <el-row style="height: 65vh; margin-top: 2vh">
       <!-- xs：phone  lg:computer -->
       <!--xs 768  sm 992 md  1200 lg 1920 xl-->
 
@@ -100,7 +108,8 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-row style="height: 15%">
+
+    <el-row style="height: 15vh">
       <Footer></Footer>
     </el-row>
   </div>
@@ -109,6 +118,8 @@
 <script>
 import Footer from "./Footer";
 import Header from "./Header";
+import { instance } from "../../axios";
+
 export default {
   components: {
     Footer,
@@ -152,7 +163,7 @@ export default {
         },
         {
           label: "管理员",
-          value: "manager",
+          value: "admin",
         },
       ],
 
@@ -184,12 +195,8 @@ export default {
       this.$refs.login.validate((valid) => {
         console.log("submit!");
         if (valid) {
-          this.$message.success("登录成功");
-          localStorage.setItem("ms_username", this.param.username);
-          localStorage.setItem("young-user-type", this.userType);
-          this.setUserType();
-          console.log("缓存用户类型", this.userType);
-          this.$router.push("/home");
+          console.log("valid!");
+          this.login(this.userType, this.param.username, this.param.password);
         } else {
           this.$message.error(this.$t("login.error0"));
           return false;
@@ -201,6 +208,46 @@ export default {
     },
     setUserType() {
       this.$store.commit("setUserType", this.userType);
+    },
+    login(type, id, pwd) {
+      console.log("登录:", type, id, pwd);
+      instance
+        .get(`/${type}/check/${id}/${pwd}`, {
+          /*  params: {
+            id: id,
+            pwd: pwd,
+        }, */
+        })
+        .then((res) => {
+          //后台返回状态码都是200。。。,先这样实现
+          console.log("res", res);
+          if (res.data === "" || res.data.length === 0) {
+            //先假设服务器正常
+            this.$message.error("账号或密码错误!");
+            this.$router.push("/login");
+          } else {
+            localStorage.setItem("young-user-type", this.userType);
+            this.setUserType();
+            console.log("缓存用户类型", this.userType);
+            let userInfo = {
+              id: res.data.id,
+              pwd: res.data.pwd,
+              name: res.data.name,
+              token: "mock",
+            };
+            this.$store.commit("storeUser", userInfo);
+            localStorage.setItem("young-userInfo", JSON.stringify(userInfo));
+            console.log(
+              "用户信息",
+              JSON.parse(localStorage.getItem("young-userInfo"))
+            );
+            this.$message.success("登录成功");
+            this.$router.push("/home");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
@@ -223,9 +270,10 @@ export default {
 .ms-login {
   position: relative;
   width: 100%;
-  height: 80%;
+  height: 100%;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgb(224, 193, 15);
   overflow: hidden;
 }
 .ms-content {
@@ -246,10 +294,12 @@ export default {
 .login-up {
   height: 10%;
   text-align: right;
+  border: 2px solid rgb(224, 193, 15);
 }
 .login-mid {
   height: 50%;
   margin: 10% 10%;
+  border: 2px solid rgb(224, 193, 15);
 }
 .login-dowm {
   height: 20%;

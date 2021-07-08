@@ -1,39 +1,40 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 12:35:17
+ * @LastEditTime: 2021-07-07 20:13:57
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
-  <el-row type="flex" class="header" justify="space-between" >
+  <el-row type="flex" class="header" justify="space-between">
     <!-- 折叠按钮 -->
-    <el-col :xs="10" :sm="10" :md="8" :lg="6" :xl="6">
+    <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4">
       <div class="header-left">
         <div class="collapse-btn" @click="collapseChage">
           <i v-if="!collapse" class="el-icon-s-fold"></i>
           <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo">试题库系统</div>
       </div>
     </el-col>
-
-    <el-col :span="1" class="hidden-md-and-down" style="border: 3px solid rgb(7, 115, 216);">
-      <div></div>
+    <el-col :xs="6" :sm="6" :md="4" :lg="6" :xl="6" class="hidden-md-and-down">
+      <div class="logo">试题库系统</div>
     </el-col>
 
-    <el-col :xs="14" :sm="14" :md="16" :lg="6" :xl="6" >
+    <el-col :xs="20" :sm="20" :md="20" :lg="14" :xl="14">
       <div class="header-right">
         <!-- 切换语言 -->
-        <el-dropdown
-          split-button
-          type="primary"
-          @command="switchLanguage"
-          style="width:50%"
-        >
+        <el-dropdown split-button type="primary" @command="switchLanguage">
           {{ $t("login.lang") }}
 
-          <template #dropdown >
+          <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item command="cn">简体中文</el-dropdown-item>
               <el-dropdown-item command="en">English</el-dropdown-item>
             </el-dropdown-menu>
           </template>
-
         </el-dropdown>
+
         <!-- 消息中心 -->
         <div class="btn-bell">
           <el-tooltip
@@ -47,6 +48,7 @@
           </el-tooltip>
           <span class="btn-bell-badge" v-if="message"></span>
         </div>
+
         <!-- 用户头像 -->
         <div class="user-avator">
           <img src="../assets/img/img.jpg" />
@@ -54,10 +56,10 @@
         <!-- 用户名下拉菜单 -->
         <el-dropdown class="user-name" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
-            {{ username }}
+            {{ userInfo.name }}
             <i class="el-icon-caret-bottom"></i>
           </span>
-          <template #dropdown >
+          <template #dropdown>
             <el-dropdown-menu>
               <a
                 href="https://github.com/lin-xin/vue-manage-system"
@@ -89,6 +91,9 @@ export default {
       let username = localStorage.getItem("ms_username");
       return username ? username : this.name;
     },
+    userInfo() {
+      return this.$store.state.userInfo;
+    },
     collapse() {
       return this.$store.state.collapse;
     },
@@ -97,7 +102,7 @@ export default {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if (command === "loginout") {
-        localStorage.removeItem("ms_username");
+        localStorage.removeItem("young-userInfo");
         this.$router.push("/login");
       }
     },
@@ -120,7 +125,7 @@ export default {
 .header {
   width: 100%;
   height: 100%;
-  
+
   font-size: auto;
   color: #fff;
 }
@@ -144,11 +149,11 @@ export default {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-end;
   flex-wrap: nowrap;
   border: 3px solid rgb(7, 115, 216);
 }
-.header-left{
+.header-left {
   height: 100%;
   width: 100%;
   display: flex;
@@ -163,7 +168,7 @@ export default {
 .btn-bell,
 .btn-fullscreen {
   position: relative;
-  
+
   width: 30px;
   height: 30px;
   text-align: center;
@@ -184,12 +189,9 @@ export default {
   color: #fff;
 }
 .user-name {
-  
   border: 3px solid rgb(7, 115, 216);
-  
 }
 .user-avator {
-  
   margin-left: 20px;
 }
 .user-avator img {
@@ -199,14 +201,11 @@ export default {
   border-radius: 50%;
 }
 .el-dropdown-link {
- 
   border: 3px solid rgb(7, 115, 216);
   color: #fff;
   cursor: pointer;
 }
 .el-dropdown-menu__item {
-
- 
   text-align: center;
 }
 .el-icon-s-unfold,

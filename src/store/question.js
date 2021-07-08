@@ -1,13 +1,23 @@
+/*
+ * @Author: 肖环宇
+ * @Date: 2021-07-03 09:49:30
+ * @LastEditTime: 2021-07-08 11:01:23
+ * @LastEditors: 肖环宇
+ * @Description: 
+ */
+import { qs } from '../axios';
+import rootStore from './index';
+import { ElMessage } from 'element-plus'
 
 const question = {
 
     namespaced: false,
     state: {
         //选择编辑的题目在题目列表中的序号
-        qsOrder:0,
+        qsOrder: 0,
         //试题库
         //暂时模拟后端数据
-        qsBank:[ 
+        qsBank: [
             {
                 id: 1,
                 course: '微积分上',
@@ -16,8 +26,8 @@ const question = {
                 level: '易',
                 //content以json字符串保存在数据库
                 content: {
-                  //  order: oldN + i + 1,
-                  //  score: deScore,
+                    //  order: oldN + i + 1,
+                    //  score: deScore,
                     level: '易',
                     question: "1+1=?",
                     choice: [
@@ -53,8 +63,8 @@ const question = {
                 name: '1+',
                 level: '易',
                 content: {
-                   // order: oldN + i + 1,
-                   // score: 5,
+                    // order: oldN + i + 1,
+                    // score: 5,
                     level: '易',
                     question: [
                         {
@@ -74,8 +84,8 @@ const question = {
                 name: '1+1>?',
                 level: '易',
                 content: {
-                   // order: oldN + i + 1,
-                   // score: deScore,
+                    // order: oldN + i + 1,
+                    // score: deScore,
                     level: '易',
                     question: "1+1>?",
                     choice: [
@@ -111,8 +121,8 @@ const question = {
                 name: '小明爱学习。',
                 level: '易',
                 content: {
-                   // order: oldN + i + 1,
-                  //  score: deScore,
+                    // order: oldN + i + 1,
+                    //  score: deScore,
                     level: '易',
                     question: "小明爱学习。",
                     subQ: [
@@ -132,8 +142,8 @@ const question = {
                 name: '1+1=2',
                 level: '易',
                 content: {
-                   // order: oldN + i + 1,
-                   // score: deScore,
+                    // order: oldN + i + 1,
+                    // score: deScore,
                     level: '易',
                     question: "1+1=2",
                     answer: true,
@@ -173,27 +183,301 @@ const question = {
                 prop: "level",
                 label: "题目难度",
             },
-           
+
         ],
-        
-      
+        //保存修改之前的题目，用于取消修改
+        tempTopic: null,
+        //新建题目
+        newTopic: null,
+        //判断是否编辑新题目
+        editNew: false,
+        //table加载中？
+        loading: false,
     },
 
     mutations: {
-     
+
         setQsOrder(state, order) {
             state.qsOrder = order;
         },
-        //删除题库中的某个题目
-        delBankTopic(state,order) {
-            state.qsBank.splice(order, 1);
-        }
-
+        setEditNew(state, boolVal) {
+            state.editNew = boolVal;
 
         },
-       
-    actions: {
+        setLoading(state, boolVal) {
+            state.loading = boolVal;
+        },
+        setTempTopic(state) {
+            state.tempTopic = JSON.parse(JSON.stringify(state.qsBank[state.qsOrder]));
+        },
+        createNewTopic(state, type) {
+            //单选题
+            if (type == "Single") {
+                state.newTopic = {
+                    level: '易',
+                    question: "",
+                    choice: [
+                        {
+                            order: 1,
+                            name: "A",
+                            content: "",
+                        },
+                        {
+                            order: 2,
+                            name: "B",
+                            content: "",
+                        },
+                        {
+                            order: 3,
+                            name: "C",
+                            content: "",
+                        },
+                        {
+                            order: 4,
+                            name: "D",
+                            content: "",
+                        },
+                    ],
+                    answer: "",
+                    explain: "",
+                };
+            }
+            //填空题   
+            else if (type == "Fill") {
+                state.newTopic = {
 
+                    level: '易',
+                    question: [
+                        {
+                            order: 1,
+                            head: '',
+                            tail: '',
+                            answer: "",
+                        },
+                    ],
+                    explain: "",
+                }
+            }
+            //多选题
+            else if (type == "Multiple") {
+                state.newTopic = {
+                    level: '易',
+                    question: "",
+                    choice: [
+                        {
+                            order: 1,
+                            name: "A",
+                            content: "",
+                        },
+                        {
+                            order: 2,
+                            name: "B",
+                            content: "",
+                        },
+                        {
+                            order: 3,
+                            name: "C",
+                            content: "",
+                        },
+                        {
+                            order: 4,
+                            name: "D",
+                            content: "",
+                        },
+                    ],
+                    answer: [],
+                    explain: "",
+                };
+            }
+            //简答题
+            else if (type == "Answer") {
+                state.newTopic = {
+
+                    level: '易',
+                    question: "",
+                    subQ: [
+                        {
+                            order: 1,
+                            content: "",
+                            answer: "",
+                        }
+                    ],
+                    explain: "",
+                };
+            }
+            //判断题
+            else if (type == "Truefalse") {
+                state.newTopic = {
+
+                    level: '易',
+                    question: "",
+                    answer: true,
+                    explain: "",
+                };
+            }
+        },
+        //删除题库中的某个题目
+        delBankTopic(state, id) {
+            // state.qsBank.splice(order, 1);
+            //     state.loading = true;
+            qs.get(`question/delete_by_id/${id}`).then(res => {
+                if (res.data === 1) {
+                    ElMessage.success({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                    console.log('删除了');
+                }
+                else {
+                    ElMessage.error({
+                        message: '删除失败',
+                        type: 'error'
+                    });
+                }
+            })
+            //TODO
+        },
+        /**
+         * @description: 存储题目到服务器
+         * @param {*} state
+         * @param {*} order
+         * @return {*}
+         */
+        saveTopic(state, type) {
+            let topic = '';
+            if (state.editNew) {
+                console.log('新建的题目', state.newTopic);
+                topic = state.newTopic;
+            } else {
+                console.log('保存的题目.content', state.qsBank[state.qsOrder].content);
+                topic = state.qsBank[state.qsOrder].content;
+            }
+            let tempBody = {};
+            //题型的公共部分
+            tempBody.proDetail = JSON.stringify(topic);
+            tempBody.proDif = topic.level;
+            tempBody.proTea = rootStore.state.userInfo.id;
+            tempBody.proAns = topic.explain;
+            tempBody.proType = type;
+            if (type === "Single") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (type == "Multiple") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (type == "Answer") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (type == "Truefalse") {
+                tempBody.proSimple = topic.question.substring(0, 8);
+            }
+            else if (type == "Fill") {
+                if (topic.question.length > 0) {
+                    tempBody.proSimple = topic.question[0].head.substring(0, 8);
+                }
+                else {
+                    tempBody.proSimple = topic.explain.substring(0, 8);
+                }
+            }
+
+            console.log('body', tempBody);
+
+            //TODO 存储到服务器
+            //增
+            if (state.editNew) {
+                qs.post('question/add', tempBody,
+                ).then(res => {
+                    console.log('res', res);
+                    if (res.status == 200) {
+
+                        ElMessage.success({
+                            message: '保存成功',
+                            type: 'success'
+                        });
+                    }
+                    else {
+                        ElMessage.error({
+                            message: '保存失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            }
+            //改
+            else {
+                tempBody.proNo = state.qsBank[state.qsOrder].id;
+                qs.post('question/update_by_id', tempBody,
+                ).then(res => {
+                    console.log('res', res);
+                    if (res.data === 1) {
+
+                        ElMessage.success({
+                            message: '保存成功',
+                            type: 'success'
+                        });
+                    }
+                    else {
+                        ElMessage.error({
+                            message: '保存失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            }
+            // state.newTopic =
+        },
+
+        undoTopic(state) {
+            if (state.editNew) {
+                state.editNew = null;
+            }
+            else {
+                console.log(state.qsBank[state.qsOrder] = state.tempTopic);
+            }
+        },
+
+        /**
+         * @description: 从服务器得到个人题库
+         * @param {*} state
+         * @param {*} data
+         * @return {*}
+         */
+        getQsBank(state, data) {
+            state.qsBank = data;
+        },
+        getPageQs(state, data) {
+            qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`,).then(res => {
+                state.qsBank = [];
+                for (const qs of res.data) {
+                    state.qsBank.push(
+                        {
+                            id: qs.proNo,
+                            name: qs.proSimple,
+                            course: qs.proClass,
+                            type: qs.proType,
+                            level: qs.proDif,
+                            content: JSON.parse(qs.proDetail),
+                        })
+                }
+                console.log('qbank', state.qsBank);
+                //    state.loading = false;
+
+            })
+        },
+
+
+    },
+
+    actions: {
+        async delBankTopic(context, data) {
+            //确保题目删除完成再重新分页加载
+
+            await context.commit('delBankTopic', data.id);
+
+            context.commit('getPageQs', { index: data.currentPage, size: data.pageSize });
+
+
+        }
     },
     getters: {}
 }

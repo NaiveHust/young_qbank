@@ -1,22 +1,27 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 12:35:17
+ * @LastEditTime: 2021-07-06 20:05:01
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
   <div class="paper">
     <!-- 试卷总体信息 保存 -->
     <el-row>
       <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
         <div class="paper-main-info">
-          <el-form
-            :model="paperInfo"
-            ref="form"
-            label-width="80px"
-            :inline="true"
-            size="small"
-          >
+          <el-form :model="paperInfo" ref="form" :inline="true" size="small">
             <el-form-item :label="$t('paper.paperName')">
               <el-input v-model="paperInfo.name"></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperScore')">
-              <el-input v-model.number="paperInfo.score" type="number"></el-input>
+              <el-input
+                v-model.number="paperInfo.score"
+                type="number"
+              ></el-input>
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperDuration')">
@@ -63,21 +68,28 @@
                     :key="type.key"
                     class="dialog-left-one"
                   >
-
-                    <el-input style="width: 12vw;" v-model.number="type.num" type="number" :min="0">
-                       <template #prepend>数目:</template>
+                    <el-input
+                      style="width: 12vw"
+                      v-model.number="type.num"
+                      type="number"
+                      :min="0"
+                    >
+                      <template #prepend>数目:</template>
                     </el-input>
 
-                    <el-input style="width: 12vw;" v-model.number="type.score" type="number" :min="0">
+                    <el-input
+                      style="width: 12vw"
+                      v-model.number="type.score"
+                      type="number"
+                      :min="0"
+                    >
                       <template #prepend>分值:</template>
                     </el-input>
 
-                    <el-button  @click.prevent="deleteType(type)"
+                    <el-button @click.prevent="deleteType(type)"
                       >删除</el-button
                     >
-
                   </el-form-item>
-
                 </el-scrollbar>
               </el-col>
 
@@ -152,7 +164,7 @@
                 {{
                   type.num
                 }}
-                 {{
+                {{
                   type.score
                 }}
 
@@ -196,7 +208,7 @@ import Multiple from "../topic/Multiple";
 import Answer from "../topic/Answer";
 import Fill from "../topic/Fill";
 import Truefalse from "../topic/TrueFalse";
-import ImportTopic from "./ImportTopic"
+import ImportTopic from "./ImportTopic";
 export default {
   data() {
     return {
@@ -233,7 +245,7 @@ export default {
         .slice(0)
         .sort((a, b) => a.order - b.order);
     },
-    paperInfo(){
+    paperInfo() {
       return this.$store.state.paper.paperContent.Info;
     },
     paperContent() {
@@ -243,8 +255,8 @@ export default {
   created() {
     this.div = document.createElement("div");
     document.body.appendChild(this.div);
-    this.$store.commit('setInPaper',true);
-    console.log('ExamPaper created!');
+    this.$store.commit("setInPaper", true);
+    console.log("ExamPaper created!");
   },
   methods: {
     handleDragStart(e, item) {
@@ -286,7 +298,7 @@ export default {
     deleteType(type) {
       this.$store.commit("deleteType", type);
     },
-   
+
     chooseType(name, index) {
       this.addType({
         index: index,
@@ -294,7 +306,7 @@ export default {
         order: index,
         num: 1,
         //此为全局默认分数，可被全局覆盖
-        score:5,
+        score: 5,
       });
     },
 
@@ -307,17 +319,16 @@ export default {
       this.$store.commit("setOrder", order);
       console.log(name);
     },
-    importTopic(){
-      this.$refs.import.dialogVisible=true;
+    importTopic() {
+      this.$refs.import.dialogVisible = true;
     },
     deleteTopic(typeName, order) {
       this.$store.commit("deleteTopic", { typeName, order });
     },
 
-    finishPaper(){
+    finishPaper() {
       this.$store.commit("finishPaper");
-    }
-
+    },
   },
 };
 </script>
@@ -326,6 +337,7 @@ export default {
 .paper {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 .paper-main-info {
   width: 100%;
@@ -386,7 +398,7 @@ export default {
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
-.dialog-left-one{
+.dialog-left-one {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;

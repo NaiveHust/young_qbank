@@ -1,3 +1,12 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-07-04 10:26:10
+ * @LastEditTime: 2021-07-06 19:43:00
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
+
 <template>
   <el-dialog
     title="导入题目"
@@ -15,7 +24,7 @@
       @selection-change="handleSelectionChange"
       :default-sort="{ prop: 'name', order: 'descending' }"
     >
-      <el-table-column type="selection" > </el-table-column>
+      <el-table-column type="selection"> </el-table-column>
       <el-table-column
         v-for="(head, index) in tableHead"
         :key="index"
@@ -53,26 +62,26 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      selectedTopics:[],
+      selectedTopics: [],
     };
   },
   computed: {
     tableHead() {
       return this.$store.state.qs.tableHead;
     },
-     qsBank() {
+    qsBank() {
       return this.$store.state.qs.qsBank;
     },
   },
   methods: {
     saveImport() {
       this.dialogVisible = false;
-      this.$store.commit("importTopics",this.selectedTopics);
+      this.$store.commit("importTopics", this.selectedTopics);
     },
-     handleSelectionChange(val) {
-        this.selectedTopics = val;
-        console.log('导入的题目',this.selectedTopics);
-      },
+    handleSelectionChange(val) {
+      this.selectedTopics = val;
+      console.log("导入的题目", this.selectedTopics);
+    },
   },
 };
 </script>
