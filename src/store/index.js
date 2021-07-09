@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-08 09:06:19
+ * @LastEditTime: 2021-07-09 10:58:48
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -10,10 +10,17 @@ import { createStore } from 'vuex'
 import exampaper from './paper'
 import question from './question'
 import course from './course'
+import admin from './admin'
 export default createStore({
     state: {
         //用户类型
         userType: null,
+        /* let userInfo = {
+              id: res.data.id,
+              pwd: res.data.pwd,
+              name: res.data.name,
+              token: "mock",
+            }; */
         userInfo: {},
         //路由便签列表
         tagsList: [
@@ -173,8 +180,8 @@ export default createStore({
             let aimTopic = state.paper.inPaper ?
                 state.paper.paperContent[data.tType].topic[data.tOrder - 1] :
                 state.qs.editNew ?
-                state.qs.newTopic :
-                state.qs.qsBank[state.qs.qsOrder].content;
+                    state.qs.newTopic :
+                    state.qs.qsBank[state.qs.qsOrder].content;
             console.log('目标题目', aimTopic);
             let aimItems = aimTopic[data.iType];
             for (const key in aimItems) {
@@ -199,6 +206,6 @@ export default createStore({
         paper: exampaper,
         qs: question,
         cs: course,
-
+        ad:admin,
     }
 })

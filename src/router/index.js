@@ -136,37 +136,7 @@ const router = createRouter({
     routes
 });
 
-// router.beforeEach((to, from, next) => {
-//     console.log(from);
-//     console.log(to);
-   
-    
-//     if (to.matched.length === 0) {  // 如果未匹配到路由
-//         //from.path ? next({ path: from.path }) : next('/login')
-//         console.log('path:'+lastPath);
-//         lastPath ? router.push(lastPath) : next('/login');
 
-//     } else {
-//         lastPath = to.path
-        
-//         next()  // 如果匹配到正确跳转
-//     }
-// })
-
-/* router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
-    const role = localStorage.getItem('ms_username');
-    if (!role && to.path !== '/login') {
-        next('/login');
-    } else if (to.meta.permission) {
-        // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
-        role === 'admin'
-            ? next()
-            : next('/403');
-    } else {
-        next();
-    }
-}); */
 router.beforeEach((to, from, next) => {
     console.log('上一个页面：', from)
     console.log('下一个页面：', to)
@@ -179,10 +149,10 @@ router.beforeEach((to, from, next) => {
         rootStore.commit('storeUser', JSON.parse(userInfo));
         console.log('刷新后', rootStore.state.userInfo);
     }
-    
-    if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
+    // 判断该路由是否需要登录权限
+    if (to.meta.requireAuth) { 
        // console.log('main-token：', userToken)
-        if (rootStore.state.userInfo) { // 判断本地是否存在token
+        if (userInfo) { // 判断本地是否存在token
             if (to.meta.roles.length !== 0) {
                 for (let i = 0; i < to.meta.roles.length; i++) {
                     if (userType === to.meta.roles[i]) {
@@ -199,22 +169,30 @@ router.beforeEach((to, from, next) => {
             }
         } else {
             next({
-                path: '/Login'
+                path: '/login'
             })
         }
-    } else {
-        next()
-    }
-    /* 如果本地存在token,则不允许直接跳转到登录页面 */
-    /* if (to.fullPath === '/Login') {
-        if (userToken) {
-            next({
+    } 
+    else if (to.fullPath === '/login') {
+        //如果token信息还在
+      
+        if (userInfo&&userType) {
+           /*  next({
                 path: from.fullPath
+            }) */
+            //转到主页
+            next({
+                path: '/home'
             })
         } else {
             next()
         }
-    } */
+    }
+    else{
+        next()
+    }
+  
+   
 })
 
 export default router;

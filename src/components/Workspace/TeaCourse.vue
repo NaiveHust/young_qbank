@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-07 11:25:10
- * @LastEditTime: 2021-07-07 12:35:44
+ * @LastEditTime: 2021-07-09 13:00:03
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -150,9 +150,8 @@ export default {
     //保存课程修改
     saveCourse() {
       this.dialogVisible = false;
-      this.$store.commit("saveCourse", {
-        name: this.courseName,
-      });
+      this.$store.dispatch("saveCourse", this.courseName,
+      );
     },
     //取消课程修改
     undoCourse() {

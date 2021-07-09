@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:00:43
- * @LastEditTime: 2021-07-08 15:24:44
+ * @LastEditTime: 2021-07-08 21:38:10
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -69,7 +69,7 @@
               v-loading="loading"
               :data="qsBank"
               style="width: 100%"
-              height="40vh"
+              height="60vh"
               :default-sort="{ prop: 'date', order: 'descending' }"
             >
               <el-table-column
