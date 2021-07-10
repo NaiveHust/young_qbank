@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 20:41:38
- * @LastEditTime: 2021-07-09 11:28:02
+ * @LastEditTime: 2021-07-09 22:01:50
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -15,12 +15,12 @@
           <div style="margin-top: 15px">
             <el-select
               v-model="searchType"
-              placeholder="搜索类型"
+              placeholder="用户类型"
               clearable
               style="width: 20%"
             >
-              <el-option label="课程名" value="1"></el-option>
-              <el-option label="老师" value="2"></el-option>
+              <el-option label="学生" value="student" @click="switchType('student')"></el-option>
+              <el-option label="老师" value="teacher" @click="switchType('teacher')"></el-option>
             </el-select>
             <el-input
               placeholder="请输入搜索内容"
@@ -39,9 +39,9 @@
           <div class="south-table">
           <el-table
             v-loading="loading"
-            :data="qsBank"
+            :data="userList"
             style="width: 100%"
-            height="60vh"
+            height="50vh"
             :default-sort="{ prop: 'date', order: 'descending' }"
           >
             <el-table-column
@@ -97,10 +97,27 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      searchType:'student',
+       currentPage: 1,
+      pageSize: 5,
+    };
   },
   computed:{
-
+      userList(){
+        if(this.searchType ==='student'){       
+          return this.$store.state.ad.stuList;
+        }
+        else{
+           return this.$store.state.ad.teaList;
+        }
+      },
+      tableHead(){
+        return this.$store.state.ad.tableHead;
+      },
+      totalCount() {
+      return this.$store.state.ad.totalCount;
+    },
   },
   methods:{
     drawPie(){
@@ -170,9 +187,42 @@ export default {
         }
     }]
 })
-    }
     },
-  
+    switchType(type){
+      if(type ==='teacher'){
+        this.$store.dispatch("getTeas", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+      }
+      else{
+        this.$store.dispatch("getStus", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+      }
+    },
+       //每页条数改变时触发 选择一页显示多少行
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+     this.switchType(this.searchType);
+      
+    },
+    //当前页改变时触发 跳转其他页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.switchType(this.searchType);
+      }
+    },
+  created(){
+    this.$store.dispatch('getStus',{
+      index:1,
+      size:5
+    });
+  },
   mounted() {
    this.drawPie();
    this.drawBar();

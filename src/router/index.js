@@ -105,7 +105,7 @@ const routes = [
                 meta: {
                     title: '管理课程',
                     requireAuth: true,
-                    roles: ['teacher'],
+                    roles: ['teacher','admin'],
                 },
                 component: TeaCourse,
             },

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:33:55
- * @LastEditTime: 2021-07-07 08:52:57
+ * @LastEditTime: 2021-07-10 09:59:45
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -48,19 +48,31 @@
         </div>
       </el-form-item>
 
-      <div style="width: 100%">
-        <span>难度</span>
+       <div style="width: 100%;display:flex;justify-content:space-between;">
+       
         <el-select
           v-model="truefalse.level"
-          placeholder="请选择"
-          style="width: 10%"
+          placeholder="试题难度"
+          style="width: 15%"
         >
           <el-option label="易" value="易"></el-option>
           <el-option label="中" value="中"></el-option>
           <el-option label="难" value="难"></el-option>
         </el-select>
+        
+          <el-select
+          v-model="truefalse.course"
+          placeholder="所属课程"
+          style="width: 15%"
+        >
+         <el-option 
+          v-for="(course,index) in courses"
+          :key="index"
+          :label="course.cName" :value="course.cName"
+          ></el-option>
+        </el-select>
+        
 
-        <span style="margin-left: 5%">答案解析</span>
         <el-input
           type="textarea"
           style="width: 60%"
@@ -70,6 +82,7 @@
           v-model="truefalse.explain"
         >
         </el-input>
+        
       </div>
     </el-form>
   </div>
@@ -103,6 +116,9 @@ export default {
       } else {
         return this.$store.state.qs.qsBank[this.qsOrder].content;
       }
+    },
+     courses(){
+      return this.$store.state.cs.myCourses;
     },
   },
   methods: {},

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-08 20:38:36
+ * @LastEditTime: 2021-07-09 20:22:35
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -163,7 +163,7 @@ export default {
   },
   created() {
     this.$store.commit("setInPaper", false);
-    this.$store.commit("getPapers", {
+    this.$store.dispatch("getPapers", {
       index: 1,
       size: 1000,
     });

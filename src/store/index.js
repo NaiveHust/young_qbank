@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-09 10:58:48
+ * @LastEditTime: 2021-07-09 18:43:27
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -43,7 +43,7 @@ export default createStore({
                 icon: "el-icon-apple",
                 index: "teacourse",
                 title: "管理课程",
-                roles: ["teacher"],
+                roles: ["teacher","admin"],
             },
             {
                 icon: "el-icon-apple",

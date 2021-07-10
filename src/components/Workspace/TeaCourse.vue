@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-07 11:25:10
- * @LastEditTime: 2021-07-09 13:00:03
+ * @LastEditTime: 2021-07-09 20:06:37
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -33,12 +33,12 @@
           </div>
         </el-row>
         <el-row>
-          <!-- 题目列表区 -->
+          <!-- 课程列表区 -->
           <div class="south-table">
             <el-table
-              :data="tCourse"
+              :data="myCourses"
               style="width: 100%"
-              height="40vh"
+              height="60vh"
               :default-sort="{ prop: 'date', order: 'descending' }"
             >
               <el-table-column
@@ -112,8 +112,12 @@ export default {
     tableHead() {
       return this.$store.state.cs.tableHead;
     },
-    tCourse() {
-      return this.$store.state.cs.courseList;
+    myCourses() {
+      if (this.$store.state.userType === "teacher") {
+        return this.$store.state.cs.myCourses;
+      } else {
+        return this.$store.state.cs.courseList;
+      }
     },
   },
   methods: {
@@ -150,14 +154,19 @@ export default {
     //保存课程修改
     saveCourse() {
       this.dialogVisible = false;
-      this.$store.dispatch("saveCourse", this.courseName,
-      );
+      this.$store.dispatch("saveCourse", this.courseName);
     },
     //取消课程修改
     undoCourse() {
       this.dialogVisible = false;
-      this.$store.commit("undoCourse");
     },
+  },
+  created() {
+    if (this.$store.state.userType === "teacher") {
+      this.$store.dispatch("getTeaCourse");
+    } else {
+      this.$store.dispatch("getCourses");
+    }
   },
 };
 </script>

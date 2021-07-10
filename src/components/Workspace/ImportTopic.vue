@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-04 10:26:10
- * @LastEditTime: 2021-07-08 19:56:42
+ * @LastEditTime: 2021-07-09 21:04:07
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -89,7 +89,7 @@ export default {
       console.log(`每页 ${val} 条`);
       this.currentPage = 1;
       this.pageSize = val;
-      this.$store.commit("getPageQs", {
+      this.$store.dispatch("getPageQs", {
         index: this.currentPage,
         size: this.pageSize,
       });
@@ -98,7 +98,7 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
-      this.$store.commit("getPageQs", {
+      this.$store.dispatch("getPageQs", {
         index: this.currentPage,
         size: this.pageSize,
       });
@@ -107,7 +107,7 @@ export default {
   created() {
     //从服务器分页获取题目,默认为第一页
     this.currentPage = 1;
-    this.$store.commit("getPageQs", {
+    this.$store.dispatch("getPageQs", {
       index: this.currentPage,
       size: this.pageSize,
     });

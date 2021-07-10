@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:27:09
- * @LastEditTime: 2021-07-09 16:43:48
+ * @LastEditTime: 2021-07-09 20:07:03
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -12,8 +12,10 @@
       <!-- 菜单工具栏 -->
       <el-col :span="14">
         <div class="west-header">
-          <span>已选课程</span>
-          <el-table
+          <span>已选课程</span>        
+        </div>
+        <div class="west-course">
+           <el-table
             :data="myCourses"
             style="width: 100%"
             height="60vh"
@@ -40,7 +42,6 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="west-course"></div>
       </el-col>
       <!-- 搜索课程区 -->
       <el-col :span="10">

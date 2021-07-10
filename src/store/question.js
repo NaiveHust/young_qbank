@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:49:30
- * @LastEditTime: 2021-07-08 22:38:59
+ * @LastEditTime: 2021-07-10 09:28:05
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -25,11 +25,13 @@ const question = {
                 type: 'Single',
                 name: '1+1=?',
                 level: '易',
+         
                 //content以json字符串保存在数据库
                 content: {
                     //  order: oldN + i + 1,
                     //  score: deScore,
                     level: '易',
+                    course:"",
                     question: "1+1=?",
                     choice: [
                         {
@@ -218,6 +220,7 @@ const question = {
             if (type == "Single") {
                 state.newTopic = {
                     level: '易',
+                    course:"",
                     question: "",
                     choice: [
                         {
@@ -250,6 +253,7 @@ const question = {
                 state.newTopic = {
 
                     level: '易',
+                    course:"",
                     question: [
                         {
                             order: 1,
@@ -265,6 +269,7 @@ const question = {
             else if (type == "Multiple") {
                 state.newTopic = {
                     level: '易',
+                    course:"",
                     question: "",
                     choice: [
                         {
@@ -297,6 +302,7 @@ const question = {
                 state.newTopic = {
 
                     level: '易',
+                    course:"",
                     question: "",
                     subQ: [
                         {
@@ -313,44 +319,15 @@ const question = {
                 state.newTopic = {
 
                     level: '易',
+                    course:"",
                     question: "",
                     answer: true,
                     explain: "",
                 };
             }
         },
-        //删除题库中的某个题目
-        delBankTopic(state, id) {
-            // state.qsBank.splice(order, 1);
-            //     state.loading = true;
-            state.loading = true;
-            return new Promise(() => {
-
-                qs.get(`question/delete_by_id/${id}`).then(res => {
-                    if (res.data === 1) {
-                        ElMessage.success({
-                            message: '删除成功',
-                            type: 'success'
-                        });
-                        console.log('删除了');
-                    }
-                    else {
-                        ElMessage.error({
-                            message: '删除失败',
-                            type: 'error'
-                        });
-                    }
-                })
-
-            })
-
-        },
-        /**
-         * @description: 存储题目到服务器
-         * @param {*} state
-         * @param {*} order
-         * @return {*}
-         */
+       
+      
         saveTopic(state, type) {
             let topic = '';
             if (state.editNew) {
@@ -367,6 +344,7 @@ const question = {
             tempBody.proTea = rootStore.state.userInfo.id;
             tempBody.proAns = topic.explain;
             tempBody.proType = type;
+            tempBody.proClass = topic.course;
             if (type === "Single") {
                 tempBody.proSimple = topic.question.substring(0, 8);
             }
@@ -450,31 +428,9 @@ const question = {
             }
         },
 
-        /**
-         * @description: 从服务器得到个人题库
-         * @param {*} state
-         * @param {*} data
-         * @return {*}
-         */
+     
 
-        getPageQs(state, data) {
-            qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`,).then(res => {
-                state.qsBank = [];
-                state.totalCount = res.data.totalCount;
-                for (const qs of res.data.list) {
-                    state.qsBank.push(
-                        {
-                            id: qs.proNo,
-                            name: qs.proSimple,
-                            course: qs.proClass,
-                            type: qs.proType,
-                            level: qs.proDif,
-                            content: JSON.parse(qs.proDetail),
-                        })
-                }
-                console.log('qbank', state.qsBank);
-            })
-        },
+      
 
 
     },
@@ -482,9 +438,6 @@ const question = {
     actions: {
         async delBankTopic(context, data) {
             //确保题目删除完成再重新分页加载
-
-            //await context.commit('delBankTopic', data.id);
-            //await context.commit('getPageQs', { index: data.currentPage, size: data.pageSize });
             context.state.loading = true;
             await qs.get(`question/delete_by_id/${data.id}`).then(res => {
                 if (res.data === 1) {
@@ -535,6 +488,7 @@ const question = {
             tempBody.proTea = rootStore.state.userInfo.id;
             tempBody.proAns = topic.explain;
             tempBody.proType = data.type;
+            tempBody.proClass = topic.course;
             if (data.type === "Single") {
                 tempBody.proSimple = topic.question.substring(0, 8);
             }
@@ -617,6 +571,23 @@ const question = {
                 }
                 context.state.loading = false;
                 console.log('qbank', context.state.qsBank);
+            })
+        },
+        async  getPageQs({state}, data) {
+         return  qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`,).then(res => {
+                state.qsBank = [];
+                state.totalCount = res.data.totalCount;
+                for (const qs of res.data.list) {
+                    state.qsBank.push(
+                        {
+                            id: qs.proNo,
+                            name: qs.proSimple,
+                            course: qs.proClass,
+                            type: qs.proType,
+                            level: qs.proDif,
+                            content: JSON.parse(qs.proDetail),
+                        })
+                }
             })
         },
 

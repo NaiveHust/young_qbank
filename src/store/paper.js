@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-01 19:40:10
- * @LastEditTime: 2021-07-08 20:47:30
+ * @LastEditTime: 2021-07-10 09:16:43
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -163,6 +163,7 @@ const exampaper = {
                             score: deScore,
                             level: '易',
                             question: "",
+                            course:"",
                             choice: [
                                 {
                                     order: 1,
@@ -195,6 +196,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: 5,
                             level: '易',
+                            course:"",
                             question: [
                                 {
                                     order: 1,
@@ -212,6 +214,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             level: '易',
+                            course:"",
                             question: "",
                             choice: [
                                 {
@@ -245,6 +248,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             level: '易',
+                            course:"",
                             question: "",
                             subQ: [
                                 {
@@ -262,6 +266,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             level: '易',
+                            course:"",
                             question: "",
                             answer: true,
                             explain: "",
@@ -383,7 +388,12 @@ const exampaper = {
         setCurrentPaper(state, data) {
             state.paperContent = data;
         },
-        getPapers(state, data) {
+       
+
+
+    },
+    actions: {
+        async  getPapers({state}, data) {
 
 
             /*  state.paperList.push({
@@ -404,10 +414,6 @@ const exampaper = {
                 console.log('paperList', state.paperList);
             })
         },
-
-
-    },
-    actions: {
         //保存创建试卷
         async finishPaper(context) {
             let tempBody = {};

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:00:43
- * @LastEditTime: 2021-07-08 21:38:10
+ * @LastEditTime: 2021-07-09 21:00:34
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -69,7 +69,7 @@
               v-loading="loading"
               :data="qsBank"
               style="width: 100%"
-              height="60vh"
+              height="50vh"
               :default-sort="{ prop: 'date', order: 'descending' }"
             >
               <el-table-column
@@ -262,7 +262,7 @@ export default {
       console.log(`每页 ${val} 条`);
       this.currentPage = 1;
       this.pageSize = val;
-      this.$store.commit("getPageQs", {
+      this.$store.dispatch("getPageQs", {
         index: this.currentPage,
         size: this.pageSize,
       });
@@ -271,7 +271,7 @@ export default {
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
       this.currentPage = val;
-      this.$store.commit("getPageQs", {
+      this.$store.dispatch("getPageQs", {
         index: this.currentPage,
         size: this.pageSize,
       });
@@ -283,7 +283,7 @@ export default {
     this.$store.commit("setInPaper", false);
     //从服务器分页获取题目,默认为第一页
     this.currentPage = 1;
-    this.$store.commit("getPageQs", {
+    this.$store.dispatch("getPageQs", {
       index: this.currentPage,
       size: this.pageSize,
     });
