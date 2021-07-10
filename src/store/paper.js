@@ -1,3 +1,14 @@
+/*
+ * @Author: 肖环宇
+ * @Date: 2021-07-01 19:40:10
+ * @LastEditTime: 2021-07-08 20:47:30
+ * @LastEditors: 肖环宇
+ * @Description: 
+ */
+import { pp } from '../axios';
+import rootStore from './index';
+import { ElMessage } from 'element-plus'
+
 const exampaper = {
 
     namespaced: false,
@@ -16,7 +27,10 @@ const exampaper = {
         typeList: [
 
         ],
+        //试卷库
+        paperList: [],
         //整张试卷的对象
+
         paperContent: {
             Info: {
                 name: '',
@@ -63,7 +77,8 @@ const exampaper = {
 
         //判断是在试卷中编辑题目还是在题库中编辑题目
         inPaper: false,
-
+        //判断实在编辑旧试卷的id,平时为null，只有点击编辑时临时赋值
+        editId: null,
     },
 
     mutations: {
@@ -101,8 +116,8 @@ const exampaper = {
             }
             state.typeList.push(type);
             state.typeList.sort((a, b) => a.index - b.index);
-            console.log('typeList:');
-            console.log(state.typeList);
+            //console.log('typeList:');
+            //console.log(state.typeList);
         },
         //删除单个题型
         deleteType(state, type) {
@@ -262,41 +277,61 @@ const exampaper = {
         setOrder(state, order) {
             state.currentOrder = order;
         },
-      
-        addFillItem(state, order) {
-            /*{
-                   order: '易',
-                   score: 5,
-                   question: [
-                                {
-                                    order: i + 1,
-                                    head: '',
-                                    tail:'',
-                                    answer:'',
-                                },
-                            ],
-                          
-                            ,
-                        }*/
-            var aimTopic = state.paperContent.Fill.topic[order - 1];
-            var i = aimTopic.question.length;
-            aimTopic.question.push({
-                order: i + 1,
-                head: '',
-                tail: '',
-                answer: '',
-            });
-
+        setEditId(state, id) {
+            state.editId = id;
+            console.log('创建试卷中:', id);
         },
-        //保存创建试卷
-        finishPaper(state) {
-            console.log('编辑完成后的试卷');
-            console.log(state.paperContent);
-            console.log(JSON.stringify(state.paperContent));
+
+        resetPaper(state) {
+            state.paperContent = {
+                Info: {
+                    name: '',
+                    score: '',
+                    duration: '',
+
+                },
+                Single: {
+                    //题型描述
+                    info: '',
+                    //题目 元素是single中sContent对象
+
+                    topic: [
+
+                    ],
+                },
+                Multiple: {
+                    //题型描述
+                    info: '',
+                    //题目
+                    topic: [],
+                },
+                Truefalse: {
+                    //题型描述
+                    info: '',
+                    //题目
+                    topic: [],
+                },
+                Fill: {
+                    //题型描述
+                    info: '',
+                    //题目
+                    topic: [],
+                },
+                Answer: {
+                    //题型描述
+                    info: '',
+                    //题目
+                    topic: [],
+                }
+            }
         },
         setInPaper(state, boolVal) {
             state.inPaper = boolVal;
             console.log('在试卷中编辑:', state.inPaper);
+        },
+        setNewPaper(state, boolVal) {
+            state.newPaper = boolVal;
+            console.log('创建试卷中:', state.newPaper);
         },
         //导入题目
         importTopics(state, topics) {
@@ -342,12 +377,125 @@ const exampaper = {
             for (const tType of state.typeList) {
                 tType.num = state.paperContent[tType.name].topic.length;
             }
-        }
+        },
+
+        //改变当前编辑的试卷
+        setCurrentPaper(state, data) {
+            state.paperContent = data;
+        },
+        getPapers(state, data) {
+
+
+            /*  state.paperList.push({
+                 id: i,
+                 name: state.paperContent.Info.name,
+                 json: JSON.stringify(state.paperContent),
+             }); */
+            console.log('paperList', state.paperList);
+            pp.get(`paper/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`).then(res => {
+                state.paperList = [];
+                for (const paper of res.data) {
+                    state.paperList.push({
+                        id: paper.paperNo,
+                        name: paper.paperName,
+                        json: paper.paperInfo,
+                    });
+                }
+                console.log('paperList', state.paperList);
+            })
+        },
+
+
     },
     actions: {
+        //保存创建试卷
+        async finishPaper(context) {
+            let tempBody = {};
+            tempBody.paperName = context.state.paperContent.Info.name;
+            tempBody.paperScore = context.state.paperContent.Info.score;
+            tempBody.paperTime = context.state.paperContent.Info.duration;
+            tempBody.paperTea = rootStore.state.userInfo.id;
+            tempBody.paperInfo = JSON.stringify(context.state.paperContent);
 
+            //如果没有试卷id,即在创建试卷
+            if (!context.state.editId) {
+                await pp.post('paper/add', tempBody).then(res => {
+                    if (res.data === 1) {
+                        ElMessage.success({
+                            message: '保存成功',
+                            type: 'success'
+                        });
+                    }
+                    else {
+                        ElMessage.error({
+                            message: '保存失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            }
+            else {
+                tempBody.paperNo = context.state.editId;
+                await pp.post('paper/update_by_id', tempBody).then(res => {
+                    if (res.data === 1) {
+                        ElMessage.success({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                    else {
+                        ElMessage.error({
+                            message: '修改失败',
+                            type: 'error'
+                        });
+                    }
+                })
+            }
+
+            await pp.get(`paper/findByTea/${rootStore.state.userInfo.id}/1/1000`).then(res => {
+                context.state.paperList = [];
+                for (const paper of res.data) {
+                    context.state.paperList.push({
+                        id: paper.paperNo,
+                        name: paper.paperName,
+                        json: paper.paperInfo,
+                    });
+                }
+            })
+
+        },
+        //删除试卷
+        async delPaper(context, id) {
+            // state.paperList.splice(index, 1);
+            await pp.get(`paper/delete_by_id/${id}`).then(res => {
+                if (res.data === 1) {
+                    ElMessage.success({
+                        message: '删除成功',
+                        type: 'success'
+                    });
+                }
+                else {
+                    ElMessage.error({
+                        message: '删除失败',
+                        type: 'error'
+                    });
+                }
+            })
+
+            await pp.get(`paper/findByTea/${rootStore.state.userInfo.id}/1/1000`).then(res => {
+                context.state.paperList = [];
+                for (const paper of res.data) {
+                    context.state.paperList.push({
+                        id: paper.paperNo,
+                        name: paper.paperName,
+                        json: paper.paperInfo,
+                    });
+                }
+            })
+
+        },
     },
     getters: {}
-}
 
+}
 export default exampaper

@@ -1,3 +1,11 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 19:33:16
+ * @LastEditTime: 2021-07-07 08:52:35
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
   <!-- 单选题 -->
   <div class="multiple">
@@ -30,11 +38,11 @@
       <el-scrollbar class="multiple-ones">
         <el-checkbox-group v-model="multiples.answer">
           <div
-           v-for="item in multiples.choice"
+            v-for="item in multiples.choice"
             :key="item.name"
             class="multiple-one"
           >
-           <el-checkbox-button  :label="item.name" ></el-checkbox-button>
+            <el-checkbox-button :label="item.name"></el-checkbox-button>
             <el-input
               v-model="item.content"
               style="width: 40vw"
@@ -44,30 +52,33 @@
             >
             </el-input>
 
-             <el-button
-                    class="el-icon-delete"
-                    @click.stop="delItem(item.order)"
-                    style="float: right"
-                  >
-                  </el-button>
+            <el-button
+              class="el-icon-delete"
+              @click.stop="delItem(item.order)"
+              style="float: right"
+            >
+            </el-button>
           </div>
         </el-checkbox-group>
-        
       </el-scrollbar>
 
       <el-form-item>
         <el-button type="primary" @click="addItem()">添加选项</el-button>
         <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
       </el-form-item>
- <div style="width:100%">
-      <span>难度</span>
-      <el-select v-model="multiples.level" placeholder="请选择" style="width:10%">
-        <el-option label="易" value="易" ></el-option>
-        <el-option label="中" value="中" ></el-option>
-        <el-option label="难" value="难" ></el-option>
-      </el-select>
+      <div style="width: 100%">
+        <span>难度</span>
+        <el-select
+          v-model="multiples.level"
+          placeholder="请选择"
+          style="width: 10%"
+        >
+          <el-option label="易" value="易"></el-option>
+          <el-option label="中" value="中"></el-option>
+          <el-option label="难" value="难"></el-option>
+        </el-select>
 
-        <span style="margin-left:5%">答案解析</span>
+        <span style="margin-left: 5%">答案解析</span>
         <el-input
           type="textarea"
           style="width: 60%"
@@ -88,20 +99,25 @@ export default {
     return {};
   },
   computed: {
-     inPaper() {
+    editNew() {
+      return this.$store.state.qs.editNew;
+    },
+    inPaper() {
       return this.$store.state.paper.inPaper;
     },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
-   qsOrder(){
+    qsOrder() {
       return this.$store.state.qs.qsOrder;
     },
-     multiples() {
+    multiples() {
       if (this.inPaper) {
         return this.$store.state.paper.paperContent.Multiple.topic[
           this.currentOrder - 1
         ];
+      } else if (this.editNew) {
+        return this.$store.state.qs.newTopic;
       } else {
         return this.$store.state.qs.qsBank[this.qsOrder].content;
       }

@@ -1,3 +1,12 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-07-04 10:26:10
+ * @LastEditTime: 2021-07-08 19:56:42
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
+
 <template>
   <el-dialog
     title="导入题目"
@@ -7,7 +16,6 @@
     top="10vh"
     :close-on-click-modal="false"
     :show-close="false"
-    :before-close="handleClose"
   >
     <el-table
       :data="qsBank"
@@ -15,7 +23,7 @@
       @selection-change="handleSelectionChange"
       :default-sort="{ prop: 'name', order: 'descending' }"
     >
-      <el-table-column type="selection" > </el-table-column>
+      <el-table-column type="selection"> </el-table-column>
       <el-table-column
         v-for="(head, index) in tableHead"
         :key="index"
@@ -24,20 +32,18 @@
         sortable
       >
       </el-table-column>
-      <!-- <el-table-column label="操作">
-        <template #default="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          >
-        </template>
-      </el-table-column> -->
     </el-table>
+    <el-pagination
+      align="center"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[5, 10, 20]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="totalCount"
+    >
+    </el-pagination>
 
     <template #footer>
       <span class="dialog-footer">
@@ -53,26 +59,58 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      selectedTopics:[],
+      selectedTopics: [],
+      currentPage: 1,
+      pageSize: 5,
     };
   },
   computed: {
     tableHead() {
       return this.$store.state.qs.tableHead;
     },
-     qsBank() {
+    qsBank() {
       return this.$store.state.qs.qsBank;
+    },
+    totalCount() {
+      return this.$store.state.qs.totalCount;
     },
   },
   methods: {
     saveImport() {
       this.dialogVisible = false;
-      this.$store.commit("importTopics",this.selectedTopics);
+      this.$store.commit("importTopics", this.selectedTopics);
     },
-     handleSelectionChange(val) {
-        this.selectedTopics = val;
-        console.log('导入的题目',this.selectedTopics);
-      },
+    handleSelectionChange(val) {
+      this.selectedTopics = val;
+      console.log("导入的题目", this.selectedTopics);
+    },
+    //每页条数改变时触发 选择一页显示多少行
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+      this.$store.commit("getPageQs", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+    },
+    //当前页改变时触发 跳转其他页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.$store.commit("getPageQs", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+    },
+  },
+  created() {
+    //从服务器分页获取题目,默认为第一页
+    this.currentPage = 1;
+    this.$store.commit("getPageQs", {
+      index: this.currentPage,
+      size: this.pageSize,
+    });
   },
 };
 </script>

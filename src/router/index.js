@@ -9,7 +9,9 @@ import PpBank from '../components/Workspace/PpBank'
 import MarkPaper from '../components/Workspace/MarkPaper'
 import TakeExam from '../components/Workspace/TakeExam'
 import ManageUser from '../components/Workspace/ManageUser'
-import JsonToPaper from "../components/Workspace/JsonToPaper";
+import MyCourse from '../components/Workspace/MyCourse'
+import TeaCourse from '../components/Workspace/TeaCourse'
+import rootStore from '../store'
 
 const routes = [
     {
@@ -33,7 +35,7 @@ const routes = [
                 meta: {
                     title: '欢迎！',
                     requireAuth: true,
-                    roles: ['student', 'teacher', 'manager'],
+                    roles: ['student', 'teacher', 'admin'],
                 },
                 component:Welcome,
             },
@@ -43,7 +45,7 @@ const routes = [
                 meta: {
                     title: '用户管理',
                     requireAuth: true,
-                    roles: ['manager'],
+                    roles: ['admin'],
                 },
                 component: ManageUser,
             },
@@ -63,7 +65,7 @@ const routes = [
                 meta: {
                     title: '题库管理',
                     requireAuth: true,
-                    roles: ['teacher', 'manager'],
+                    roles: ['teacher', 'admin'],
                 },
                 component: QsBank,
             },
@@ -73,7 +75,7 @@ const routes = [
                 meta: {
                     title: '试卷管理',
                     requireAuth: true,
-                    roles: ['teacher', 'manager'],
+                    roles: ['teacher', 'admin'],
                 },
                 component: PpBank,
             },
@@ -88,6 +90,26 @@ const routes = [
                 component: MarkPaper,
             },
             {
+                path: "/mycourse",
+                name: "MyCourse",
+                meta: {
+                    title: '我的课程',
+                    requireAuth: true,
+                    roles: ['student',],
+                },
+                component: MyCourse,
+            },
+            {
+                path: "/teacourse",
+                name: "TeaCourse",
+                meta: {
+                    title: '管理课程',
+                    requireAuth: true,
+                    roles: ['teacher'],
+                },
+                component: TeaCourse,
+            },
+            {
                 path: "/takeexam",
                 name: "TakeExam",
                 meta: {
@@ -97,14 +119,7 @@ const routes = [
                 },
                 component: TakeExam,
             },
-            {
-                path: "/jsontopaper",
-                name: "试卷 docx",
-                meta: {
-                    title: '生成试卷 docx 文件'
-                },
-                component: JsonToPaper
-            }
+          
         ]
     },
     {
@@ -121,46 +136,23 @@ const router = createRouter({
     routes
 });
 
-// router.beforeEach((to, from, next) => {
-//     console.log(from);
-//     console.log(to);
-   
-    
-//     if (to.matched.length === 0) {  // 如果未匹配到路由
-//         //from.path ? next({ path: from.path }) : next('/login')
-//         console.log('path:'+lastPath);
-//         lastPath ? router.push(lastPath) : next('/login');
 
-//     } else {
-//         lastPath = to.path
-        
-//         next()  // 如果匹配到正确跳转
-//     }
-// })
-
-/* router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
-    const role = localStorage.getItem('ms_username');
-    if (!role && to.path !== '/login') {
-        next('/login');
-    } else if (to.meta.permission) {
-        // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
-        role === 'admin'
-            ? next()
-            : next('/403');
-    } else {
-        next();
-    }
-}); */
 router.beforeEach((to, from, next) => {
     console.log('上一个页面：', from)
     console.log('下一个页面：', to)
    // let userToken = localStorage.getItem('userToken');
     //let role = localStorage.getItem('role');
     let userType = localStorage.getItem('young-user-type');
-    if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
+    rootStore.state.userType = userType;
+    let userInfo = localStorage.getItem('young-userInfo');
+    if (Object.keys(rootStore.state.userInfo).length === 0&&userInfo) {
+        rootStore.commit('storeUser', JSON.parse(userInfo));
+        console.log('刷新后', rootStore.state.userInfo);
+    }
+    // 判断该路由是否需要登录权限
+    if (to.meta.requireAuth) { 
        // console.log('main-token：', userToken)
-        if (userType) { // 判断本地是否存在token
+        if (userInfo) { // 判断本地是否存在token
             if (to.meta.roles.length !== 0) {
                 for (let i = 0; i < to.meta.roles.length; i++) {
                     if (userType === to.meta.roles[i]) {
@@ -177,22 +169,30 @@ router.beforeEach((to, from, next) => {
             }
         } else {
             next({
-                path: '/Login'
+                path: '/login'
             })
         }
-    } else {
-        next()
-    }
-    /* 如果本地存在token,则不允许直接跳转到登录页面 */
-    /* if (to.fullPath === '/Login') {
-        if (userToken) {
-            next({
+    } 
+    else if (to.fullPath === '/login') {
+        //如果token信息还在
+      
+        if (userInfo&&userType) {
+           /*  next({
                 path: from.fullPath
+            }) */
+            //转到主页
+            next({
+                path: '/home'
             })
         } else {
             next()
         }
-    } */
+    }
+    else{
+        next()
+    }
+  
+   
 })
 
 export default router;

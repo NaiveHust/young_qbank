@@ -1,3 +1,11 @@
+/*
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 12:35:17
+ * @LastEditTime: 2021-07-06 19:42:32
+ * @LastEditors: 肖环宇
+ * @Description: 
+ */
+
 import { createI18n } from 'vue-i18n'
 
 const i18n = createI18n({
@@ -17,10 +25,10 @@ const i18n = createI18n({
     }
 });
 // import('./en.js').then((res) => {
-    
+
 //     console.log(res.default);
 // });
- console.log(i18n.global.messages);
+console.log(i18n.global.messages);
 // console.log(require('./cn.js'));
 
 export default i18n;

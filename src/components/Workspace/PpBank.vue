@@ -1,22 +1,17 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-07-03 16:56:03
+ * @LastEditTime: 2021-07-08 20:38:36
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
   <div class="qsbank">
     <el-row class="qsbank-north">
       <!-- 菜单工具栏 -->
       <el-col :span="16">
         <div class="north-bar">
-          <div>
-            题型
-            <el-select v-model="viewType" clearable placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </div>
-
           <div style="margin-top: 15px">
             <el-select
               v-model="searchType"
@@ -48,100 +43,130 @@
         <div class="north-chart"></div>
       </el-col>
     </el-row>
+
     <el-row class="qsbank-south">
       <!-- 显示列表 -->
-      <el-col :span="12">
+      <el-col :span="20">
         <div class="south-table">
           <el-table
-            :data="tableData"
-            style="width: 100%"
-            :default-sort="{ prop: 'date', order: 'descending' }"
+            :data="paperList"
+            style="width: 100%; height: 60vh"
+            max-height="400"
+            :default-sort="{ prop: 'name', order: 'descending' }"
           >
-            <el-table-column 
-            v-for="(head,index) in tableHead"
-            :key="index"
-            :prop ="head.name" :label="head.label" sortable>
+            <el-table-column
+              v-for="(head, index) in tableHead"
+              :key="index"
+              :prop="head.prop"
+              :label="head.label"
+              sortable
+            >
             </el-table-column>
-          
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-button
+                  size="mini"
+                  @click="handleEdit(scope.$index, scope.row)"
+                  >编辑</el-button
+                >
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.$index, scope.row)"
+                  >删除</el-button
+                >
+                <el-button size="mini" @click="exportPaper(scope.row)"
+                  >导出</el-button
+                >
+              </template>
+            </el-table-column>
           </el-table>
         </div>
       </el-col>
-
-      <!-- 题目显示区 -->
-      <el-col :span="12">
-        <div class="south-view">
-          <component
-            :is="viewType"
-            style="width: 100%; height: 100%"
-          ></component>
-        </div>
-      </el-col>
     </el-row>
+
+    <el-dialog
+      title="试卷编辑"
+      v-model="dialogVisible"
+      width="80vw"
+      height="80vh"
+      center
+      :close-on-click-modal="false"
+      :show-close="true"
+      :before-close="handleClose"
+    >
+      <ExamPaper> </ExamPaper>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import Single from "../topic/Single";
-import Multiple from "../topic/Multiple";
-import Answer from "../topic/Answer";
-import Fill from "../topic/Fill";
-import Truefalse from "../topic/TrueFalse";
+import { jsonToPaper } from "../../office";
+import ExamPaper from "./ExamPaper";
 export default {
   components: {
-    Single,
-    Multiple,
-    Answer,
-    Fill,
-    Truefalse,
+    ExamPaper,
   },
   data() {
     return {
-      options: [
-        {
-          value: "Single",
-          label: "单选题",
-        },
-        {
-          value: "Multiple",
-          label: "多选题",
-        },
-        {
-          value: "Truefalse",
-          label: "判断题",
-        },
-        {
-          value: "Fill",
-          label: "填空题",
-        },
-        {
-          value: "Answer",
-          label: "简答题",
-        },
-      ],
       tableHead: [
         {
           prop: "name",
-          label: "题目简称",
+          label: "试卷名称",
         },
         {
           prop: "course",
           label: "所属课程",
         },
-        {
-          prop: "type",
-          label: "题型",
-        },
-        {
-          prop: "level",
-          label: "题目难度",
-        },
       ],
       viewType: "",
+      dialogVisible: false,
       searchType: "",
+      searchVal: "",
     };
+  },
+  computed: {
+    paperList() {
+      return this.$store.state.paper.paperList;
+    },
+  },
+  methods: {
+    exportPaper(row) {
+      for (const key in this.paperList) {
+        if (this.paperList[key].id === row.id) {
+          jsonToPaper(this.paperList[key].json);
+          break;
+        }
+      }
+    },
+    handleEdit(index, row) {
+      for (const key in this.paperList) {
+        if (this.paperList[key].id === row.id) {
+          this.$store.commit(
+            "setCurrentPaper",
+            JSON.parse(this.paperList[key].json)
+          );
+          this.$store.commit("setEditId", row.id);
+          break;
+        }
+      }
+      this.dialogVisible = true;
+    },
+    handleDelete(index, row) {
+      this.$store.dispatch("delPaper", row.id);
+    },
+    handleClose() {
+      this.$store.commit("setEditId", null);
+      this.$store.commit("resetPaper");
+      this.dialogVisible = false;
+    },
   },
   created() {
     this.$store.commit("setInPaper", false);
+    this.$store.commit("getPapers", {
+      index: 1,
+      size: 1000,
+    });
   },
 };
 </script>
@@ -153,10 +178,11 @@ export default {
 .qsbank {
   height: 100%;
   width: 100%;
+  overflow: hidden;
   border: 3px solid rgb(7, 115, 216);
 }
 .qsbank-north {
-  height: 30%;
+  height: 30vh;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
@@ -171,7 +197,7 @@ export default {
   border: 3px solid rgb(7, 115, 216);
 }
 .qsbank-south {
-  height: 70%;
+  height: 70vh;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }

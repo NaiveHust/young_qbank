@@ -1,3 +1,11 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 19:34:26
+ * @LastEditTime: 2021-07-07 08:52:44
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
   <!-- 填空题 -->
   <div class="fill">
@@ -104,6 +112,9 @@ export default {
     };
   },
   computed: {
+    editNew() {
+      return this.$store.state.qs.editNew;
+    },
     inPaper() {
       return this.$store.state.paper.inPaper;
     },
@@ -118,6 +129,8 @@ export default {
         return this.$store.state.paper.paperContent.Fill.topic[
           this.currentOrder - 1
         ];
+      } else if (this.editNew) {
+        return this.$store.state.qs.newTopic;
       } else {
         return this.$store.state.qs.qsBank[this.qsOrder].content;
       }

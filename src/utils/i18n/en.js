@@ -1,5 +1,13 @@
+/*
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 12:35:17
+ * @LastEditTime: 2021-07-06 19:42:19
+ * @LastEditors: 肖环宇
+ * @Description: 
+ */
+
 module.exports = {
-    
+
     login: {
         userName: 'username',
         pwd: 'password',
@@ -9,7 +17,7 @@ module.exports = {
         reqName: 'input username',
         reqPwd: 'input password',
         error0: 'Something wrong with your brain!',
-         success: 'Login failed!'
+        success: 'Login failed!'
     },
     paper: {
         paperName: 'Paper Name',
@@ -20,8 +28,8 @@ module.exports = {
         Single: 'Single',
         Multiple: 'Multiple',
         Truefalse: 'Truefalse',
-        Fill: 'Fill',     
+        Fill: 'Fill',
         Answer: 'Answer',
     }
-    
+
 }

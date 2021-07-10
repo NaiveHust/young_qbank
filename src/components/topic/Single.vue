@@ -1,3 +1,11 @@
+<!--
+ * @Author: 肖环宇
+ * @Date: 2021-06-29 19:32:15
+ * @LastEditTime: 2021-07-07 09:12:23
+ * @LastEditors: 肖环宇
+ * @Description: 
+-->
+
 <template>
   <!-- 单选题 -->
   <div class="single">
@@ -75,6 +83,7 @@
           v-model="singles.explain"
         >
         </el-input>
+        <!-- <el-button type="primary" @click="saveTopic()">保存</el-button> -->
       </div>
     </el-form>
   </div>
@@ -91,10 +100,14 @@ export default {
     inPaper() {
       return this.$store.state.paper.inPaper;
     },
+
+    editNew() {
+      return this.$store.state.qs.editNew;
+    },
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
-    qsOrder(){
+    qsOrder() {
       return this.$store.state.qs.qsOrder;
     },
     singles() {
@@ -102,12 +115,11 @@ export default {
         return this.$store.state.paper.paperContent.Single.topic[
           this.currentOrder - 1
         ];
+      } else if (this.editNew) {
+        return this.$store.state.qs.newTopic;
       } else {
         return this.$store.state.qs.qsBank[this.qsOrder].content;
       }
-    },
-    sContent() {
-      return this.$store.state.paper.sTem;
     },
   },
   methods: {
