@@ -1,14 +1,14 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-10 10:07:30
+ * @LastEditTime: 2021-07-10 21:15:58
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 
 <template>
-  <div class="qsbank">
-    <el-row class="qsbank-north">
+  <div class="ppbank">
+    <el-row class="ppbank-north">
       <!-- 菜单工具栏 -->
       <el-col :span="16">
         <div class="north-bar">
@@ -37,21 +37,11 @@
             </el-input>
           </div>
         </div>
-      </el-col>
-      <!-- 图表区 -->
-      <el-col :span="8">
-        <div class="north-chart"></div>
-      </el-col>
-    </el-row>
-
-    <el-row class="qsbank-south">
-      <!-- 显示列表 -->
-      <el-col :span="20">
         <div class="south-table">
           <el-table
             :data="paperList"
-            style="width: 100%; height: 60vh"
-            max-height="400"
+            style="width: 100%"
+            height="50vh"
             :default-sort="{ prop: 'name', order: 'descending' }"
           >
             <el-table-column
@@ -61,7 +51,13 @@
               :label="head.label"
               sortable
             >
+              <template #header v-if="head.chart">
+                <el-button plain @click="showChart(head.prop)">{{
+                  head.label
+                }}</el-button>
+              </template>
             </el-table-column>
+
             <el-table-column label="操作">
               <template #default="scope">
                 <el-button
@@ -81,7 +77,24 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-pagination
+            align="center"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 20]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="totalCount"
+          >
+          </el-pagination>
         </div>
+      </el-col>
+      <!-- 图表区 -->
+      <el-col :span="8">
+        <div id="north"></div>
+
+        <div id="south"></div>
       </el-col>
     </el-row>
 
@@ -109,28 +122,120 @@ export default {
   },
   data() {
     return {
-      tableHead: [
-        {
-          prop: "name",
-          label: "试卷名称",
-        },
-        {
-          prop: "course",
-          label: "所属课程",
-        },
-      ],
       viewType: "",
       dialogVisible: false,
       searchType: "",
       searchVal: "",
+      currentPage: 1,
+      pageSize: 5,
     };
   },
   computed: {
     paperList() {
       return this.$store.state.paper.paperList;
     },
+    tableHead() {
+      return this.$store.state.paper.tableHead.filter(
+        (item) => item.roles.indexOf(this.$store.state.userType) > -1
+      );
+    },
+    totalCount() {
+      return this.$store.state.paper.totalCount;
+    },
+     chartData(){
+      return this.$store.state.paper.chartData;
+    },
   },
   methods: {
+     drawPie() {
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = this.$echarts.init(document.getElementById("north"));
+      // 绘制图表
+      myChart.setOption({
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          top: "5%",
+          left: "center",
+        },
+        series: [
+          {
+           /*  name: "访问来源", */
+            type: "pie",
+            radius: ["40%", "70%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "40",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: this.chartData,
+          },
+        ],
+      });
+    },
+    drawBar() {
+      var myChart = this.$echarts.init(document.getElementById("south"));
+      myChart.setOption({
+        xAxis: {
+          type: "category",
+          
+         // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+         data:this.chartData.map(item=>
+           item.name
+         )
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+             data:this.chartData.map(item=>
+           item.value
+         ),
+            type: "bar",
+            showBackground: true,
+            backgroundStyle: {
+              color: "rgba(180, 180, 180, 0.2)",
+            },
+          },
+        ],
+      });
+    },
+    //每页条数改变时触发 选择一页显示多少行
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+      this.$store.dispatch("getPapers", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+    },
+    //当前页改变时触发 跳转其他页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.$store.dispatch("getPapers", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+    },
     exportPaper(row) {
       for (const key in this.paperList) {
         if (this.paperList[key].id === row.id) {
@@ -160,19 +265,33 @@ export default {
       this.$store.commit("resetPaper");
       this.dialogVisible = false;
     },
+   async showChart(prop){
+     if(prop ==='course'){
+       
+       await  this.$store.dispatch('getPNumByCs');
+     }
+     this.drawPie();
+     this.drawBar();
+     console.log('表数据',this.chartData);
+    },
+    
   },
   created() {
     this.$store.commit("setInPaper", false);
     this.$store.dispatch("getPapers", {
-      index: 1,
-      size: 1000,
+      index: this.currentPage,
+      size: this.pageSize,
     });
+    
     if (this.$store.state.userType === "teacher") {
       this.$store.dispatch("getTeaCourse");
     } else {
-      this.$store.dispatch("getCourses");
+      this.$store.dispatch("getCourses",{index:1,size:1000});
     }
   },
+  mounted(){
+    this.showChart('course');
+  }
 };
 </script>
 
@@ -180,19 +299,19 @@ export default {
 .el-input-group__prepend {
   width: 30%;
 }
-.qsbank {
+.ppbank {
   height: 100%;
   width: 100%;
   overflow: hidden;
   border: 3px solid rgb(7, 115, 216);
 }
-.qsbank-north {
-  height: 30vh;
+.ppbank-west {
+  height: 100%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
 .north-bar {
-  height: 100%;
+  height: 30%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
@@ -201,13 +320,13 @@ export default {
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
-.qsbank-south {
+.ppbank-south {
   height: 70vh;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
 .south-table {
-  height: 100%;
+  height: 70%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
@@ -218,6 +337,12 @@ export default {
 }
 .bar-search {
   width: 50%;
+  border: 3px solid rgb(7, 115, 216);
+}
+#north,
+#south {
+  height: 40vh;
+  width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
 </style>

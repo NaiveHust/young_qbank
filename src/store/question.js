@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:49:30
- * @LastEditTime: 2021-07-10 15:47:52
+ * @LastEditTime: 2021-07-10 21:02:05
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -174,22 +174,33 @@ const question = {
                 prop: "name",
                 label: "题目简称",
                 chart:false,
+                roles:['teacher','admin']
+            },
+            {
+                prop: "tid",
+                label: "命题人",
+                chart:false,
+                roles:['admin']
             },
             {
                 prop: "course",
                 label: "所属课程",
                 chart:true,
+                roles:['teacher','admin']
             },
             {
                 prop: "type",
                 label: "题型",
                 chart:true,
+                roles:['teacher','admin']
             },
             {
                 prop: "level",
                 label: "题目难度",
                 chart:true,
+                roles:['teacher','admin']
             },
+            
 
         ],
 
@@ -390,96 +401,7 @@ const question = {
         },
        
       
-        saveTopic(state, type) {
-            let topic = '';
-            if (state.editNew) {
-                console.log('新建的题目', state.newTopic);
-                topic = state.newTopic;
-            } else {
-                console.log('保存的题目.content', state.qsBank[state.qsOrder].content);
-                topic = state.qsBank[state.qsOrder].content;
-            }
-            let tempBody = {};
-            //题型的公共部分
-            tempBody.proDetail = JSON.stringify(topic);
-            tempBody.proDif = topic.level;
-            tempBody.proTea = rootStore.state.userInfo.id;
-            tempBody.proAns = topic.explain;
-            tempBody.proType = type;
-            tempBody.proClass = topic.course;
-            if (type === "Single") {
-                tempBody.proSimple = topic.question.substring(0, 8);
-            }
-            else if (type == "Multiple") {
-                tempBody.proSimple = topic.question.substring(0, 8);
-            }
-            else if (type == "Answer") {
-                tempBody.proSimple = topic.question.substring(0, 8);
-            }
-            else if (type == "Truefalse") {
-                tempBody.proSimple = topic.question.substring(0, 8);
-            }
-            else if (type == "Fill") {
-                if (topic.question.length > 0) {
-                    tempBody.proSimple = topic.question[0].head.substring(0, 8);
-                }
-                else {
-                    tempBody.proSimple = topic.explain.substring(0, 8);
-                }
-            }
-
-            console.log('body', tempBody);
-
-            //TODO 存储到服务器
-            //增
-            if (state.editNew) {
-                return new Promise(() => {
-                    qs.post('question/add', tempBody,
-                    ).then(res => {
-                        console.log('res', res);
-                        if (res.status == 200) {
-
-                            ElMessage.success({
-                                message: '保存成功',
-                                type: 'success'
-                            });
-                        }
-                        else {
-                            ElMessage.error({
-                                message: '保存失败',
-                                type: 'error'
-                            });
-                        }
-                    })
-                })
-
-            }
-            //改
-            else {
-                tempBody.proNo = state.qsBank[state.qsOrder].id;
-                return new Promise(() => {
-                    qs.post('question/update_by_id', tempBody,
-                    ).then(res => {
-                        console.log('res', res);
-                        if (res.data === 1) {
-
-                            ElMessage.success({
-                                message: '保存成功',
-                                type: 'success'
-                            });
-                        }
-                        else {
-                            ElMessage.error({
-                                message: '保存失败',
-                                type: 'error'
-                            });
-                        }
-                    })
-                })
-
-            }
-
-        },
+      
 
         undoTopic(state) {
             if (state.editNew) {
@@ -635,8 +557,16 @@ const question = {
                 console.log('qbank', context.state.qsBank);
             })
         },
+        //得到题目
         async  getPageQs({state}, data) {
-         return  qs.get(`question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`,).then(res => {
+            let url ='';
+            if(rootStore.state.userType ==='teacher'){
+                url = `question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`;
+            }
+            else{
+                url =`question/findByPage/${data.index}/${data.size}`
+            }
+           qs.get(url,).then(res => {
                 state.qsBank = [];
                 state.totalCount = res.data.totalCount;
                 for (const qs of res.data.list) {
@@ -645,6 +575,7 @@ const question = {
                             id: qs.proNo,
                             name: qs.proSimple,
                             course: qs.proClass,
+                            tid:qs.proTea,
                             type: qs.proType,
                             level: qs.proDif,
                             content: JSON.parse(qs.proDetail),
@@ -653,55 +584,117 @@ const question = {
             })
         },
         //课程
-        async getNumBycs({state}){
+        async getNumByCs({state}){
             state.chartData = [];
-            let courses = rootStore.state.cs.myCourses;
-            let id = rootStore.state.userInfo.id;
+            let courses = rootStore.state.userType ==='teacher'?
+            rootStore.state.cs.myCourses:
+            rootStore.state.cs.courseList;
+            
+            
+            let noreapts = [];
             for (const cs of courses) {
-                console.log('cs',cs);
-              await   qs.get(`question/findByCla/${cs.cName}/${id}/1/0`).then(res=>{
-                    if(res.data ===0){
-                        state.chartData.push({value: 0, name: cs.cName})
-                    }
-                    else{
-                        state.chartData.push({value: res.data.totalCount, name: cs.cName})
-                    }
-                })
+                if(noreapts.indexOf(cs.cName)<0){
+                    noreapts.push(cs.cName);
+                }
             }
+            console.log('norepeats',noreapts);
+            
+            let id = rootStore.state.userInfo.id;
+            if(rootStore.state.userType ==='teacher'){
+                for (const cs of noreapts) {
+               
+                    await   qs.get(`question/findByCla/${cs}/${id}/1/0`).then(res=>{
+                          if(res.data ===0){
+                              state.chartData.push({value: 0, name: cs})
+                          }
+                          else{
+                              state.chartData.push({value: res.data.totalCount, name: cs})
+                          }
+                      })
+                  }
+            }
+            else{
+                for (const cs of noreapts) {
+               
+                    await   qs.get(`question/findByClaAdmin/${cs}/1/0`).then(res=>{
+                          if(res.data ===0){
+                              state.chartData.push({value: 0, name: cs})
+                          }
+                          else{
+                              state.chartData.push({value: res.data.totalCount, name: cs})
+                          }
+                      })
+                  }
+            }
+         
         },
         //题型
         async getNumByTp({state}){
             state.chartData = [];
             let id = rootStore.state.userInfo.id;
             let types = state.qsType;
-            for (const tp of types) {
-                console.log('tp',tp);
-              await   qs.get(`question/findByType/${tp.name}/${id}/1/0`).then(res=>{
-                    if(res.data ===0){
-                        state.chartData.push({value: 0, name: tp.label})
-                    }
-                    else{
-                        state.chartData.push({value: res.data.totalCount, name: tp.label})
-                    }
-                })
+            
+            if(rootStore.state.userType ==='teacher'){
+                for (const tp of types) {
+                 
+                  await   qs.get(`question/findByType/${tp.name}/${id}/1/0`).then(res=>{
+                        if(res.data ===0){
+                            state.chartData.push({value: 0, name: tp.label})
+                        }
+                        else{
+                            state.chartData.push({value: res.data.totalCount, name: tp.label})
+                        }
+                    })
+                }
             }
+            else{
+                for (const tp of types) {
+                    
+                  await   qs.get(`question/findByTypeAdmin/${tp.name}/1/0`).then(res=>{
+                        if(res.data ===0){
+                            state.chartData.push({value: 0, name: tp.label})
+                        }
+                        else{
+                            state.chartData.push({value: res.data.totalCount, name: tp.label})
+                        }
+                    })
+                }
+            }
+            
+           
+
         },
         //难度
         async getNumByLv({state}){
             state.chartData = [];
             let id = rootStore.state.userInfo.id;
             let levels = state.qsLv;
-            for (const lv of levels) {
-                console.log('lv',lv);
-              await   qs.get(`question/findByDif/${lv.name}/${id}/1/0`).then(res=>{
-                    if(res.data ===0){
-                        state.chartData.push({value: 0, name: lv.label})
-                    }
-                    else{
-                        state.chartData.push({value: res.data.totalCount, name: lv.label})
-                    }
-                })
+            if(rootStore.state.userType ==='teacher'){
+                for (const lv of levels) {
+                    console.log('lv',lv);
+                  await   qs.get(`question/findByDif/${lv.name}/${id}/1/0`).then(res=>{
+                        if(res.data ===0){
+                            state.chartData.push({value: 0, name: lv.label})
+                        }
+                        else{
+                            state.chartData.push({value: res.data.totalCount, name: lv.label})
+                        }
+                    })
+                }
+            }else{
+                for (const lv of levels) {
+                    console.log('lv',lv);
+                  await   qs.get(`question/findByDifAdmin/${lv.name}/1/0`).then(res=>{
+                        if(res.data ===0){
+                            state.chartData.push({value: 0, name: lv.label})
+                        }
+                        else{
+                            state.chartData.push({value: res.data.totalCount, name: lv.label})
+                        }
+                    })
+                }
             }
+          
         },
 
     },

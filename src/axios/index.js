@@ -1,12 +1,12 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-06 09:58:34
- * @LastEditTime: 2021-07-08 20:25:00
+ * @LastEditTime: 2021-07-10 19:08:53
  * @LastEditors: 肖环宇
  * @Description: 
  */
 import axios from "axios";
-import store from '../store'
+
 
 const config = {
     baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:9000/api/v1' : 'http://localhost:9000/api/v1',
@@ -29,8 +29,8 @@ const qs = axios.create(qsConfig);
 
 instance.interceptors.request.use(config => {
 
-    console.log(store.state.userInfo);
-    console.log('config', config);
+   //console.log(store.state.userInfo);
+   //console.log('config', config);
     return config;
 })
 

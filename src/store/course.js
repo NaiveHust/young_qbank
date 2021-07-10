@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:59:40
- * @LastEditTime: 2021-07-10 09:32:42
+ * @LastEditTime: 2021-07-10 20:24:00
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -29,6 +29,7 @@ const course = {
         courseList: [],
         //已加入的课程
         myCourses: [],
+        totalCount:0,
 
     },
 
@@ -40,11 +41,11 @@ const course = {
 
     actions: {
        
-        //得到所有课程
-        async getCourses(context) {
-
-            return instance.get('class/findByPage/1/1000').then(res => {
+        //分页得到所有课程
+        async getCourses(context,data) {
+            return instance.get(`class/findByPage/${data.index}/${data.size}`).then(res => {
                 context.state.courseList = [];
+                context.state.totalCount = res.data.totalCount;
                 for (const course of res.data.list) {
                     context.state.courseList.push({
                         id: course.id,
@@ -58,7 +59,7 @@ const course = {
         },
         //学生得到已选课程
         async getChosen(context) {
-            return instance.get(`class/findClaByStu/${rootStore.state.userInfo.id}`).then(res => {
+            return instance.get(`class/findClaByStu/${rootStore.state.userInfo.id}/1/1000`).then(res => {
                 context.state.myCourses = [];
                 for (const course of res.data.list) {
                     context.state.myCourses.push({
@@ -94,13 +95,14 @@ const course = {
             });
 
             await context.dispatch('getChosen');
-            await context.dispatch('getCourses');
+            await context.dispatch('getCourses',{index:1,size:1000});
 
         },
         //老师得到自己创建的课程
         async getTeaCourse(context) {
-            return instance.get(`class/findClaByTea/${rootStore.state.userInfo.id}`).then(res => {
+            return instance.get(`class/findClaByTea/${rootStore.state.userInfo.id}/1/1000`).then(res => {
                 context.state.myCourses = [];
+                context.state.totalCount = res.data.totalCount;
                 for (const course of res.data.list) {
                     context.state.myCourses.push({
                         id: course.id,

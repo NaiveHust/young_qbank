@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-08 20:03:34
+ * @LastEditTime: 2021-07-10 18:16:18
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -31,6 +31,18 @@
               ></el-input>
             </el-form-item>
 
+            <el-select
+              v-model="paperInfo.course"
+              placeholder="所属课程"
+              style="width: 15%"
+            >
+              <el-option
+                v-for="(course, index) in courses"
+                :key="index"
+                :label="course.cName"
+                :value="course.cName"
+              ></el-option>
+            </el-select>
             <!-- <el-form-item>
             <el-button type="primary" @click="onSubmit">立即创建</el-button>
             <el-button>取消</el-button>
@@ -254,11 +266,19 @@ export default {
     paperContent() {
       return this.$store.state.paper.paperContent;
     },
+     courses(){
+      return this.$store.state.cs.myCourses;
+    },
   },
   created() {
     this.div = document.createElement("div");
     document.body.appendChild(this.div);
     this.$store.commit("setInPaper", true);
+      if (this.$store.state.userType === "teacher") {
+      this.$store.dispatch("getTeaCourse");
+    } else {
+      this.$store.dispatch("getCourses");
+    }
     console.log("ExamPaper created!");
   },
   methods: {

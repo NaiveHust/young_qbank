@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:00:43
- * @LastEditTime: 2021-07-10 16:06:01
+ * @LastEditTime: 2021-07-10 21:15:44
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -13,18 +13,6 @@
         <el-row style="width: 100%; height: 30%">
           <!-- 菜单工具栏 -->
           <div class="north-bar">
-            <div>
-              题型
-              <el-select v-model="viewType" clearable placeholder="请选择">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                >
-                </el-option>
-              </el-select>
-            </div>
 
             <div style="margin-top: 15px">
               <el-select
@@ -83,6 +71,7 @@
                   <el-button plain @click="showChart(head.prop)">{{head.label}}</el-button>
                 </template>
               </el-table-column>
+              
               <el-table-column label="操作">
                 <template #default="scope">
                   <el-button
@@ -200,7 +189,9 @@ export default {
   },
   computed: {
     tableHead() {
-      return this.$store.state.qs.tableHead;
+      return this.$store.state.qs.tableHead.filter(
+        (item) => item.roles.indexOf(this.$store.state.userType) > -1
+      );
     },
     qsBank() {
       return this.$store.state.qs.qsBank;
@@ -362,7 +353,7 @@ export default {
    async showChart(prop) {
      console.log(prop);
      if(prop ==='course'){
-       await  this.$store.dispatch('getNumBycs');
+       await  this.$store.dispatch('getNumByCs');
      }
      else if(prop ==='type'){
        await  this.$store.dispatch('getNumByTp');
@@ -376,8 +367,7 @@ export default {
     },
   },
   mounted() {
-    this.drawPie();
-    this.drawBar();
+    this.showChart('course');
   },
   created() {
     //题目编辑模式从试卷切换到题库
@@ -391,8 +381,12 @@ export default {
     if (this.$store.state.userType === "teacher") {
       this.$store.dispatch("getTeaCourse");
     } else {
-      this.$store.dispatch("getCourses");
+      this.$store.dispatch("getCourses",{index:1,size:10000});
     }
+
+    
+
+    
   },
 };
 </script>
