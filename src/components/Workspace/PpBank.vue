@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-09 20:22:35
+ * @LastEditTime: 2021-07-10 10:07:30
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -167,6 +167,11 @@ export default {
       index: 1,
       size: 1000,
     });
+    if (this.$store.state.userType === "teacher") {
+      this.$store.dispatch("getTeaCourse");
+    } else {
+      this.$store.dispatch("getCourses");
+    }
   },
 };
 </script>

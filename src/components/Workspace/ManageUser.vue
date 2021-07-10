@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 20:41:38
- * @LastEditTime: 2021-07-09 22:01:50
+ * @LastEditTime: 2021-07-10 10:31:13
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -82,13 +82,10 @@
         </div>
       </el-col>
       <!-- 图表区 -->
-      <el-col :span="8">
-        <div class="north-chart">
-        <div  id="north"></div>
-        </div>
-        <div class="south-chart">
+      <el-col :span="8">   
+        <div  id="north"></div>     
         <div  id="south"></div>
-        </div>
+        
       </el-col>
     </el-row>
   </div>

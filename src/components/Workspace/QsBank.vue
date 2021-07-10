@@ -1,15 +1,15 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:00:43
- * @LastEditTime: 2021-07-09 21:00:34
+ * @LastEditTime: 2021-07-10 16:06:01
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 
 <template>
   <div class="qsbank">
-    <el-row class="qsbank-north">
-      <el-col :span="24">
+    <el-row class="qsbank-west">
+      <el-col :span="16">
         <el-row style="width: 100%; height: 30%">
           <!-- 菜单工具栏 -->
           <div class="north-bar">
@@ -79,6 +79,9 @@
                 :label="head.label"
                 sortable
               >
+                <template #header v-if="head.chart">
+                  <el-button plain @click="showChart(head.prop)">{{head.label}}</el-button>
+                </template>
               </el-table-column>
               <el-table-column label="操作">
                 <template #default="scope">
@@ -109,6 +112,12 @@
             </el-pagination>
           </div>
         </el-row>
+      </el-col>
+      <!-- 图表区 -->
+      <el-col :span="8">
+        <div id="north"></div>
+
+        <div id="south"></div>
       </el-col>
     </el-row>
 
@@ -205,8 +214,81 @@ export default {
     loading() {
       return this.$store.state.qs.loading;
     },
+    chartData(){
+      return this.$store.state.qs.chartData;
+    },
   },
   methods: {
+    drawPie() {
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = this.$echarts.init(document.getElementById("north"));
+      // 绘制图表
+      myChart.setOption({
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          top: "5%",
+          left: "center",
+        },
+        series: [
+          {
+           /*  name: "访问来源", */
+            type: "pie",
+            radius: ["40%", "70%"],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "40",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: this.chartData,
+          },
+        ],
+      });
+    },
+    drawBar() {
+      var myChart = this.$echarts.init(document.getElementById("south"));
+      myChart.setOption({
+        xAxis: {
+          type: "category",
+          
+         // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+         data:this.chartData.map(item=>
+           item.name
+         )
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+             data:this.chartData.map(item=>
+           item.value
+         ),
+            type: "bar",
+            showBackground: true,
+            backgroundStyle: {
+              color: "rgba(180, 180, 180, 0.2)",
+            },
+          },
+        ],
+      });
+    },
     handleEdit(index, row) {
       this.$store.commit("setTempTopic");
       this.$store.commit("setEditNew", false);
@@ -276,8 +358,27 @@ export default {
         size: this.pageSize,
       });
     },
+    //数据可视化
+   async showChart(prop) {
+     console.log(prop);
+     if(prop ==='course'){
+       await  this.$store.dispatch('getNumBycs');
+     }
+     else if(prop ==='type'){
+       await  this.$store.dispatch('getNumByTp');
+     }
+     else if(prop==='level'){
+        await  this.$store.dispatch('getNumByLv');
+     }
+     this.drawPie();
+     this.drawBar();
+     console.log('表数据',this.chartData);
+    },
   },
-
+  mounted() {
+    this.drawPie();
+    this.drawBar();
+  },
   created() {
     //题目编辑模式从试卷切换到题库
     this.$store.commit("setInPaper", false);
@@ -287,6 +388,11 @@ export default {
       index: this.currentPage,
       size: this.pageSize,
     });
+    if (this.$store.state.userType === "teacher") {
+      this.$store.dispatch("getTeaCourse");
+    } else {
+      this.$store.dispatch("getCourses");
+    }
   },
 };
 </script>
@@ -301,8 +407,8 @@ export default {
   overflow: hidden;
   border: 3px solid rgb(7, 115, 216);
 }
-.qsbank-north {
-  height: 30%;
+.qsbank-west {
+  height: 100%;
   width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
@@ -333,6 +439,12 @@ export default {
 }
 .bar-search {
   width: 50%;
+  border: 3px solid rgb(7, 115, 216);
+}
+#north,
+#south {
+  height: 40vh;
+  width: 100%;
   border: 3px solid rgb(7, 115, 216);
 }
 </style>

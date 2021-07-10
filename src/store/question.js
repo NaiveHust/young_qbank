@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:49:30
- * @LastEditTime: 2021-07-10 09:28:05
+ * @LastEditTime: 2021-07-10 15:47:52
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -173,21 +173,46 @@ const question = {
             {
                 prop: "name",
                 label: "题目简称",
+                chart:false,
             },
             {
                 prop: "course",
                 label: "所属课程",
+                chart:true,
             },
             {
                 prop: "type",
                 label: "题型",
+                chart:true,
             },
             {
                 prop: "level",
                 label: "题目难度",
+                chart:true,
             },
 
         ],
+
+        /*  
+        pie
+        data: [
+              { value: 10, name: "线性代数" },
+              { value: 12, name: "复变函数" },
+              { value: 13, name: "微积分" },
+              { value: 14, name: "概率论" },
+              
+            ], */
+             /* 
+            bar
+            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+             data: [120, 200, 150, 80, 70, 110, 130],
+            */
+            //题目类型，题目难度，  |题目课程
+            chartData:[],
+        
+
+           
+          
         //保存修改之前的题目，用于取消修改
         tempTopic: null,
         //新建题目
@@ -198,6 +223,43 @@ const question = {
         loading: false,
         //总题数
         totalCount: 0,
+        qsType:[
+            {
+                name:'Single',
+                label:'单选题'
+            },
+            {
+                name:'Multiple',
+                label:'多选题'
+            },
+            {
+                name:'Fill',
+                label:'填空题'
+            },
+            {
+                name:'Answer',
+                label:'简答题'
+            },
+            {
+                name:'Truefalse',
+                label:'判断题'
+            },
+            
+        ],
+        qsLv:[
+        {
+            name:'易',
+            label:'易'
+        },
+        {
+            name:'中',
+            label:'中'
+        },
+        {
+            name:'难',
+            label:'难'
+        },
+    ],
     },
 
     mutations: {
@@ -589,6 +651,57 @@ const question = {
                         })
                 }
             })
+        },
+        //课程
+        async getNumBycs({state}){
+            state.chartData = [];
+            let courses = rootStore.state.cs.myCourses;
+            let id = rootStore.state.userInfo.id;
+            for (const cs of courses) {
+                console.log('cs',cs);
+              await   qs.get(`question/findByCla/${cs.cName}/${id}/1/0`).then(res=>{
+                    if(res.data ===0){
+                        state.chartData.push({value: 0, name: cs.cName})
+                    }
+                    else{
+                        state.chartData.push({value: res.data.totalCount, name: cs.cName})
+                    }
+                })
+            }
+        },
+        //题型
+        async getNumByTp({state}){
+            state.chartData = [];
+            let id = rootStore.state.userInfo.id;
+            let types = state.qsType;
+            for (const tp of types) {
+                console.log('tp',tp);
+              await   qs.get(`question/findByType/${tp.name}/${id}/1/0`).then(res=>{
+                    if(res.data ===0){
+                        state.chartData.push({value: 0, name: tp.label})
+                    }
+                    else{
+                        state.chartData.push({value: res.data.totalCount, name: tp.label})
+                    }
+                })
+            }
+        },
+        //难度
+        async getNumByLv({state}){
+            state.chartData = [];
+            let id = rootStore.state.userInfo.id;
+            let levels = state.qsLv;
+            for (const lv of levels) {
+                console.log('lv',lv);
+              await   qs.get(`question/findByDif/${lv.name}/${id}/1/0`).then(res=>{
+                    if(res.data ===0){
+                        state.chartData.push({value: 0, name: lv.label})
+                    }
+                    else{
+                        state.chartData.push({value: res.data.totalCount, name: lv.label})
+                    }
+                })
+            }
         },
 
     },
