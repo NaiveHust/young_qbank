@@ -132,6 +132,6 @@ export default {
 .tf {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

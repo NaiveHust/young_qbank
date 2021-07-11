@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-07 20:13:57
+ * @LastEditTime: 2021-07-11 11:44:09
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -24,8 +24,12 @@
     <el-col :xs="20" :sm="20" :md="20" :lg="14" :xl="14">
       <div class="header-right">
         <!-- 切换语言 -->
-        <el-dropdown split-button type="primary" @command="switchLanguage">
-          {{ $t("login.lang") }}
+        <el-dropdown  @command="switchLanguage">
+          
+
+        <el-button  class='lan-button'>
+    {{ $t("login.lang") }}<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
 
           <template #dropdown>
             <el-dropdown-menu>
@@ -33,6 +37,7 @@
               <el-dropdown-item command="en">English</el-dropdown-item>
             </el-dropdown-menu>
           </template>
+
         </el-dropdown>
 
         <!-- 消息中心 -->
@@ -136,13 +141,17 @@ export default {
   /*鼠标悬浮样式*/
   cursor: pointer;
   height: 100%;
-  border: 3px solid rgb(7, 115, 216);
+}
+
+.lan-button{
+  color: rgba(160, 33, 219, 1);
+  background: rgba(160, 33, 219, 0.1);
 }
 .logo {
   float: left;
   height: 100%;
   line-height: 350%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .header-right {
   height: 100%;
@@ -151,14 +160,14 @@ export default {
   align-items: center;
   justify-content: flex-end;
   flex-wrap: nowrap;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .header-left {
   height: 100%;
   width: 100%;
   display: flex;
   flex-wrap: nowrap;
-  border: 3px solid rgb(7, 115, 216);
+ 
 }
 .btn-fullscreen {
   transform: rotate(45deg);
@@ -189,7 +198,7 @@ export default {
   color: #fff;
 }
 .user-name {
-  border: 3px solid rgb(7, 115, 216);
+  border: 3px 
 }
 .user-avator {
   margin-left: 20px;
@@ -201,7 +210,7 @@ export default {
   border-radius: 50%;
 }
 .el-dropdown-link {
-  border: 3px solid rgb(7, 115, 216);
+  
   color: #fff;
   cursor: pointer;
 }

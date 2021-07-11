@@ -225,40 +225,40 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .teacourse-north {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .teacourse-south {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-table {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

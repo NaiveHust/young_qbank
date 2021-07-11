@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:27:09
- * @LastEditTime: 2021-07-10 19:33:33
+ * @LastEditTime: 2021-07-11 11:53:49
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -154,47 +154,47 @@ export default {
 .mycourse {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .mycourse-north {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 20%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .west-header {
   height: 10%;
   width: 100%;
   display: flex;
-  border: 3px solid rgb(153, 12, 209);
+  
 }
 .west-course {
   height: 90%;
   width: 100%;
   display: flex;
-  border: 3px solid rgb(153, 12, 209);
+  
 }
 .south-table {
   height: 80%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

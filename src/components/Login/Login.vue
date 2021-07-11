@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-11 11:05:31
+ * @LastEditTime: 2021-07-11 14:29:14
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -93,7 +93,7 @@
               </el-input>
             </el-form-item>
 
-            <div style="width: 100%">
+            <div style="width: 80%;margin: 10%">
               <el-button type="primary" @click="submitForm()">
                 {{ $t("login.login") }}
               </el-button>
@@ -241,7 +241,7 @@ export default {
               JSON.parse(localStorage.getItem("young-userInfo"))
             );
             this.$message.success("登录成功");
-            this.$router.push("/home");
+            this.$router.push("/welcome");
           }
         })
         .catch((err) => {
@@ -278,6 +278,12 @@ export default {
   padding: 2% 10%;
 }
 
+
+.lan-button{
+  color: rgba(160, 33, 219, 1);
+  background: rgba(160, 33, 219, 0.1);
+}
+
 .login-mid button {
   width: 100%;
   height: 100%;
@@ -298,7 +304,13 @@ export default {
   height: 60%;
   margin: 10% 10%;
   
+  
 }
+.login-mid .el-form-item{
+  margin: 10%;
+  
+}
+
 .login-down {
   height: 10%;
 }

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-06 19:42:42
+ * @LastEditTime: 2021-07-11 11:38:47
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -20,7 +20,7 @@ export default {
 <style>
 #app {
   background-size: auto;
-  font-family: Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 
   color: #2c3e50;
 }

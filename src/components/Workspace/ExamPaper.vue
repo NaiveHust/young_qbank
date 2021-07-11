@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-10 18:16:18
+ * @LastEditTime: 2021-07-11 13:39:07
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -31,18 +31,21 @@
               ></el-input>
             </el-form-item>
 
-            <el-select
-              v-model="paperInfo.course"
-              placeholder="所属课程"
-              style="width: 15%"
-            >
-              <el-option
-                v-for="(course, index) in courses"
-                :key="index"
-                :label="course.cName"
-                :value="course.cName"
-              ></el-option>
-            </el-select>
+            <el-form-item>
+              <el-select
+                v-model="paperInfo.course"
+                placeholder="所属课程"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="(course, index) in courses"
+                  :key="index"
+                  :label="course.cName"
+                  :value="course.cName"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+
             <!-- <el-form-item>
             <el-button type="primary" @click="onSubmit">立即创建</el-button>
             <el-button>取消</el-button>
@@ -76,7 +79,7 @@
             <el-row>
               <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
                 <!-- 在dialog中增加题型 -->
-                <el-scrollbar class="type-view">
+                <div class="type-view">
                   <el-form-item
                     v-for="type in typeList"
                     :label="$i18n.messages[$i18n.locale].topic[type.name]"
@@ -101,28 +104,23 @@
                       <template #prepend>分值:</template>
                     </el-input>
 
-                    <el-button @click.prevent="deleteType(type)"
-                      >删除</el-button
+                    <el-button 
+                    style="float:right"
+                    class="el-icon-delete"
+                    @click.prevent="deleteType(type)"
+                      ></el-button
                     >
                   </el-form-item>
-                </el-scrollbar>
+                </div>
               </el-col>
 
               <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
                 <div class="dialog-right">
-                  <el-scrollbar
-                    style="
-                      height: 40vh;
-                      display: flex;
-                      flex-direction: column;
-                      align-items: center;
-                      justify-content: center;
-                    "
-                  >
+                  
                     <!-- value,name,index -->
                     <el-button
-                      type="primary"
-                      style="width: 80%; margin-bottom: 5%"
+                     
+                      round
                       v-for="(value, name, index) in $i18n.messages[
                         $i18n.locale
                       ].topic"
@@ -131,7 +129,7 @@
                     >
                       {{ "添加" }}{{ value }}
                     </el-button>
-                  </el-scrollbar>
+                  
                 </div>
               </el-col>
             </el-row>
@@ -158,12 +156,7 @@
                 class="item"
                 v-for="type in typeListCopy"
                 :key="type.index"
-                style="
-                  width: 90%;
-                  display: flex;
-                  flex-direction: column;
-                  border: 3px solid rgb(7, 115, 216);
-                "
+                style="width: 90%; display: flex; flex-direction: column"
                 draggable="true"
                 @dragstart="handleDragStart($event, type)"
                 @dragover.prevent="handleDragOver($event, type)"
@@ -186,7 +179,7 @@
                 <li
                   v-for="(topic, index) in paperContent[type.name].topic"
                   :key="index"
-                  style="height: 5vh; border: 3px solid rgb(167, 15, 98)"
+                  style="height: 5vh"
                   @click="editTopic(type.name, topic.order)"
                 >
                   第{{ topic.order }}题
@@ -266,7 +259,7 @@ export default {
     paperContent() {
       return this.$store.state.paper.paperContent;
     },
-     courses(){
+    courses() {
       return this.$store.state.cs.myCourses;
     },
   },
@@ -274,7 +267,7 @@ export default {
     this.div = document.createElement("div");
     document.body.appendChild(this.div);
     this.$store.commit("setInPaper", true);
-      if (this.$store.state.userType === "teacher") {
+    if (this.$store.state.userType === "teacher") {
       this.$store.dispatch("getTeaCourse");
     } else {
       this.$store.dispatch("getCourses");
@@ -367,7 +360,6 @@ export default {
   height: 100%;
   display: flex;
   flex-wrap: nowrap;
-  border: 3px solid rgb(7, 115, 216);
 }
 .paper-bar {
   width: 100%;
@@ -376,7 +368,6 @@ export default {
   align-items: center;
   justify-content: space-around;
   flex-wrap: nowrap;
-  border: 3px solid rgb(7, 115, 216);
 }
 
 .paper-bar button {
@@ -385,13 +376,14 @@ export default {
 }
 .paper-outline-view {
   width: 100%;
-  height: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  height: 95%;
+  
+  background: rgb(31, 138, 180,0.2);
+  margin: 2% 0;
 }
 .paper-edit {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(167, 15, 98);
 }
 .el-form-item {
   width: 20%;
@@ -402,33 +394,58 @@ export default {
 }
 
 .type-view {
-  border: 3px solid rgb(7, 115, 216);
-  height: 55vh;
-  width: 100%;
+  height: 90%;
+  width: 90%;
+  margin: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+   border:  2px ridge rgb(62, 130, 185, 0.5);
+  border-radius: 1rem;
 }
 
 .dialog-form {
-  height: 90%;
+  height: 100%;
   width: 100%;
-  border: 3px solid rgb(212, 199, 14);
+  border: 3px solid rgb(62, 130, 185, 0.5);
+  border-radius: 1rem;
 }
 .dialog-footer {
   height: 10%;
-  border: 3px solid rgb(7, 115, 216);
 }
 .dialog-right {
-  height: 100%;
-  width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
+  height: 50vh;
+  width: 90%;
+  margin: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border:  2px ridge rgb(62, 130, 185, 0.5);
+  border-radius: 1rem;
+}
+.dialog-right .el-button{
+  width: 60%;
+  width: 80%; 
+  margin: 2% 0;
+  
+  color: rgb(36, 3, 51);
+  background: rgba(21, 103, 197, 0.2);
 }
 .dialog-left-one {
   display: flex;
-  flex-wrap: nowrap;
+  width: 100%; 
+  flex-direction: row;
   justify-content: space-between;
 }
 
 .type-view .el-form-item {
-  width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
+  display: flex;
+  width: 100%; 
+  color: rgba(160, 33, 219, 1);
+  background: rgba(27, 28, 109, 0.1);
 }
 </style>

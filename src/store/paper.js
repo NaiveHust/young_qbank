@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-01 19:40:10
- * @LastEditTime: 2021-07-10 21:11:54
+ * @LastEditTime: 2021-07-11 15:25:55
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -525,9 +525,7 @@ const exampaper = {
             let id = rootStore.state.userInfo.id;
 
             if(rootStore.state.userType==='teacher'){
-                for (const cs of noreapts) {
-                
-                
+                for (const cs of noreapts) {   
                     await   pp.get(`paper/findByClaAndTea/${cs}/${id}/1/0`).then(res=>{
                           if(res.data ===0){
                               state.chartData.push({value: 0, name: cs})

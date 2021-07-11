@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:34:26
- * @LastEditTime: 2021-07-10 09:59:26
+ * @LastEditTime: 2021-07-11 11:52:21
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -189,12 +189,12 @@ export default {
 .fill {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .fill-form {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(216, 7, 52);
+  
 }
 .fill-one {
   width: 95%;
@@ -204,16 +204,16 @@ export default {
   flex-wrap: nowrap;
   flex-direction: row;
   align-items: center;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .fill-info {
   width: 100%;
   height: 20vh;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .fill-ones {
   width: 100%;
   height: 50vh;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

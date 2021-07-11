@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:32:15
- * @LastEditTime: 2021-07-10 09:55:56
+ * @LastEditTime: 2021-07-11 11:52:47
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -173,12 +173,12 @@ export default {
 .single {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .single-form {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(216, 7, 52);
+  
   display: flex;
   justify-content: center;
 }
@@ -188,12 +188,12 @@ export default {
   margin-bottom: 1vh;
   display: flex;
   flex-wrap: nowrap;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .single-info {
   width: 100%;
   height: 10%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .single-ones {
   width: 100%;
