@@ -35,11 +35,11 @@ var PaperCreator = /** @class */ (function () {
                             alignment: docx_1.AlignmentType.CENTER
                         }),
                         new docx_1.Paragraph({
-                            text: "满分：" + paperObj.Info.score + "考试时长：" + paperObj.Info.duration,
+                            text: "满分：" + paperObj.Info.score + " 分  考试时长：" + paperObj.Info.duration + " 分钟",
                             alignment: docx_1.AlignmentType.CENTER
                         }),
                         new docx_1.Paragraph({
-                            text: "姓名：________" + "班级：__________" + "学号：__________",
+                            text: "姓名：________" + "  班级：__________" + "  学号：__________",
                             alignment: docx_1.AlignmentType.CENTER
                         }),
                         new docx_1.Paragraph({
@@ -58,7 +58,7 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + " (" + topic.score + "分)",
                             heading: docx_1.HeadingLevel.HEADING_2
                         }));
                         // 每个单选题的选项
@@ -94,7 +94,7 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + " (" + topic.score + "分)",
                             heading: docx_1.HeadingLevel.HEADING_2
                         }));
                         // 每个多选题的选项
@@ -130,7 +130,7 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + " (" + topic.score + "分)",
                             heading: docx_1.HeadingLevel.HEADING_2
                         }));
                         return arr;
@@ -156,7 +156,7 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++number + " \u9898 ",
+                            text: "\u7B2C " + ++number + " \u9898 " + " (" + topic.score + "分)",
                             heading: docx_1.HeadingLevel.HEADING_2
                         }));
                         // 每个填空题的每一空
@@ -191,7 +191,7 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + "\n",
+                            text: "\u7B2C " + ++number + " \u9898 " + topic.question + " (" + topic.score + "分)",
                             heading: docx_1.HeadingLevel.HEADING_2
                         }));
                         // 每个简答题的每一问
@@ -200,6 +200,10 @@ var PaperCreator = /** @class */ (function () {
                             var array = [];
                             array.push(new docx_1.Paragraph({
                                 text: s.content
+                            }));
+                            // 一题简单题的每一小问空一行
+                            array.push(new docx_1.Paragraph({
+                                text: ""
                             }));
                             return array;
                         })
@@ -229,19 +233,12 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++numberAnswer + " \u9898 \u7B54\u6848\uFF1A" + topic.answer + "解析：" + topic.explain,
+                            text: "\u7B2C " + ++numberAnswer + " \u9898",
                             heading: docx_1.HeadingLevel.HEADING_2
                         }));
-                        // 每个单选题的选项
-                        arr.push.apply(arr, topic.choice
-                            .map(function (c) {
-                            var array = [];
-                            array.push(new docx_1.Paragraph({
-                                text: c.name + ". " + c.content
-                            }));
-                            return array;
-                        })
-                            .reduce(function (prev, curr) { return prev.concat(curr); }, []));
+                        arr.push(new docx_1.Paragraph({
+                            text: "答案：" + topic.answer + " 解析：" + topic.explain
+                        }));
                         return arr;
                     })
                         .reduce(function (prev, curr) { return prev.concat(curr); }, []), [
@@ -265,8 +262,11 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++numberAnswer + " \u9898 " + topic.question + "\n",
+                            text: "\u7B2C " + ++numberAnswer + " \u9898 ",
                             heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "答案："
                         }));
                         // 每个多选题的选项
                         arr.push.apply(arr, topic.answer
@@ -304,8 +304,11 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++numberAnswer + " \u9898 \u7B54\u6848\uFF1A" + topic.answer + "解析：" + topic.explain,
+                            text: "\u7B2C " + ++numberAnswer + " \u9898",
                             heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "答案：" + topic.answer + " 解析：" + topic.explain
                         }));
                         return arr;
                     })
@@ -332,6 +335,9 @@ var PaperCreator = /** @class */ (function () {
                         arr.push(new docx_1.Paragraph({
                             text: "\u7B2C " + ++numberAnswer + " \u9898 ",
                             heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "\u7B54\u6848\uFF1A"
                         }));
                         // 每个填空题的每一空
                         arr.push.apply(arr, topic.question
@@ -368,15 +374,18 @@ var PaperCreator = /** @class */ (function () {
                             text: " "
                         }));
                         arr.push(new docx_1.Paragraph({
-                            text: "\u7B2C " + ++numberAnswer + " \u9898 " + topic.question + "\n",
+                            text: "\u7B2C " + ++numberAnswer + " \u9898 ",
                             heading: docx_1.HeadingLevel.HEADING_2
+                        }));
+                        arr.push(new docx_1.Paragraph({
+                            text: "答案："
                         }));
                         // 每个简答题的每一问
                         arr.push.apply(arr, topic.subQ
                             .map(function (s) {
                             var array = [];
                             array.push(new docx_1.Paragraph({
-                                text: "答案" + s.answer
+                                text: s.answer
                             }));
                             return array;
                         })

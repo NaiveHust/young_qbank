@@ -16,10 +16,10 @@ export const jsonToPaper = (jsonString) => {
   const paperCreator = new PaperCreator();
   const paper = paperCreator.create(jsonString)
 
-
   Packer.toBlob(paper).then(blob => {
-    console.log(blob);
-    saveAs(blob, "paper.docx");
+    console.log(paper);
+    let paperObj = JSON.parse(jsonString)
+    saveAs(blob, paperObj.Info.name + ".docx");
     console.log("Document created successfully");
   });
 

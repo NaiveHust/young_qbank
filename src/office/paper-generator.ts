@@ -26,11 +26,11 @@ export class PaperCreator {
               alignment: AlignmentType.CENTER,
             }),
             new Paragraph({
-              text: "满分：" + paperObj.Info.score + "考试时长：" + paperObj.Info.duration,
+              text: "满分：" + paperObj.Info.score + " 分  考试时长：" + paperObj.Info.duration + " 分钟",
               alignment: AlignmentType.CENTER,
             }),
             new Paragraph({
-              text: "姓名：________" + "班级：__________" + "学号：__________",
+              text: "姓名：________" + "  班级：__________" + "  学号：__________",
               alignment: AlignmentType.CENTER,
             }),
             new Paragraph({
@@ -51,7 +51,7 @@ export class PaperCreator {
                 );
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++number} 题 ` + topic.question + "\n",
+                    text: `第 ${++number} 题 ` + topic.question + " (" + topic.score + "分)",
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
@@ -96,7 +96,7 @@ export class PaperCreator {
                 )
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++number} 题 ` + topic.question + "\n",
+                    text: `第 ${++number} 题 ` + topic.question + " (" + topic.score + "分)",
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
@@ -141,7 +141,7 @@ export class PaperCreator {
                 )
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++number} 题 ` + topic.question + "\n",
+                    text: `第 ${++number} 题 ` + topic.question + " (" + topic.score + "分)",
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
@@ -172,7 +172,7 @@ export class PaperCreator {
                 )
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++number} 题 `,
+                    text: `第 ${++number} 题 ` + " (" + topic.score + "分)",
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
@@ -216,7 +216,7 @@ export class PaperCreator {
                 )
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++number} 题 ` + topic.question + "\n",
+                    text: `第 ${++number} 题 ` + topic.question + " (" + topic.score + "分)",
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
@@ -228,6 +228,12 @@ export class PaperCreator {
                       array.push(
                         new Paragraph({
                           text: s.content,
+                        })
+                      )
+                      // 一题简单题的每一小问空一行
+                      array.push(
+                        new Paragraph({
+                          text: "",
                         })
                       )
 
@@ -264,24 +270,14 @@ export class PaperCreator {
                 );
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++numberAnswer} 题 答案：` + topic.answer + "解析：" + topic.explain,
+                    text: `第 ${++numberAnswer} 题`,
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
-                // 每个单选题的选项
                 arr.push(
-                  ...topic.choice
-                    .map(c => {
-                      let array: Paragraph[] = []
-                      array.push(
-                        new Paragraph({
-                          text: c.name + ". " + c.content,
-                        })
-                      )
-
-                      return array
-                    })
-                    .reduce((prev, curr) => prev.concat(curr), []),
+                  new Paragraph({
+                    text: "答案：" + topic.answer + " 解析：" + topic.explain,
+                  })
                 )
 
                 return arr;
@@ -309,8 +305,13 @@ export class PaperCreator {
                 )
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++numberAnswer} 题 ` + topic.question + "\n",
+                    text: `第 ${++numberAnswer} 题 `,
                     heading: HeadingLevel.HEADING_2,
+                  })
+                )
+                arr.push(
+                  new Paragraph({
+                    text: "答案："
                   })
                 )
                 // 每个多选题的选项
@@ -358,11 +359,15 @@ export class PaperCreator {
                 )
                 arr.push(
                   new Paragraph({
-                    text: `第 ${++numberAnswer} 题 答案：` + topic.answer + "解析：" + topic.explain,
+                    text: `第 ${++numberAnswer} 题`,
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
-
+                arr.push(
+                  new Paragraph({
+                    text: "答案：" + topic.answer + " 解析：" + topic.explain
+                  })
+                )
                 return arr
               })
               .reduce((prev, curr) => prev.concat(curr), []),
@@ -391,6 +396,11 @@ export class PaperCreator {
                   new Paragraph({
                     text: `第 ${++numberAnswer} 题 `,
                     heading: HeadingLevel.HEADING_2,
+                  })
+                )
+                arr.push(
+                  new Paragraph({
+                    text: `答案：`,
                   })
                 )
                 // 每个填空题的每一空
@@ -441,6 +451,11 @@ export class PaperCreator {
                     heading: HeadingLevel.HEADING_2,
                   })
                 )
+                arr.push(
+                  new Paragraph({
+                    text: "答案：",
+                  })
+                )
                 // 每个简答题的每一问
                 arr.push(
                   ...topic.subQ
@@ -448,7 +463,7 @@ export class PaperCreator {
                       let array: Paragraph[] = []
                       array.push(
                         new Paragraph({
-                          text: "答案" + s.answer,
+                          text: s.answer,
                         })
                       )
 
