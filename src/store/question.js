@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:49:30
- * @LastEditTime: 2021-07-11 15:22:47
+ * @LastEditTime: 2021-07-11 19:35:40
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -204,20 +204,6 @@ const question = {
 
         ],
 
-        /*  
-        pie
-        data: [
-              { value: 10, name: "线性代数" },
-              { value: 12, name: "复变函数" },
-              { value: 13, name: "微积分" },
-              { value: 14, name: "概率论" },
-              
-            ], */
-             /* 
-            bar
-            data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-             data: [120, 200, 150, 80, 70, 110, 130],
-            */
             //题目类型，题目难度，  |题目课程
             chartData:[],
         

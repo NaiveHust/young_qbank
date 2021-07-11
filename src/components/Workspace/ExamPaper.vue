@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-11 13:39:07
+ * @LastEditTime: 2021-07-11 19:59:54
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -118,12 +118,9 @@
                 <div class="dialog-right">
                   
                     <!-- value,name,index -->
-                    <el-button
-                     
+                    <el-button            
                       round
-                      v-for="(value, name, index) in $i18n.messages[
-                        $i18n.locale
-                      ].topic"
+                      v-for="(value, name, index) in $i18n.messages[$i18n.locale].topic"
                       :key="value.key"
                       @click="chooseType(name, index)"
                     >
@@ -153,7 +150,7 @@
           <el-scrollbar style="height: 75vh">
             <transition-group>
               <ul
-                class="item"
+                class="type"
                 v-for="type in typeListCopy"
                 :key="type.index"
                 style="width: 90%; display: flex; flex-direction: column"
@@ -163,23 +160,21 @@
                 @dragenter="handleDragEnter($event, type)"
                 @dragend="handleDragEnd($event, type)"
               >
-                {{
-                  type.name
-                }}
-                {{
-                  type.order
-                }}
-                {{
-                  type.num
-                }}
-                {{
-                  type.score
-                }}
+              <div><span>{{type.label}}</span>
+              <el-button size="small" 
+              :class="type.fold?'el-icon-caret-right':'el-icon-caret-bottom'" 
+              style="float:right;"
+              @click="type.fold=!type.fold"
+              ></el-button></div>
+              
+              
 
                 <li
                   v-for="(topic, index) in paperContent[type.name].topic"
+                  v-show="!type.fold"
                   :key="index"
                   style="height: 5vh"
+                  class='topic'
                   @click="editTopic(type.name, topic.order)"
                 >
                   第{{ topic.order }}题
@@ -319,7 +314,10 @@ export default {
       this.addType({
         index: index,
         name: name,
+        label:this.$i18n.messages['cn'].topic[name],
         order: index,
+        //题型是否折叠
+        fold:false,
         num: 1,
         //此为全局默认分数，可被全局覆盖
         score: 5,
@@ -388,11 +386,15 @@ export default {
 .el-form-item {
   width: 20%;
 }
-.item {
-  margin-top: 10px;
+.type {
+  margin: 2vh 0;
   transition: all linear 0.3s;
+  border: 1vh solid rgb(166, 186, 224);
 }
-
+.topic{
+  margin: 1vh 0;
+  border: 1vh solid #fff;
+}
 .type-view {
   height: 90%;
   width: 90%;
