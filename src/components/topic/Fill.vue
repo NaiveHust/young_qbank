@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:34:26
- * @LastEditTime: 2021-07-07 08:52:44
+ * @LastEditTime: 2021-07-11 11:52:21
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -76,20 +76,31 @@
           >添加填空</el-button
         >
       </el-form-item>
-
-      <div style="width: 100%">
-        <span>难度</span>
+ <div style="width: 100%;display:flex;justify-content:space-between;">
+       
         <el-select
           v-model="fills.level"
-          placeholder="请选择"
-          style="width: 10%"
+          placeholder="试题难度"
+          style="width: 15%"
         >
           <el-option label="易" value="易"></el-option>
           <el-option label="中" value="中"></el-option>
           <el-option label="难" value="难"></el-option>
         </el-select>
+        
+          <el-select
+          v-model="fills.course"
+          placeholder="所属课程"
+          style="width: 15%"
+        >
+         <el-option 
+          v-for="(course,index) in courses"
+          :key="index"
+          :label="course.cName" :value="course.cName"
+          ></el-option>
+        </el-select>
+        
 
-        <span style="margin-left: 5%">答案解析</span>
         <el-input
           type="textarea"
           style="width: 60%"
@@ -99,6 +110,7 @@
           v-model="fills.explain"
         >
         </el-input>
+        
       </div>
     </el-form>
   </div>
@@ -134,6 +146,9 @@ export default {
       } else {
         return this.$store.state.qs.qsBank[this.qsOrder].content;
       }
+    },
+     courses(){
+      return this.$store.state.cs.myCourses;
     },
   },
   methods: {
@@ -174,12 +189,12 @@ export default {
 .fill {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .fill-form {
   width: 100%;
   height: 100%;
-  border: 3px solid rgb(216, 7, 52);
+  
 }
 .fill-one {
   width: 95%;
@@ -189,16 +204,16 @@ export default {
   flex-wrap: nowrap;
   flex-direction: row;
   align-items: center;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .fill-info {
   width: 100%;
   height: 20vh;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .fill-ones {
   width: 100%;
   height: 50vh;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

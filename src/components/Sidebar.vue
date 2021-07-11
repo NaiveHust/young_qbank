@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-04 17:40:20
- * @LastEditTime: 2021-07-08 11:14:05
+ * @LastEditTime: 2021-07-11 11:35:45
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -88,7 +88,7 @@ export default {
 .sidebar {
   height: 100%;
   width: 100%;
-  border: 2px solid rgb(13, 88, 201);
+
   overflow-y: scroll;
   display: flex;
 }

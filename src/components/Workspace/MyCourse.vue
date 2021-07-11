@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:27:09
- * @LastEditTime: 2021-07-09 16:43:48
+ * @LastEditTime: 2021-07-11 11:53:49
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -12,8 +12,10 @@
       <!-- 菜单工具栏 -->
       <el-col :span="14">
         <div class="west-header">
-          <span>已选课程</span>
-          <el-table
+          <span>已选课程</span>        
+        </div>
+        <div class="west-course">
+           <el-table
             :data="myCourses"
             style="width: 100%"
             height="60vh"
@@ -40,7 +42,6 @@
             </el-table-column>
           </el-table>
         </div>
-        <div class="west-course"></div>
       </el-col>
       <!-- 搜索课程区 -->
       <el-col :span="10">
@@ -142,7 +143,7 @@ export default {
     },
   },
   created() {
-    this.$store.dispatch("getCourses");
+    this.$store.dispatch("getCourses",{index:1,size:10000});
     this.$store.dispatch("getChosen");
     console.log("我的课程");
   },
@@ -153,47 +154,47 @@ export default {
 .mycourse {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .mycourse-north {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 20%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .west-header {
   height: 10%;
   width: 100%;
   display: flex;
-  border: 3px solid rgb(153, 12, 209);
+  
 }
 .west-course {
   height: 90%;
   width: 100%;
   display: flex;
-  border: 3px solid rgb(153, 12, 209);
+  
 }
 .south-table {
   height: 80%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

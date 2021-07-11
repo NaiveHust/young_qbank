@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-01 19:40:10
- * @LastEditTime: 2021-07-08 20:47:30
+ * @LastEditTime: 2021-07-11 15:25:55
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -17,7 +17,26 @@ const exampaper = {
         topicList: [
 
         ],
-
+        tableHead: [
+            {
+              prop: "name",
+              label: "试卷名称",
+              chart:false,
+              roles:['teacher','admin']
+            },
+            {
+              prop: "course",
+              label: "所属课程",
+              chart:true,
+              roles:['teacher','admin']
+            },
+            {
+                prop: "tid",
+                label: "出卷人编号",
+                chart:false,
+                roles:['admin']
+              },
+          ],
         //题型列表
         /* 
         {
@@ -74,11 +93,13 @@ const exampaper = {
         }
         ,
         currentOrder: 0,
-
+        //总试卷数
+        totalCount: 0,
         //判断是在试卷中编辑题目还是在题库中编辑题目
         inPaper: false,
         //判断实在编辑旧试卷的id,平时为null，只有点击编辑时临时赋值
         editId: null,
+        chartData:[],
     },
 
     mutations: {
@@ -163,6 +184,7 @@ const exampaper = {
                             score: deScore,
                             level: '易',
                             question: "",
+                            course:"",
                             choice: [
                                 {
                                     order: 1,
@@ -195,6 +217,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: 5,
                             level: '易',
+                            course:"",
                             question: [
                                 {
                                     order: 1,
@@ -212,6 +235,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             level: '易',
+                            course:"",
                             question: "",
                             choice: [
                                 {
@@ -245,6 +269,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             level: '易',
+                            course:"",
                             question: "",
                             subQ: [
                                 {
@@ -262,6 +287,7 @@ const exampaper = {
                             order: oldN + i + 1,
                             score: deScore,
                             level: '易',
+                            course:"",
                             question: "",
                             answer: true,
                             explain: "",
@@ -288,7 +314,8 @@ const exampaper = {
                     name: '',
                     score: '',
                     duration: '',
-
+                    course:'',
+                    
                 },
                 Single: {
                     //题型描述
@@ -383,37 +410,43 @@ const exampaper = {
         setCurrentPaper(state, data) {
             state.paperContent = data;
         },
-        getPapers(state, data) {
+       
 
 
-            /*  state.paperList.push({
-                 id: i,
-                 name: state.paperContent.Info.name,
-                 json: JSON.stringify(state.paperContent),
-             }); */
-            console.log('paperList', state.paperList);
-            pp.get(`paper/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`).then(res => {
+    },
+    actions: {
+        async  getPapers({state}, data) {
+
+            let url ='';
+            if(rootStore.state.userType ==='teacher'){
+                url = `paper/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`;
+            }
+            else{
+                url = `paper/findByPage/${data.index}/${data.size}`
+            }
+            
+            pp.get(url).then(res => {
                 state.paperList = [];
-                for (const paper of res.data) {
+                state.totalCount = res.data.totalCount;
+                for (const paper of res.data.list) {
                     state.paperList.push({
                         id: paper.paperNo,
+                        tid:paper.paperTea,
                         name: paper.paperName,
+                        course:paper.paperClass,
                         json: paper.paperInfo,
                     });
                 }
                 console.log('paperList', state.paperList);
             })
         },
-
-
-    },
-    actions: {
         //保存创建试卷
         async finishPaper(context) {
             let tempBody = {};
             tempBody.paperName = context.state.paperContent.Info.name;
             tempBody.paperScore = context.state.paperContent.Info.score;
             tempBody.paperTime = context.state.paperContent.Info.duration;
+            tempBody.paperClass = context.state.paperContent.Info.course;
             tempBody.paperTea = rootStore.state.userInfo.id;
             tempBody.paperInfo = JSON.stringify(context.state.paperContent);
 
@@ -451,17 +484,7 @@ const exampaper = {
                     }
                 })
             }
-
-            await pp.get(`paper/findByTea/${rootStore.state.userInfo.id}/1/1000`).then(res => {
-                context.state.paperList = [];
-                for (const paper of res.data) {
-                    context.state.paperList.push({
-                        id: paper.paperNo,
-                        name: paper.paperName,
-                        json: paper.paperInfo,
-                    });
-                }
-            })
+            await context.dispatch('getPapers',{index:1,size:10000})
 
         },
         //删除试卷
@@ -482,18 +505,51 @@ const exampaper = {
                 }
             })
 
-            await pp.get(`paper/findByTea/${rootStore.state.userInfo.id}/1/1000`).then(res => {
-                context.state.paperList = [];
-                for (const paper of res.data) {
-                    context.state.paperList.push({
-                        id: paper.paperNo,
-                        name: paper.paperName,
-                        json: paper.paperInfo,
-                    });
-                }
-            })
+            await context.dispatch('getPapers',{index:1,size:10000})
 
         },
+        async getPNumByCs({state}){
+            state.chartData = [];
+            let courses = rootStore.state.userType ==='teacher'?
+            rootStore.state.cs.myCourses:
+            rootStore.state.cs.courseList;
+
+         
+            let noreapts = [];
+            for (const cs of courses) {
+                if(noreapts.indexOf(cs.cName)<0){
+                    noreapts.push(cs.cName);
+                }
+            }
+            console.log('norepeats',noreapts);     
+            let id = rootStore.state.userInfo.id;
+
+            if(rootStore.state.userType==='teacher'){
+                for (const cs of noreapts) {   
+                    await   pp.get(`paper/findByClaAndTea/${cs}/${id}/1/0`).then(res=>{
+                          if(res.data ===0){
+                              state.chartData.push({value: 0, name: cs})
+                          }
+                          else{
+                              state.chartData.push({value: res.data.totalCount, name: cs})
+                          }
+                      })
+                  }
+            }else{
+                for (const cs of noreapts) {
+                    await   pp.get(`paper/findByCla/${cs}/1/0`).then(res=>{
+                          if(res.data ===0){
+                              state.chartData.push({value: 0, name: cs})
+                          }
+                          else{
+                              state.chartData.push({value: res.data.totalCount, name: cs})
+                          }
+                      })
+                  }
+            }
+          
+        },
+        
     },
     getters: {}
 

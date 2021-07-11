@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-07 11:25:10
- * @LastEditTime: 2021-07-09 13:00:03
+ * @LastEditTime: 2021-07-10 20:27:11
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -33,12 +33,12 @@
           </div>
         </el-row>
         <el-row>
-          <!-- 题目列表区 -->
+          <!-- 课程列表区 -->
           <div class="south-table">
             <el-table
-              :data="tCourse"
+              :data="myCourses"
               style="width: 100%"
-              height="40vh"
+              height="50vh"
               :default-sort="{ prop: 'date', order: 'descending' }"
             >
               <el-table-column
@@ -65,6 +65,17 @@
                 </template>
               </el-table-column>
             </el-table>
+            <el-pagination
+              align="center"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 20]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="totalCount"
+            >
+            </el-pagination>
           </div>
         </el-row>
       </el-col>
@@ -106,17 +117,53 @@ export default {
     return {
       dialogVisible: false,
       courseName: "",
+      currentPage: 1,
+      pageSize: 5,
     };
   },
   computed: {
     tableHead() {
       return this.$store.state.cs.tableHead;
     },
-    tCourse() {
-      return this.$store.state.cs.courseList;
+    myCourses() {
+      if (this.$store.state.userType === "teacher") {
+        return this.$store.state.cs.myCourses;
+      } else {
+        return this.$store.state.cs.courseList;
+      }
+    },
+    totalCount() {
+      return this.$store.state.cs.totalCount;
     },
   },
   methods: {
+    //每页条数改变时触发 选择一页显示多少行
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+      if (this.$store.state.userType === "teacher") {
+        this.$store.dispatch("getTeaCourse");
+      } else {
+        this.$store.dispatch("getCourses", {
+          index: this.currentPage,
+          size: this.pageSize,
+        });
+      }
+    },
+    //当前页改变时触发 跳转其他页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      if (this.$store.state.userType === "teacher") {
+        this.$store.dispatch("getTeaCourse");
+      } else {
+        this.$store.dispatch("getCourses", {
+          index: this.currentPage,
+          size: this.pageSize,
+        });
+      }
+    },
     handleEdit(index, row) {
       this.$store.commit("setTempTopic");
       this.$store.commit("setEditNew", false);
@@ -150,14 +197,22 @@ export default {
     //保存课程修改
     saveCourse() {
       this.dialogVisible = false;
-      this.$store.dispatch("saveCourse", this.courseName,
-      );
+      this.$store.dispatch("saveCourse", this.courseName);
     },
     //取消课程修改
     undoCourse() {
       this.dialogVisible = false;
-      this.$store.commit("undoCourse");
     },
+  },
+  created() {
+    if (this.$store.state.userType === "teacher") {
+      this.$store.dispatch("getTeaCourse");
+    } else {
+      this.$store.dispatch("getCourses", {
+        index: this.currentPage,
+        size: this.pageSize,
+      });
+    }
   },
 };
 </script>
@@ -170,40 +225,40 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .teacourse-north {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .teacourse-south {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-table {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

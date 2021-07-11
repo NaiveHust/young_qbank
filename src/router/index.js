@@ -105,7 +105,7 @@ const routes = [
                 meta: {
                     title: '管理课程',
                     requireAuth: true,
-                    roles: ['teacher'],
+                    roles: ['teacher','admin'],
                 },
                 component: TeaCourse,
             },
@@ -138,8 +138,8 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-    console.log('上一个页面：', from)
-    console.log('下一个页面：', to)
+  //  console.log('上一个页面：', from)
+  //  console.log('下一个页面：', to)
    // let userToken = localStorage.getItem('userToken');
     //let role = localStorage.getItem('role');
     let userType = localStorage.getItem('young-user-type');
@@ -147,7 +147,7 @@ router.beforeEach((to, from, next) => {
     let userInfo = localStorage.getItem('young-userInfo');
     if (Object.keys(rootStore.state.userInfo).length === 0&&userInfo) {
         rootStore.commit('storeUser', JSON.parse(userInfo));
-        console.log('刷新后', rootStore.state.userInfo);
+       // console.log('刷新后', rootStore.state.userInfo);
     }
     // 判断该路由是否需要登录权限
     if (to.meta.requireAuth) { 
@@ -182,7 +182,7 @@ router.beforeEach((to, from, next) => {
             }) */
             //转到主页
             next({
-                path: '/home'
+                path: '/welcome'
             })
         } else {
             next()

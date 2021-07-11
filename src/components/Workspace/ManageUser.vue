@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 20:41:38
- * @LastEditTime: 2021-07-09 11:28:02
+ * @LastEditTime: 2021-07-11 17:50:31
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -15,12 +15,20 @@
           <div style="margin-top: 15px">
             <el-select
               v-model="searchType"
-              placeholder="搜索类型"
+              placeholder="用户类型"
               clearable
               style="width: 20%"
             >
-              <el-option label="课程名" value="1"></el-option>
-              <el-option label="老师" value="2"></el-option>
+              <el-option
+                label="学生"
+                value="student"
+                @click="switchType('student')"
+              ></el-option>
+              <el-option
+                label="老师"
+                value="teacher"
+                @click="switchType('teacher')"
+              ></el-option>
             </el-select>
             <el-input
               placeholder="请输入搜索内容"
@@ -36,12 +44,12 @@
             </el-input>
           </div>
         </div>
-          <div class="south-table">
+        <div class="south-table">
           <el-table
             v-loading="loading"
-            :data="qsBank"
+            :data="userList"
             style="width: 100%"
-            height="60vh"
+            height="50vh"
             :default-sort="{ prop: 'date', order: 'descending' }"
           >
             <el-table-column
@@ -51,6 +59,11 @@
               :label="head.label"
               sortable
             >
+              <template #header v-if="head.chart">
+                <el-button plain @click="showChart(head.prop)">{{
+                  head.label
+                }}</el-button>
+              </template>
             </el-table-column>
             <el-table-column label="操作">
               <template #default="scope">
@@ -83,12 +96,8 @@
       </el-col>
       <!-- 图表区 -->
       <el-col :span="8">
-        <div class="north-chart">
-        <div  id="north"></div>
-        </div>
-        <div class="south-chart">
-        <div  id="south"></div>
-        </div>
+        <div id="north"></div>
+        <div id="south"></div>
       </el-col>
     </el-row>
   </div>
@@ -97,85 +106,164 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      searchType: "student",
+      currentPage: 1,
+      pageSize: 5,
+      pieChart:null,
+      barChart:null,
+    };
   },
-  computed:{
-
+  computed: {
+    userList() {
+      if (this.searchType === "student") {
+        return this.$store.state.ad.stuList;
+      } else {
+        return this.$store.state.ad.teaList;
+      }
+    },
+    tableHead() {
+      return this.$store.state.ad.tableHead;
+    },
+    totalCount() {
+      return this.$store.state.ad.totalCount;
+    },
+    chartData() {
+      return this.$store.state.ad.chartData;
+    },
   },
-  methods:{
-    drawPie(){
-       // 基于准备好的dom，初始化echarts实例
-    var myChart = this.$echarts.init(document.getElementById("north"));
-    // 绘制图表
-    myChart.setOption({
-    tooltip: {
-        trigger: 'item'
-    },
-    legend: {
-        top: '5%',
-        left: 'center'
-    },
-    series: [
-        {
-            name: '访问来源',
-            type: 'pie',
-            radius: ['40%', '70%'],
+  methods: {
+  drawPie() {
+      // 基于准备好的dom，初始化echarts实例
+          let myChart = this.$echarts.getInstanceByDom(this.pieChart);
+           if(myChart){
+            myChart.dispose();
+          }
+          myChart =null;
+          if(!myChart){
+          myChart =  this.$echarts.init(this.pieChart);
+          }
+      // 绘制图表
+      myChart.setOption({
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          top: "5%",
+          left: "center",
+        },
+        series: [
+          {
+            /*  name: "访问来源", */
+            type: "pie",
+            radius: ["40%", "70%"],
             avoidLabelOverlap: false,
             itemStyle: {
-                borderRadius: 10,
-                borderColor: '#fff',
-                borderWidth: 2
+              borderRadius: 10,
+              borderColor: "#fff",
+              borderWidth: 2,
             },
             label: {
-                show: false,
-                position: 'center'
+              show: false,
+              position: "center",
             },
             emphasis: {
-                label: {
-                    show: true,
-                    fontSize: '40',
-                    fontWeight: 'bold'
-                }
+              label: {
+                show: true,
+                fontSize: "40",
+                fontWeight: "bold",
+              },
             },
             labelLine: {
-                show: false
+              show: false,
             },
-            data: [
-                {value: 1048, name: '搜索引擎'},
-                {value: 735, name: '直接访问'},
-                {value: 580, name: '邮件营销'},
-                {value: 484, name: '联盟广告'},
-                {value: 300, name: '视频广告'}
-            ]
-        }
-    ]
-});
-  },
-    drawBar(){
-      var myChart = this.$echarts.init(document.getElementById("south"));
+            data: this.chartData,
+          },
+        ],
+      });
+      console.log('pieChart',myChart);
+    },
+    drawBar() {
+         
+          let myChart = this.$echarts.getInstanceByDom(this.barChart);
+          if(myChart){
+            myChart.dispose();
+          }
+          myChart =null;
+          if(!myChart){
+          myChart =  this.$echarts.init(this.barChart);
+          }
       myChart.setOption({
-    xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        xAxis: {
+          type: "category",
+
+          // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: this.chartData.map((item) => item.name),
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+            data: this.chartData.map((item) => item.value),
+            type: "bar",
+            showBackground: true,
+            backgroundStyle: {
+              color: "rgba(180, 180, 180, 0.2)",
+            },
+          },
+        ],
+      });
+      console.log('barChart',myChart);
+      
+       
     },
-    yAxis: {
-        type: 'value'
+    async switchType(type) {
+      if (type === "teacher") {
+        await this.$store.dispatch("getTeas", {
+          index: this.currentPage,
+          size: this.pageSize,
+        });
+      } else {
+        await this.$store.dispatch("getStus", {
+          index: this.currentPage,
+          size: this.pageSize,
+        });
+      }
+      await this.showChart();
     },
-    series: [{
-        data: [120, 200, 150, 80, 70, 110, 130],
-        type: 'bar',
-        showBackground: true,
-        backgroundStyle: {
-            color: 'rgba(180, 180, 180, 0.2)'
-        }
-    }]
-})
-    }
+    async showChart() {
+      await this.$store.dispatch("getchartData");
+      console.log('表格数据',this.chartData);
+      this.drawPie();
+      this.drawBar();
     },
-  
+
+    //每页条数改变时触发 选择一页显示多少行
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.currentPage = 1;
+      this.pageSize = val;
+      this.switchType(this.searchType);
+    },
+    //当前页改变时触发 跳转其他页
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.switchType(this.searchType);
+    },
+  },
+  created() {
+    this.$store.dispatch("getStus", {
+      index: 1,
+      size: 5,
+    });
+  },
   mounted() {
-   this.drawPie();
-   this.drawBar();
+
+    this.pieChart = document.getElementById('north');
+    this.barChart = document.getElementById('south');
+    this.showChart();
   },
 };
 </script>
@@ -185,46 +273,47 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .user-north {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 50%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .user-south {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 
 .south-table {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
-#north, #south{
+#north,
+#south{
   height: 40vh;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

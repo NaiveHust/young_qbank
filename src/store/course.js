@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:59:40
- * @LastEditTime: 2021-07-09 16:53:59
+ * @LastEditTime: 2021-07-10 20:24:00
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -26,28 +26,96 @@ const course = {
             },
 
         ],
-        //可获取的课程
         courseList: [],
         //已加入的课程
-        myCourses:[],
+        myCourses: [],
+        totalCount:0,
 
     },
 
     mutations: {
-        saveCourse(state, course) {
-            state.courseList.push(course);
-            //TODO 将题目存到服务器 teaid coursename
+      
 
-        },
-        undoCourse(state) {
-            console.log(state.courseList);
-        }
 
     },
 
     actions: {
-        //老师创建课程
-        async saveCourse(context, name) {
+       
+        //分页得到所有课程
+        async getCourses(context,data) {
+            return instance.get(`class/findByPage/${data.index}/${data.size}`).then(res => {
+                context.state.courseList = [];
+                context.state.totalCount = res.data.totalCount;
+                for (const course of res.data.list) {
+                    context.state.courseList.push({
+                        id: course.id,
+                        cName: course.name,
+                        tid: course.id,
+                        tName: course.tname
+                    })
+                }
+                console.log('courseList', context.state.courseList);
+            })
+        },
+        //学生得到已选课程
+        async getChosen(context) {
+            return instance.get(`class/findClaByStu/${rootStore.state.userInfo.id}/1/1000`).then(res => {
+                context.state.myCourses = [];
+                for (const course of res.data.list) {
+                    context.state.myCourses.push({
+                        id: course.id,
+                        cName: course.name,
+                        tid: course.id,
+                        tName: course.tname
+                    })
+                }
+                console.log('已选课程', context.state.myCourses);
+            })
+        },
+        //学生加入课程
+        async joinCourse(context, course) {
+            let tempBody = {};
+            tempBody.cid = course.id;
+            tempBody.tid = course.tid;
+            tempBody.sid = rootStore.state.userInfo.id;
+            //加入课程
+            await instance.post('class/choose_lesson', tempBody).then(res => {
+                if (res.status === 200) {
+                    ElMessage.success({
+                        message: '加入成功',
+                        type: 'success'
+                    });
+                }
+                else {
+                    ElMessage.error({
+                        message: '加入失败',
+                        type: 'error'
+                    });
+                }
+            });
+
+            await context.dispatch('getChosen');
+            await context.dispatch('getCourses',{index:1,size:1000});
+
+        },
+        //老师得到自己创建的课程
+        async getTeaCourse(context) {
+            return instance.get(`class/findClaByTea/${rootStore.state.userInfo.id}/1/1000`).then(res => {
+                context.state.myCourses = [];
+                context.state.totalCount = res.data.totalCount;
+                for (const course of res.data.list) {
+                    context.state.myCourses.push({
+                        id: course.id,
+                        cName: course.name,
+                        tid: course.id,
+                        tName: course.tname
+                    })
+                }
+                console.log('已交课程', context.state.myCourses);
+            })
+        },
+         //老师创建课程
+         async saveCourse(context, name) {
             await instance.post('class/addClass', {
                 name: name,
                 tid: rootStore.state.userInfo.id,
@@ -67,70 +135,8 @@ const course = {
                 }
             })
             //刷新课程列表
-         /*    await instance.get(`class/findByTea/${rootStore.state.userInfo.id}`).then(res=>{
-
-
-                context.state.courseList
-            }) */
+               await context.dispatch('getTeaCourse');
         },
-        //得到课程
-        async getCourses(context){
-            
-           return  instance.get('class/findByPage/1/1000').then(res=>{
-                context.state.courseList = [];
-                for (const course of res.data.list) {
-                    context.state.courseList.push({
-                        id:course.id,
-                        cName:course.name,
-                        tid:course.id,
-                        tName:course.tname
-                    })
-                }
-                console.log('courseList',context.state.courseList);
-            })
-        },
-        //得到已选课程
-        async getChosen(context){
-            return instance.get(`class/findClaByStu/${rootStore.state.userInfo.id}`).then(res=>{
-                 context.state.myCourses = [];
-                 for (const course of res.data.list) {
-                     context.state.myCourses.push({
-                         id:course.id,
-                         cName:course.name,
-                         tid:course.id,
-                         tName:course.tname
-                     })
-                 }
-                 console.log('已选课程',context.state.myCourses);
-             })
-         },
-        //学生加入课程
-        async joinCourse(context,course){
-            let tempBody = {};
-            tempBody.cid = course.id;
-            tempBody.tid = course.tid;
-            tempBody.sid =rootStore.state.userInfo.id ;
-            //加入课程
-            await instance.post('class/choose_lesson',tempBody).then(res=>{
-                if (res.status === 200) {
-                    ElMessage.success({
-                        message: '加入成功',
-                        type: 'success'
-                    });
-                }
-                else {
-                    ElMessage.error({
-                        message: '加入失败',
-                        type: 'error'
-                    });
-                }
-            });
-
-            await context.dispatch('getChosen');
-            await context.dispatch('getCourses');
-
-        },
-        
 
     },
     getters: {}

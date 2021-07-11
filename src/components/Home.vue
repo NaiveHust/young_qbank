@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-06 20:07:57
+ * @LastEditTime: 2021-07-11 11:50:23
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -98,6 +98,8 @@ export default {
 .body-dashboard {
   height: 95%;
   width: 100%;
+  border-style: inset;
+ 
   overflow: hidden;
 }
 </style>
