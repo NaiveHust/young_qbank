@@ -182,7 +182,7 @@ router.beforeEach((to, from, next) => {
             }) */
             //转到主页
             next({
-                path: '/home'
+                path: '/welcome'
             })
         } else {
             next()

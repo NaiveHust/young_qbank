@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-06 19:40:53
+ * @LastEditTime: 2021-07-11 14:26:09
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -84,6 +84,9 @@ export default {
     setTags(route) {
       //404路由
       if (route.name === "notfound") {
+        return false;
+      }
+      if(!route.meta){
         return false;
       }
       //当前路径的标签是后被添加
