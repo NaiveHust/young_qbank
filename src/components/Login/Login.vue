@@ -1,27 +1,27 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-07 20:26:14
+ * @LastEditTime: 2021-07-11 11:05:31
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 
 <template>
   <div class="login-wrap">
-    <el-row style="height: 15vh">
+    <el-row style="height: 10vh;">
       <Header></Header>
     </el-row>
 
-    <el-row style="height: 65vh; margin-top: 2vh">
+    <el-row style="height: 76vh; margin: 2vh">
       <!-- xs：phone  lg:computer -->
       <!--xs 768  sm 992 md  1200 lg 1920 xl-->
 
       <el-col :span="14" class="hidden-md-and-down">
-        <el-carousel style="height: 80%" pause-on-hover>
+        <el-carousel style="height: 100%" pause-on-hover>
           <el-carousel-item v-for="img in images" :key="img" class="login-img">
             <el-image
               :src="img"
-              fit="scale - down"
+              fit="fill"
               style="height: 100%"
             ></el-image>
           </el-carousel-item>
@@ -42,7 +42,7 @@
           <div class="login-up">
             <el-dropdown
               split-button
-              type="primary"
+              size="medium"
               @command="switchLanguage"
               style="margin-top: 2%; margin-right: 2%"
             >
@@ -109,7 +109,7 @@
       </el-col>
     </el-row>
 
-    <el-row style="height: 15vh">
+    <el-row style="height: 10vh;">
       <Footer></Footer>
     </el-row>
   </div>
@@ -177,10 +177,9 @@ export default {
         password: [{ validator: validatePass, trigger: "blur" }],
       },
       images: [
-        require("../../assets/img/login/01.jpg"),
-        require("../../assets/img/login/02.jpg"),
-        require("../../assets/img/login/03.jpg"),
-        require("../../assets/img/login/04.jpg"),
+        require("../../assets/img/login/01.png"),
+        require("../../assets/img/login/02.png"),
+       
       ],
     };
   },
@@ -255,8 +254,8 @@ export default {
 
 <style scoped>
 .login-wrap {
-  background-color: rgb(60, 170, 175);
-  background-size: auto;
+ background:  repeat url('../../assets/img/login/login_bg.png');
+  
   height: 100%;
 }
 .ms-title {
@@ -272,8 +271,7 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.3);
-  border: 2px solid rgb(224, 193, 15);
+  background: rgb(31, 138, 180,0.2);
   overflow: hidden;
 }
 .ms-content {
@@ -294,24 +292,23 @@ export default {
 .login-up {
   height: 10%;
   text-align: right;
-  border: 2px solid rgb(224, 193, 15);
+  
 }
 .login-mid {
-  height: 50%;
+  height: 60%;
   margin: 10% 10%;
-  border: 2px solid rgb(224, 193, 15);
+  
 }
-.login-dowm {
-  height: 20%;
+.login-down {
+  height: 10%;
 }
 
 .login-lang {
   margin-top: 20px;
 }
 .login-img {
-  border: 20px;
-  border-color: black;
-  height: 100%;
+ 
+  height: 150%;
   text-align: center;
 }
 </style>
