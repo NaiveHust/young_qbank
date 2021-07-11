@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 20:41:38
- * @LastEditTime: 2021-07-10 22:35:48
+ * @LastEditTime: 2021-07-11 17:50:31
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -110,6 +110,8 @@ export default {
       searchType: "student",
       currentPage: 1,
       pageSize: 5,
+      pieChart:null,
+      barChart:null,
     };
   },
   computed: {
@@ -131,9 +133,16 @@ export default {
     },
   },
   methods: {
-    drawPie() {
+  drawPie() {
       // 基于准备好的dom，初始化echarts实例
-      var myChart = this.$echarts.init(document.getElementById("north"));
+          let myChart = this.$echarts.getInstanceByDom(this.pieChart);
+           if(myChart){
+            myChart.dispose();
+          }
+          myChart =null;
+          if(!myChart){
+          myChart =  this.$echarts.init(this.pieChart);
+          }
       // 绘制图表
       myChart.setOption({
         tooltip: {
@@ -172,9 +181,18 @@ export default {
           },
         ],
       });
+      console.log('pieChart',myChart);
     },
     drawBar() {
-      var myChart = this.$echarts.init(document.getElementById("south"));
+         
+          let myChart = this.$echarts.getInstanceByDom(this.barChart);
+          if(myChart){
+            myChart.dispose();
+          }
+          myChart =null;
+          if(!myChart){
+          myChart =  this.$echarts.init(this.barChart);
+          }
       myChart.setOption({
         xAxis: {
           type: "category",
@@ -196,6 +214,9 @@ export default {
           },
         ],
       });
+      console.log('barChart',myChart);
+      
+       
     },
     async switchType(type) {
       if (type === "teacher") {
@@ -213,6 +234,7 @@ export default {
     },
     async showChart() {
       await this.$store.dispatch("getchartData");
+      console.log('表格数据',this.chartData);
       this.drawPie();
       this.drawBar();
     },
@@ -238,6 +260,9 @@ export default {
     });
   },
   mounted() {
+
+    this.pieChart = document.getElementById('north');
+    this.barChart = document.getElementById('south');
     this.showChart();
   },
 };
@@ -248,47 +273,47 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .user-north {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 50%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .user-south {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 
 .south-table {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 #north,
-#south {
+#south{
   height: 40vh;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>

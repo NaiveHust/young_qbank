@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-10 21:15:58
+ * @LastEditTime: 2021-07-11 17:50:19
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -128,6 +128,8 @@ export default {
       searchVal: "",
       currentPage: 1,
       pageSize: 5,
+      pieChart:null,
+      barChart:null,
     };
   },
   computed: {
@@ -147,9 +149,16 @@ export default {
     },
   },
   methods: {
-     drawPie() {
+  drawPie() {
       // 基于准备好的dom，初始化echarts实例
-      var myChart = this.$echarts.init(document.getElementById("north"));
+          let myChart = this.$echarts.getInstanceByDom(this.pieChart);
+           if(myChart){
+            myChart.dispose();
+          }
+          myChart =null;
+          if(!myChart){
+          myChart =  this.$echarts.init(this.pieChart);
+          }
       // 绘制图表
       myChart.setOption({
         tooltip: {
@@ -161,7 +170,7 @@ export default {
         },
         series: [
           {
-           /*  name: "访问来源", */
+            /*  name: "访问来源", */
             type: "pie",
             radius: ["40%", "70%"],
             avoidLabelOverlap: false,
@@ -188,26 +197,31 @@ export default {
           },
         ],
       });
+      console.log('pieChart',myChart);
     },
     drawBar() {
-      var myChart = this.$echarts.init(document.getElementById("south"));
+         
+          let myChart = this.$echarts.getInstanceByDom(this.barChart);
+          if(myChart){
+            myChart.dispose();
+          }
+          myChart =null;
+          if(!myChart){
+          myChart =  this.$echarts.init(this.barChart);
+          }
       myChart.setOption({
         xAxis: {
           type: "category",
-          
-         // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-         data:this.chartData.map(item=>
-           item.name
-         )
+
+          // data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: this.chartData.map((item) => item.name),
         },
         yAxis: {
           type: "value",
         },
         series: [
           {
-             data:this.chartData.map(item=>
-           item.value
-         ),
+            data: this.chartData.map((item) => item.value),
             type: "bar",
             showBackground: true,
             backgroundStyle: {
@@ -216,6 +230,9 @@ export default {
           },
         ],
       });
+      console.log('barChart',myChart);
+      
+       
     },
     //每页条数改变时触发 选择一页显示多少行
     handleSizeChange(val) {
@@ -270,9 +287,10 @@ export default {
        
        await  this.$store.dispatch('getPNumByCs');
      }
+     console.log('表数据',this.chartData);
      this.drawPie();
      this.drawBar();
-     console.log('表数据',this.chartData);
+     
     },
     
   },
@@ -290,6 +308,8 @@ export default {
     }
   },
   mounted(){
+    this.pieChart = document.getElementById('north');
+    this.barChart = document.getElementById('south');
     this.showChart('course');
   }
 };
@@ -303,46 +323,46 @@ export default {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .ppbank-west {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-bar {
   height: 30%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .north-chart {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .ppbank-south {
   height: 70vh;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-table {
   height: 70%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .south-view {
   height: 100%;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 .bar-search {
   width: 50%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 #north,
 #south {
   height: 40vh;
   width: 100%;
-  border: 3px solid rgb(7, 115, 216);
+  
 }
 </style>
