@@ -1,13 +1,13 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-12 15:52:54
- * @LastEditTime: 2021-07-12 16:21:07
+ * @LastEditTime: 2021-07-12 20:00:48
  * @LastEditors: 肖环宇
  * @Description: 
  */
-/* import { pp } from '../axios';
+ import { pp } from '../axios';
 import rootStore from './index';
-import { ElMessage } from 'element-plus' */
+//import { ElMessage } from 'element-plus' 
 
 const exam = {
 
@@ -30,16 +30,51 @@ const exam = {
                 label:'出卷人',
             },
         ],
+        //考哪张试卷
+        examOrder:0,
     },
 
     mutations: {
-      
+        setExOrder(state,order){
+            state.examOrder = order;
+        }
 
 
     },
 
     actions: {
-       
+      async getExams({state,dispatch}){
+          await dispatch('getChosen');
+          let courses =rootStore.state.cs.myCourses;
+          state.myExams = [];
+            for (const cs of courses) {
+                await pp.get(`paper/findByClaAndTea/${cs.cName}/${cs.tid}/1/10000`).then(res=>{
+                   for (const ex of res.data.list) {
+                       if(ex.paperType ==='yes'){
+                           state.myExams.push(
+                               {
+                                   eName:ex.paperName,
+                                   cName:cs.cName,
+                                   tName:cs.tName,
+                                   paper:ex,
+                               }
+                               );
+                               rootStore.state.myExams=[];
+                               rootStore.state.myExams.push( {
+                                eName:ex.paperName,
+                                cName:cs.cName,
+                                tName:cs.tName,
+                                paper:ex,
+                            });
+                            console.log(rootStore.state.myExams);
+                       }
+                   }
+                    
+                })
+            }
+            console.log('测试',state.myExams);
+            
+       }
 
     },
     getters: {

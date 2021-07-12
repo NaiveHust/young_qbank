@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:27:09
- * @LastEditTime: 2021-07-12 13:52:43
+ * @LastEditTime: 2021-07-12 19:59:44
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -161,6 +161,7 @@ export default {
     this.$store.dispatch("getCourses",{index:1,size:10000});
     this.$store.dispatch("getChosen");
     console.log("我的课程");
+
   },
 };
 </script>

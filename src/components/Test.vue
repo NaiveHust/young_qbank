@@ -1,51 +1,38 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-12 20:53:01
+ * @LastEditTime: 2021-07-12 21:29:19
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 
 <template>
   <div class="paper">
-    <!-- 试卷总体信息 保存 -->
-    <el-row>
-      <el-col :xs="14" :sm="14" :md="14" :lg="14" :xl="14">
-        <div class="paper-main-info">
-          <el-form :model="paperInfo" ref="form" :inline="true" size="small">
+    <!-- 试卷主题信息 -->
+    <el-row class="paper-main-info" >
+      <div >
+          <el-form
+            :model="paperContent.Info"
+            ref="form"
+            :inline="true"
+            size="small"
+          >
             <el-form-item :label="$t('paper.paperName')">
-              <el-input v-model="paperInfo.name"></el-input>
+              <span>{{paperContent.Info.name}}</span>
+              
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperScore')">
-              <el-input
-                v-model.number="paperInfo.score"
-                type="number"
-              ></el-input>
+              <span>{{paperContent.Info.score}}</span>
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperDuration')">
               <el-input
-                v-model.number="paperInfo.duration"
+                v-model.number="paperContent.Info.duration"
                 type="number"
                 style="width: 10vw"
                 ><template #append> 分钟 </template></el-input
               >
-            </el-form-item>
-
-            <el-form-item>
-              <el-select
-                v-model="paperInfo.course"
-                placeholder="所属课程"
-                style="width: 100%; margin-left: 5vw"
-              >
-                <el-option
-                  v-for="(course, index) in courses"
-                  :key="index"
-                  :label="course.cName"
-                  :value="course.cName"
-                ></el-option>
-              </el-select>
             </el-form-item>
 
             <!-- <el-form-item>
@@ -54,125 +41,17 @@
           </el-form-item> -->
           </el-form>
         </div>
-      </el-col>
-      <el-col :xs="3" :sm="3" :md="3" :lg="3" :xl="3">
-        
-        <el-progress type="line" 
-        class="paper-progress"
-        :text-inside="true" 
-        :stroke-width="24"
-        :color="customColorMethod"
-        :percentage="percent">
-          <template #default="{  }">
-            
-            <span class="progress-val">{{nowScore}}/{{paperInfo.score}}</span>       
-          </template>
-        </el-progress>
-
-      </el-col>
-      <!-- 工具栏 -->
-      <el-col :xs="7" :sm="7" :md="7" :lg="7" :xl="7">
-        <div class="paper-bar">
-          <el-button type="primary" round @click="dialogVisible = true"
-            >添加题型</el-button
-          >
-          <el-button type="primary" round @click="importTopic()"
-            >导入题目</el-button
-          >
-          <el-button type="primary" round @click="finishPaper()"
-            >保存<i class="el-icon-upload el-icon--right"></i
-          ></el-button>
-        </div>
-        <!-- 对话窗 添加题目区 -->
-        <el-dialog
-          title="添加题型"
-          v-model="dialogVisible"
-          width="80vw"
-          center
-          top="10vh"
-          :close-on-click-modal="false"
-          :show-close="false"
-          :before-close="handleClose"
-        >
-          <el-form ref="topicForm" label-width="100px" class="dialog-form">
-            <el-row>
-              <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
-                <!-- 在dialog中增加题型 -->
-                <div class="type-view">
-                  <el-form-item
-                    v-for="type in typeList"
-                    :label="$i18n.messages[$i18n.locale].topic[type.name]"
-                    :key="type.key"
-                    class="dialog-left-one"
-                  >
-                    <el-input
-                      style="width: 12vw"
-                      v-model.number="type.num"
-                      type="number"
-                      :min="0"
-                    >
-                      <template #prepend>数目:</template>
-                    </el-input>
-
-                    <el-input
-                      style="width: 12vw"
-                      v-model.number="type.score"
-                      type="number"
-                      :min="0"
-                    >
-                      <template #prepend>分值:</template>
-                    </el-input>
-
-                    <el-button
-                      style="float: right"
-                      class="el-icon-delete"
-                      @click.prevent="deleteType(type)"
-                    ></el-button>
-                  </el-form-item>
-                </div>
-              </el-col>
-
-              <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
-                <div class="dialog-right">
-                  <!-- value,name,index -->
-                  <el-button
-                    round
-                    v-for="(value, name, index) in $i18n.messages[$i18n.locale]
-                      .topic"
-                    :key="value.key"
-                    @click="chooseType(name, index)"
-                  >
-                    {{ "添加" }}{{ value }}
-                  </el-button>
-                </div>
-              </el-col>
-            </el-row>
-          </el-form>
-
-          <template #footer>
-            <span class="dialog-footer">
-              <el-button @click="dialogVisible = false">取 消</el-button>
-              <el-button type="primary" @click="saveType()">确 定</el-button>
-            </span>
-          </template>
-        </el-dialog>
-        <ImportTopic ref="import"></ImportTopic>
-      </el-col>
     </el-row>
-    <!-- 主区域 -->
-    <el-row style="height: 90%">
-      <!-- <el-col>
-
-      </el-col> -->
-      <!-- 试卷大纲显示 -->
-      <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4">
+    <el-row class="paper-main">
+      <!-- 导航目录 -->
+      <el-col :xs="5" :sm="5" :md="5" :lg="5" :xl="5">
         <div class="paper-outline-view">
           <el-scrollbar style="height: 75vh">
             <transition-group>
               <ul
                 class="type"
-                v-for="type in typeListCopy"
-                :key="type.index"
+                v-for="(type,index) in typeList"
+                :key="index"
                 style="width: 90%; display: flex; flex-direction: column"
                 draggable="true"
                 @dragstart="handleDragStart($event, type)"
@@ -182,7 +61,7 @@
               >
                 <div>
                   <span>{{ type.label }}</span>
-                  <span style="margin-left:20px">共{{type.num}}题</span>
+                  <span style="margin-left: 20px">共{{ type.num }}题</span>
                   <el-button
                     size="small"
                     :class="
@@ -215,24 +94,28 @@
           </el-scrollbar>
         </div>
       </el-col>
-
-      <!-- 试卷内容编辑 -->
-      <el-col :xs="16" :sm="16" :md="18" :lg="20" :xl="20" :offset="0">
+      <!-- 显示单个题目 -->
+      <el-col :xs="14" :sm="14" :md="14" :lg="14" :xl="14">
+        
+       
+        <!-- 显示单个题目 -->
         <div class="paper-edit">
           <component :is="editCom" class="topic-com"></component>
         </div>
       </el-col>
+
+      <el-col :xs="5" :sm="5" :md="5" :lg="5" :xl="5"> </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import Single from "../topic/Single";
-import Multiple from "../topic/Multiple";
-import Answer from "../topic/Answer";
-import Fill from "../topic/Fill";
-import Truefalse from "../topic/TrueFalse";
-import ImportTopic from "./ImportTopic";
+import  Single from "./reply/Rsingle";
+import Multiple from "./reply/Rmultiple";
+import Answer from "./reply/Ranswer";
+import Fill from "./reply/Rfill";
+import Truefalse from "./reply/Rtruefalse";
+
 export default {
   data() {
     return {
@@ -241,7 +124,6 @@ export default {
         paperScore: "",
         paperDuration: "",
       },
-
       dragging: null,
       div: null,
       dialogVisible: false,
@@ -254,48 +136,23 @@ export default {
     Answer,
     Fill,
     Truefalse,
-    ImportTopic,
   },
   //会有缓存，只有依赖的响应式属性发生变化时，才会重新计算。
   computed: {
-    topicList() {
-      return this.$store.state.paper.topicList;
+    paperContent() {
+      return this.$store.state.paper.paperContent;
     },
     typeList() {
       return this.$store.state.paper.typeList;
     },
-    typeListCopy() {
-      return this.$store.state.paper.typeList
-        .slice(0)
-        .sort((a, b) => a.order - b.order);
-    },
-    paperInfo() {
-      return this.$store.state.paper.paperContent.Info;
-    },
-    paperContent() {
-      return this.$store.state.paper.paperContent;
-    },
-    courses() {
-      return this.$store.state.cs.myCourses;
-    },
-    nowScore(){
-      return this.$store.state.paper.nowScore;
-    },
-    percent(){
-      let percent = this.nowScore/(this.paperInfo.score===0?100:this.paperInfo.score)*100;
-      return percent>100?100:percent;
-    }
   },
   created() {
-    this.div = document.createElement("div");
-    document.body.appendChild(this.div);
-    this.$store.commit("setInPaper", true);
-    if (this.$store.state.userType === "teacher") {
-      this.$store.dispatch("getTeaCourse");
-    } else {
-      this.$store.dispatch("getCourses");
-    }
-    console.log("ExamPaper created!");
+    let paperContent = JSON.parse(localStorage.getItem("the-test"));
+
+    console.log(JSON.parse(localStorage.getItem("young-userInfo")));
+    this.$store.commit("setpaperContent", paperContent);
+    this.$store.commit("setTypeList");
+    console.log("新的vuex实例", this.$store);
   },
   methods: {
     handleDragStart(e, item) {
@@ -371,21 +228,21 @@ export default {
     finishPaper() {
       this.$store.dispatch("finishPaper");
     },
-     customColorMethod(percentage) {
-       console.log(percentage)
-        if (percentage < 30) {
-          return '#909399';
-        } else if (percentage < 70) {
-          return '#e6a23c';
-        } 
-        else if(this.nowScore>this.paperInfo.score){
-          return '#F56C6C'
-        }
-        else {
-          return '#67c23a';
-        }
-        
-      },
+    customColorMethod(percentage) {
+      console.log(percentage);
+      if (percentage < 30) {
+        return "#909399";
+      } else if (percentage < 70) {
+        return "#e6a23c";
+      } else if (this.nowScore > this.paperInfo.score) {
+        return "#F56C6C";
+      } else {
+        return "#67c23a";
+      }
+    },
+  },
+  beforeUnmount() {
+    localStorage.removeItem("the-test");
   },
 };
 </script>
@@ -396,11 +253,22 @@ export default {
   height: 100%;
   overflow: hidden;
 }
+.paper-main {
+
+  width: 100%;
+  height: 80%;
+  border: 1vh solid rgb(41, 86, 207, 0.3);
+}
 .paper-main-info {
   width: 100%;
-  height: 100%;
+  height: 10%;
   display: flex;
   flex-wrap: nowrap;
+  justify-content: center;
+  border: 1vh solid rgb(41, 86, 207, 0.3);
+}
+.paper-main-info .span{
+  
 }
 .paper-bar {
   width: 100%;
@@ -410,7 +278,7 @@ export default {
   justify-content: space-around;
   flex-wrap: nowrap;
 }
-.paper-progress{
+.paper-progress {
   width: 100%;
   height: 100%;
 }
@@ -420,15 +288,15 @@ export default {
   width: auto;
 }
 .paper-outline-view {
-  width: 100%;
-  height: 95%;
+  width: 80%;
+  height: 90%;
 
   background: rgb(31, 138, 180, 0.1);
   margin: 2% 0;
 }
 .paper-edit {
   width: 100%;
-  height: 100%;
+  height: 90%;
 }
 
 .topic-com {
@@ -502,7 +370,7 @@ export default {
   color: rgba(160, 33, 219, 1);
   background: rgba(27, 28, 109, 0.1);
 }
-.progress-val{
+.progress-val {
   font-size: 16px;
 }
 </style>

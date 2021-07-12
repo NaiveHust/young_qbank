@@ -1,67 +1,71 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 17:26:30
- * @LastEditTime: 2021-07-12 16:34:04
+ * @LastEditTime: 2021-07-12 19:35:13
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 <template>
-   <el-empty
-  style="width:100%;height:100%"
-   description="快实现了..."></el-empty>
- 
-    <!--  
-     <el-table
-    :data="myExams"
-    style="width: 100%"
-    height="60vh"
-    :default-sort="{ prop: 'name', order: 'descending' }"
-  >
-    <el-table-column
-      v-for="(head, index) in tableHead"
-      :key="index"
-      :prop="head.prop"
-      :label="head.label"
-      sortable
+  <div class="exam-table">
+    <el-table
+      :data="myExams"
+      style="width: 100%"
+      height="60vh"
+      :default-sort="{ prop: 'name', order: 'descending' }"
     >
-    </el-table-column>
-    
-    <el-table-column label="操作">
-      <template #default="scope">
-        <el-button size="mini" type="primary">查看</el-button>
-        <el-button size="mini" type="danger" @click="handleJoin(scope.row)"
-          >退出</el-button
-        >
-      </template>
-    </el-table-column>
-  </el-table> -->
-
- 
-  
+      <el-table-column
+        v-for="(head, index) in tableHead"
+        :key="index"
+        :prop="head.prop"
+        :label="head.label"
+        sortable
+      >
+      </el-table-column>
+      <el-table-column label="操作">
+        <template #default="scope">
+          <el-button size="mini" type="danger" @click="takeExam(scope.row)"
+            >开始考试</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
 export default {
-  data(){
-    return{
-
-    }
+  data() {
+    return {};
   },
- /*  computed:{
-    tableHead(){
+  computed: {
+    tableHead() {
       return this.$store.state.ex.tableHead;
     },
-    myExams(){
+    myExams() {
       return this.$store.state.ex.myExams;
-    }
-  }, */
+    },
+  },
+  methods: {
+    takeExam(row) {
+      for (const key in this.myExams) {
+        if (this.myExams[key].paper.paperNo === row.paper.paperNo) {
+          this.$store.commit("setExOrder", parseInt(key));
+        }
+      }
+      let test = this.$router.resolve({ name: "Test" });
+      localStorage.setItem('the-test',row.paper.paperInfo);
+      window.open(test.href, "_blank");
+    },
+  },
+  created() {
+    this.$store.dispatch("getExams");
+  },
 };
 </script>
 
 <style scoped>
-.exam-table{
+.exam-table {
   width: 100%;
   height: 100;
 }
-
 </style>

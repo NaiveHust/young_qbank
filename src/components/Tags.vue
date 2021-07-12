@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-11 14:26:09
+ * @LastEditTime: 2021-07-12 18:54:44
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -84,6 +84,10 @@ export default {
     setTags(route) {
       //404路由
       if (route.name === "notfound") {
+        return false;
+      }
+      //在新的标签页中打开考试界面
+      if(route.name ==='Test'){
         return false;
       }
       if(!route.meta){

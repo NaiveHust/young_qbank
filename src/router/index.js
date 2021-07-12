@@ -11,6 +11,7 @@ import TakeExam from '../components/Workspace/TakeExam'
 import ManageUser from '../components/Workspace/ManageUser'
 import MyCourse from '../components/Workspace/MyCourse'
 import TeaCourse from '../components/Workspace/TeaCourse'
+import Test from '../components/Test'
 import rootStore from '../store'
 
 const routes = [
@@ -121,6 +122,16 @@ const routes = [
             },
           
         ]
+    },
+    {
+        path: "/test",
+        name: "Test",
+        meta: {
+            title: '考试界面',
+            requireAuth: true,
+            roles: ['student'],
+        },
+        component: Test,
     },
     {
         path: '/:pathMatch(.*)*',

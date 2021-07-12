@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-01 19:40:10
- * @LastEditTime: 2021-07-12 15:17:40
+ * @LastEditTime: 2021-07-12 20:51:28
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -104,6 +104,14 @@ const exampaper = {
         //判断实在编辑旧试卷的id,平时为null，只有点击编辑时临时赋值
         editId: null,
         chartData: [],
+        tranType:{
+            Single:'选择题',
+            Multiple:'多选题',
+            Truefalse:'判断题',
+            Fill:'填空题',
+            Answer:'简答题',    
+
+        }
     },
 
     mutations: {
@@ -430,6 +438,38 @@ const exampaper = {
 
             }
             console.log('当前总分', state.nowScore);
+        },
+        setpaperContent(state,data){
+            state.paperContent =data;
+        },
+        setTypeList(state){
+            //label fold
+            /* {
+        index: index,
+        name: name,
+        label: this.$i18n.messages["cn"].topic[name],
+        order: index,
+        //题型是否折叠
+        fold: false,
+        num: 0,
+        //此为全局默认分数，可被全局覆盖
+        score: 5,
+      } */
+            state.typeList = [];
+            for (const key in state.paperContent) {
+                let tType = state.paperContent[key];
+                //有该题型
+                if(Object.hasOwnProperty.call(tType, 'topic')&&tType.topic.length>0){
+                    state.typeList.push({
+                        name:key,
+                        label:state.tranType[key],
+                        fold: false,
+                        num:tType.topic.length,
+                    })
+                }
+            }
+            console.log('题型',state.typeList);
+           
         },
 
 

@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-12 15:55:23
+ * @LastEditTime: 2021-07-12 19:57:30
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -99,6 +99,7 @@ export default createStore({
         // current:,
         collapse: false,
         order: 0,
+        myExams:['ni'],
 
     },
     mutations: {
@@ -204,6 +205,7 @@ export default createStore({
 
     },
     actions: {},
+    
     modules: {
         paper: exampaper,
         qs: question,
