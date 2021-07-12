@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:35:17
- * @LastEditTime: 2021-07-11 11:51:56
+ * @LastEditTime: 2021-07-12 12:21:52
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -19,7 +19,7 @@
       <el-row v-if="inPaper">
         <el-form-item :label="'第' + answers.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="answers.score" type="number"></el-input>
+          <el-input v-model.number="answers.score" type="number" @change="reCount()"></el-input>
         </el-form-item>
       </el-row>
 
@@ -40,28 +40,32 @@
           第{{ item.order }}问
           <el-input
             v-model="item.content"
-            style="width: 40vw"
+            style="width: 30%"
             type="textarea"
             resize="none"
             :autosize="{ minRows: 2, maxRows: 4 }"
           >
           </el-input>
-          答案
+        
           <el-input
             v-model="item.answer"
-            style="width: 40vw"
+            style="width: 30%"
+            placeholder="请输入答案"
             type="textarea"
             resize="none"
             :autosize="{ minRows: 2, maxRows: 4 }"
           >
           </el-input>
 
-          <el-button
-            class="el-icon-delete"
-            @click.stop="delItem(item.order)"
-            style="float: right"
-          >
-          </el-button>
+           <el-button
+              class="el-icon-delete"
+              size="medium"
+              @click.stop="delItem(item.order)"
+              type="danger"
+              round
+              style="float: right"
+            >
+            </el-button>
         </div>
       </el-scrollbar>
 
@@ -70,7 +74,7 @@
         <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
       </el-form-item>
 
-    <div style="width: 100%;display:flex;justify-content:space-between;">
+    <div style="width: 100%;display:flex;justify-content:space-around;">
        
         <el-select
           v-model="answers.level"
@@ -97,7 +101,7 @@
 
         <el-input
           type="textarea"
-          style="width: 60%"
+          style="width: 40%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目解析"
@@ -171,6 +175,9 @@ export default {
         },
       });
     },
+    reCount(){
+      this.$store.commit('countNowCount');
+    }
   },
   created() {
     console.log("Answer created!");
@@ -193,9 +200,10 @@ export default {
 }
 .answer-one {
   width: 100%;
-  height: 7vh;
-  margin-bottom: 1vh;
+  height: 8vh;
+  margin: 1vh 0;
   display: flex;
+  justify-content: space-around;
   flex-wrap: nowrap;
   
 }

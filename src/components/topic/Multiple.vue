@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:33:16
- * @LastEditTime: 2021-07-11 11:52:28
+ * @LastEditTime: 2021-07-12 14:36:31
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -19,7 +19,7 @@
       <el-row v-if="inPaper">
         <el-form-item :label="'第' + multiples.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="multiples.score" type="number"></el-input>
+          <el-input v-model.number="multiples.score" type="number" @change="reCount()"></el-input>
         </el-form-item>
       </el-row>
 
@@ -45,7 +45,7 @@
             <el-checkbox-button :label="item.name"></el-checkbox-button>
             <el-input
               v-model="item.content"
-              style="width: 40vw"
+               style="width: 40vw; margin: 0 2vw"
               type="textarea"
               resize="none"
               :autosize="{ minRows: 2, maxRows: 4 }"
@@ -54,7 +54,10 @@
 
             <el-button
               class="el-icon-delete"
+              size="medium"
               @click.stop="delItem(item.order)"
+              type="danger"
+              round
               style="float: right"
             >
             </el-button>
@@ -62,11 +65,12 @@
         </el-checkbox-group>
       </el-scrollbar>
 
-      <el-form-item>
+    
+    
         <el-button type="primary" @click="addItem()">添加选项</el-button>
-        <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
-      </el-form-item>
-       <div style="width: 100%;display:flex;justify-content:space-between;">
+     
+      
+       <div style="width: 100%;display:flex;justify-content:space-around;">
        
         <el-select
           v-model="multiples.level"
@@ -93,9 +97,9 @@
 
         <el-input
           type="textarea"
-          style="width: 60%"
+          style="width: 40%"
           resize="none"
-          :autosize="{ minRows: 2, maxRows: 4 }"
+          :autosize="{ minRows: 2, maxRows: 3 }"
           placeholder="请输入题目解析"
           v-model="multiples.explain"
         >
@@ -165,6 +169,9 @@ export default {
         },
       });
     },
+    reCount(){
+      this.$store.commit('countNowCount');
+    }
   },
   created() {
     console.log("created!");
@@ -181,25 +188,26 @@ export default {
 .multiple-form {
   width: 100%;
   height: 100%;
-  
   display: flex;
   justify-content: center;
 }
 .multiple-one {
   width: 100%;
-  height: 7vh;
-  margin-bottom: 1vh;
+  height: 8vh;
+  margin: 1vh;
   display: flex;
   flex-wrap: nowrap;
   
 }
 .multiple-info {
   width: 100%;
-  height: 20vh;
+  height: 10%;
   
 }
 .multiple-ones {
-  width: 100%;
+  width: 80%;
   height: 40vh;
+  margin: 1vh;
+  border: 2px double rgb(63, 14, 153, 0.3);
 }
 </style>

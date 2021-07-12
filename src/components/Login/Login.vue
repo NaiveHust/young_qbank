@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-11 14:29:14
+ * @LastEditTime: 2021-07-12 10:51:12
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -63,7 +63,7 @@
                 <el-option
                   v-for="(item, index) in loginType"
                   :key="index"
-                  :label="item.label"
+                  :label="$i18n.messages[$i18n.locale].loginType[item.value]"
                   :value="item.value"
                 ></el-option>
               </el-select>
@@ -154,15 +154,15 @@ export default {
       },
       loginType: [
         {
-          label: "学生",
+          
           value: "student",
         },
         {
-          label: "老师",
+         
           value: "teacher",
         },
         {
-          label: "管理员",
+          
           value: "admin",
         },
       ],

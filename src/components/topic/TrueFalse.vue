@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:33:55
- * @LastEditTime: 2021-07-10 09:59:45
+ * @LastEditTime: 2021-07-12 12:23:48
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -19,7 +19,7 @@
       <el-row v-if="inPaper">
         <el-form-item :label="'第' + truefalse.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="truefalse.score" type="number"></el-input>
+          <el-input v-model.number="truefalse.score" type="number" @change="reCount()"></el-input>
         </el-form-item>
       </el-row>
 
@@ -48,7 +48,7 @@
         </div>
       </el-form-item>
 
-       <div style="width: 100%;display:flex;justify-content:space-between;">
+       <div style="width: 100%;display:flex;justify-content:space-around;">
        
         <el-select
           v-model="truefalse.level"
@@ -75,7 +75,7 @@
 
         <el-input
           type="textarea"
-          style="width: 60%"
+          style="width: 40%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目解析"
@@ -121,7 +121,11 @@ export default {
       return this.$store.state.cs.myCourses;
     },
   },
-  methods: {},
+  methods: {
+    reCount(){
+      this.$store.commit('countNowCount');
+    }
+  },
   created() {
     console.log("TF created!");
   },

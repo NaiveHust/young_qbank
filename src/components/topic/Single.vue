@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:32:15
- * @LastEditTime: 2021-07-11 11:52:47
+ * @LastEditTime: 2021-07-12 14:36:22
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -13,7 +13,7 @@
       <el-row v-if="inPaper" class="single-info">
         <el-form-item :label="'第' + singles.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="singles.score" type="number"></el-input>
+          <el-input v-model.number="singles.score" type="number" @change="reCount()"></el-input>
         </el-form-item>
       </el-row>
 
@@ -36,10 +36,11 @@
             :key="item.name"
             class="single-one"
           >
-            <el-radio-button :label="item.name"> </el-radio-button>
+            <el-radio-button style="height: 100%" :label="item.name">
+            </el-radio-button>
             <el-input
               v-model="item.content"
-              style="width: 40vw"
+              style="width: 40vw; margin: 0 2vw"
               type="textarea"
               resize="none"
               :autosize="{ minRows: 2, maxRows: 4 }"
@@ -48,7 +49,10 @@
 
             <el-button
               class="el-icon-delete"
+              size="medium"
               @click.stop="delItem(item.order)"
+              type="danger"
+              round
               style="float: right"
             >
             </el-button>
@@ -56,13 +60,13 @@
         </el-radio-group>
       </el-scrollbar>
 
-      <el-form-item>
+      
         <el-button type="primary" @click="addItem()">添加选项</el-button>
-        <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
-      </el-form-item>
+     
 
-      <div style="width: 100%;display:flex;justify-content:space-between;">
-       
+    
+
+      <div style="width: 100%; display: flex; justify-content: space-around">
         <el-select
           v-model="singles.level"
           placeholder="试题难度"
@@ -72,30 +76,29 @@
           <el-option label="中" value="中"></el-option>
           <el-option label="难" value="难"></el-option>
         </el-select>
-        
-          <el-select
+
+        <el-select
           v-model="singles.course"
           placeholder="所属课程"
           style="width: 15%"
         >
-          <el-option 
-          v-for="(course,index) in courses"
-          :key="index"
-          :label="course.cName" :value="course.cName"
+          <el-option
+            v-for="(course, index) in courses"
+            :key="index"
+            :label="course.cName"
+            :value="course.cName"
           ></el-option>
         </el-select>
-        
 
         <el-input
           type="textarea"
-          style="width: 60%"
+          style="width: 40%"
           resize="none"
-          :autosize="{ minRows: 2, maxRows: 4 }"
+          :autosize="{ minRows: 2, maxRows: 3 }"
           placeholder="请输入题目解析"
           v-model="singles.explain"
         >
         </el-input>
-        
       </div>
     </el-form>
   </div>
@@ -132,7 +135,7 @@ export default {
         return this.$store.state.qs.qsBank[this.qsOrder].content;
       }
     },
-    courses(){
+    courses() {
       return this.$store.state.cs.myCourses;
     },
   },
@@ -162,6 +165,9 @@ export default {
         },
       });
     },
+    reCount(){
+      this.$store.commit('countNowCount');
+    }
   },
   created() {
     console.log("created!");
@@ -173,30 +179,28 @@ export default {
 .single {
   width: 100%;
   height: 100%;
-  
 }
 .single-form {
   width: 100%;
   height: 100%;
-  
   display: flex;
   justify-content: center;
 }
 .single-one {
   width: 100%;
   height: 8vh;
-  margin-bottom: 1vh;
+  margin: 1vh;
   display: flex;
   flex-wrap: nowrap;
-  
 }
 .single-info {
   width: 100%;
   height: 10%;
-  
 }
 .single-ones {
-  width: 100%;
+  width: 80%;
   height: 40vh;
+  margin: 1vh;
+  border: 2px double rgb(63, 14, 153, 0.3);
 }
 </style>

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-11 11:03:50
+ * @LastEditTime: 2021-07-12 10:40:16
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -14,7 +14,7 @@
         target="_blank"
         class="footer-font"
       >
-        联系我们
+        
       </el-link>
     </div>
   </div>

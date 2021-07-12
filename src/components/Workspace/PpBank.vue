@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 16:56:03
- * @LastEditTime: 2021-07-11 17:50:19
+ * @LastEditTime: 2021-07-12 14:24:30
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -71,9 +71,20 @@
                   @click="handleDelete(scope.$index, scope.row)"
                   >删除</el-button
                 >
+                 <el-button 
+                  v-if="$store.state.userType==='teacher'&&scope.row.type==='no'"
+                  size="mini" @click="pushPaper(scope.row)"
+                  >发布</el-button>
+                  
+                   <el-button 
+                  v-if="$store.state.userType==='teacher'&&scope.row.type==='yes'"
+                  size="mini" 
+                  disabled
+                  >已发布</el-button>
+                  
                 <el-button size="mini" @click="exportPaper(scope.row)"
-                  >导出</el-button
-                >
+                  >导出</el-button>
+                 
               </template>
             </el-table-column>
           </el-table>
@@ -261,6 +272,16 @@ export default {
         }
       }
     },
+    pushPaper(row){
+        for (const key in this.paperList) {
+        if (this.paperList[key].id === row.id) {
+          row.type='yes';
+          this.$store.dispatch('pushPaper',key);
+          break;
+        }
+      }
+    },
+    
     handleEdit(index, row) {
       for (const key in this.paperList) {
         if (this.paperList[key].id === row.id) {

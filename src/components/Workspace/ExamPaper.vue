@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-11 19:59:54
+ * @LastEditTime: 2021-07-12 15:01:50
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -10,7 +10,7 @@
   <div class="paper">
     <!-- 试卷总体信息 保存 -->
     <el-row>
-      <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
+      <el-col :xs="14" :sm="14" :md="14" :lg="14" :xl="14">
         <div class="paper-main-info">
           <el-form :model="paperInfo" ref="form" :inline="true" size="small">
             <el-form-item :label="$t('paper.paperName')">
@@ -28,14 +28,16 @@
               <el-input
                 v-model.number="paperInfo.duration"
                 type="number"
-              ></el-input>
+                style="width: 10vw"
+                ><template #append> 分钟 </template></el-input
+              >
             </el-form-item>
 
             <el-form-item>
               <el-select
                 v-model="paperInfo.course"
                 placeholder="所属课程"
-                style="width: 100%"
+                style="width: 100%; margin-left: 5vw"
               >
                 <el-option
                   v-for="(course, index) in courses"
@@ -53,14 +55,31 @@
           </el-form>
         </div>
       </el-col>
+      <el-col :xs="3" :sm="3" :md="3" :lg="3" :xl="3">
+        
+        <el-progress type="line" 
+        class="paper-progress"
+        :text-inside="true" 
+        :stroke-width="24"
+        :color="customColorMethod"
+        :percentage="percent">
+          <template #default="{  }">
+            
+            <span class="progress-val">{{nowScore}}/{{paperInfo.score}}</span>       
+          </template>
+        </el-progress>
+
+      </el-col>
       <!-- 工具栏 -->
-      <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
+      <el-col :xs="7" :sm="7" :md="7" :lg="7" :xl="7">
         <div class="paper-bar">
-          <el-button type="primary" @click="dialogVisible = true"
-            >编辑题目</el-button
+          <el-button type="primary" round @click="dialogVisible = true"
+            >添加题型</el-button
           >
-          <el-button type="primary" @click="importTopic()">导入题目</el-button>
-          <el-button type="primary" @click="finishPaper()"
+          <el-button type="primary" round @click="importTopic()"
+            >导入题目</el-button
+          >
+          <el-button type="primary" round @click="finishPaper()"
             >保存<i class="el-icon-upload el-icon--right"></i
           ></el-button>
         </div>
@@ -104,29 +123,27 @@
                       <template #prepend>分值:</template>
                     </el-input>
 
-                    <el-button 
-                    style="float:right"
-                    class="el-icon-delete"
-                    @click.prevent="deleteType(type)"
-                      ></el-button
-                    >
+                    <el-button
+                      style="float: right"
+                      class="el-icon-delete"
+                      @click.prevent="deleteType(type)"
+                    ></el-button>
                   </el-form-item>
                 </div>
               </el-col>
 
               <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
                 <div class="dialog-right">
-                  
-                    <!-- value,name,index -->
-                    <el-button            
-                      round
-                      v-for="(value, name, index) in $i18n.messages[$i18n.locale].topic"
-                      :key="value.key"
-                      @click="chooseType(name, index)"
-                    >
-                      {{ "添加" }}{{ value }}
-                    </el-button>
-                  
+                  <!-- value,name,index -->
+                  <el-button
+                    round
+                    v-for="(value, name, index) in $i18n.messages[$i18n.locale]
+                      .topic"
+                    :key="value.key"
+                    @click="chooseType(name, index)"
+                  >
+                    {{ "添加" }}{{ value }}
+                  </el-button>
                 </div>
               </el-col>
             </el-row>
@@ -144,6 +161,9 @@
     </el-row>
     <!-- 主区域 -->
     <el-row style="height: 90%">
+      <!-- <el-col>
+
+      </el-col> -->
       <!-- 试卷大纲显示 -->
       <el-col :xs="8" :sm="8" :md="6" :lg="4" :xl="4">
         <div class="paper-outline-view">
@@ -160,21 +180,24 @@
                 @dragenter="handleDragEnter($event, type)"
                 @dragend="handleDragEnd($event, type)"
               >
-              <div><span>{{type.label}}</span>
-              <el-button size="small" 
-              :class="type.fold?'el-icon-caret-right':'el-icon-caret-bottom'" 
-              style="float:right;"
-              @click="type.fold=!type.fold"
-              ></el-button></div>
-              
-              
+                <div>
+                  <span>{{ type.label }}</span>
+                  <el-button
+                    size="small"
+                    :class="
+                      type.fold ? 'el-icon-caret-right' : 'el-icon-caret-bottom'
+                    "
+                    style="float: right"
+                    @click="type.fold = !type.fold"
+                  ></el-button>
+                </div>
 
                 <li
                   v-for="(topic, index) in paperContent[type.name].topic"
                   v-show="!type.fold"
                   :key="index"
                   style="height: 5vh"
-                  class='topic'
+                  class="topic"
                   @click="editTopic(type.name, topic.order)"
                 >
                   第{{ topic.order }}题
@@ -195,10 +218,7 @@
       <!-- 试卷内容编辑 -->
       <el-col :xs="16" :sm="16" :md="18" :lg="20" :xl="20" :offset="0">
         <div class="paper-edit">
-          <component
-            :is="editCom"
-            style="width: 100%; height: 100%"
-          ></component>
+          <component :is="editCom" class="topic-com"></component>
         </div>
       </el-col>
     </el-row>
@@ -257,6 +277,13 @@ export default {
     courses() {
       return this.$store.state.cs.myCourses;
     },
+    nowScore(){
+      return this.$store.state.paper.nowScore;
+    },
+    percent(){
+      let percent = this.nowScore/(this.paperInfo.score===0?100:this.paperInfo.score)*100;
+      return percent>100?100:percent;
+    }
   },
   created() {
     this.div = document.createElement("div");
@@ -314,11 +341,11 @@ export default {
       this.addType({
         index: index,
         name: name,
-        label:this.$i18n.messages['cn'].topic[name],
+        label: this.$i18n.messages["cn"].topic[name],
         order: index,
         //题型是否折叠
-        fold:false,
-        num: 1,
+        fold: false,
+        num: 0,
         //此为全局默认分数，可被全局覆盖
         score: 5,
       });
@@ -343,6 +370,21 @@ export default {
     finishPaper() {
       this.$store.dispatch("finishPaper");
     },
+     customColorMethod(percentage) {
+       console.log(percentage)
+        if (percentage < 30) {
+          return '#909399';
+        } else if (percentage < 70) {
+          return '#e6a23c';
+        } 
+        else if(this.nowScore>this.paperInfo.score){
+          return '#F56C6C'
+        }
+        else {
+          return '#67c23a';
+        }
+        
+      },
   },
 };
 </script>
@@ -367,6 +409,10 @@ export default {
   justify-content: space-around;
   flex-wrap: nowrap;
 }
+.paper-progress{
+  width: 100%;
+  height: 100%;
+}
 
 .paper-bar button {
   height: 80%;
@@ -375,13 +421,20 @@ export default {
 .paper-outline-view {
   width: 100%;
   height: 95%;
-  
-  background: rgb(31, 138, 180,0.2);
+
+  background: rgb(31, 138, 180, 0.1);
   margin: 2% 0;
 }
 .paper-edit {
   width: 100%;
   height: 100%;
+}
+
+.topic-com {
+  width: 95%;
+  height: 95%;
+  margin: 1%;
+  border: 1vh solid rgb(41, 86, 207, 0.3);
 }
 .el-form-item {
   width: 20%;
@@ -391,7 +444,7 @@ export default {
   transition: all linear 0.3s;
   border: 1vh solid rgb(166, 186, 224);
 }
-.topic{
+.topic {
   margin: 1vh 0;
   border: 1vh solid #fff;
 }
@@ -403,7 +456,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-   border:  2px ridge rgb(62, 130, 185, 0.5);
+  border: 2px ridge rgb(62, 130, 185, 0.5);
   border-radius: 1rem;
 }
 
@@ -417,7 +470,6 @@ export default {
   height: 10%;
 }
 .dialog-right {
-  
   height: 50vh;
   width: 90%;
   margin: 3%;
@@ -425,29 +477,31 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border:  2px ridge rgb(62, 130, 185, 0.5);
+  border: 2px ridge rgb(62, 130, 185, 0.5);
   border-radius: 1rem;
 }
-.dialog-right .el-button{
+.dialog-right .el-button {
   width: 60%;
-  width: 80%; 
+  width: 80%;
   margin: 2% 0;
-  
+
   color: rgb(36, 3, 51);
   background: rgba(21, 103, 197, 0.2);
 }
 .dialog-left-one {
   display: flex;
-  width: 100%; 
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
 }
 
 .type-view .el-form-item {
-  
   display: flex;
-  width: 100%; 
+  width: 100%;
   color: rgba(160, 33, 219, 1);
   background: rgba(27, 28, 109, 0.1);
+}
+.progress-val{
+  font-size: 16px;
 }
 </style>

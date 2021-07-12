@@ -95,7 +95,7 @@ const routes = [
                 meta: {
                     title: '我的课程',
                     requireAuth: true,
-                    roles: ['student',],
+                    roles: ['student'],
                 },
                 component: MyCourse,
             },
@@ -115,7 +115,7 @@ const routes = [
                 meta: {
                     title: '我的考试',
                     requireAuth: true,
-                    roles: ['student',],
+                    roles: ['student'],
                 },
                 component: TakeExam,
             },
