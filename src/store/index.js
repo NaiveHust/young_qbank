@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-09 18:43:27
+ * @LastEditTime: 2021-07-12 19:57:30
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -11,6 +11,8 @@ import exampaper from './paper'
 import question from './question'
 import course from './course'
 import admin from './admin'
+import exam from './exam'
+
 export default createStore({
     state: {
         //用户类型
@@ -97,6 +99,7 @@ export default createStore({
         // current:,
         collapse: false,
         order: 0,
+        myExams:['ni'],
 
     },
     mutations: {
@@ -202,10 +205,12 @@ export default createStore({
 
     },
     actions: {},
+    
     modules: {
         paper: exampaper,
         qs: question,
         cs: course,
-        ad:admin,
+        ad: admin,
+        ex: exam,
     }
 })

@@ -1,10 +1,11 @@
 <!--
  * @Author: 肖环宇
- * @Date: 2021-06-29 19:33:55
- * @LastEditTime: 2021-07-12 22:03:45
+ * @Date: 2021-07-12 20:56:58
+ * @LastEditTime: 2021-07-12 23:15:46
  * @LastEditors: 肖环宇
  * @Description: 
 -->
+
 
 <template>
   <!-- 判断题 -->
@@ -16,10 +17,10 @@
       label-width="80px"
       :inline="false"
     >
-      <el-row v-if="inPaper">
+      <el-row>
         <el-form-item :label="'第' + truefalse.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="truefalse.score" type="number" @change="reCount()"></el-input>
+          <span>{{truefalse.score}}</span>
         </el-form-item>
       </el-row>
 
@@ -30,6 +31,7 @@
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目"
+          disabled
           v-model="truefalse.question"
         >
         </el-input>
@@ -38,11 +40,12 @@
           答案
           <el-switch
             style="display: block"
-            v-model="truefalse.answer"
+            v-model="truefalse.reply"
             active-color="#13ce66"
             inactive-color="#ff4949"
             active-icon-class="el-icon-check"
             inactive-icon-class="el-icon-close"
+            @change="finish('Truefalse',truefalse.order)"
           >
           </el-switch>
         </div>
@@ -50,38 +53,7 @@
 
        <div style="width: 100%;display:flex;justify-content:space-around;">
        
-        <el-select
-          v-model="truefalse.level"
-          placeholder="试题难度"
-          style="width: 15%"
-        >
-          <el-option label="易" value="易"></el-option>
-          <el-option label="中" value="中"></el-option>
-          <el-option label="难" value="难"></el-option>
-        </el-select>
-        
-          <el-select
-          v-model="truefalse.course"
-          placeholder="所属课程"
-          style="width: 15%"
-        >
-         <el-option 
-          v-for="(course,index) in courses"
-          :key="index"
-          :label="course.cName" :value="course.cName"
-          ></el-option>
-        </el-select>
-        
-
-        <el-input
-          type="textarea"
-          style="width: 40%"
-          resize="none"
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          placeholder="请输入题目解析"
-          v-model="truefalse.explain"
-        >
-        </el-input>
+   
         
       </div>
     </el-form>
@@ -94,12 +66,7 @@ export default {
     return {};
   },
   computed: {
-    editNew() {
-      return this.$store.state.qs.editNew;
-    },
-    inPaper() {
-      return this.$store.state.paper.inPaper;
-    },
+    
     qsOrder() {
       return this.$store.state.qs.qsOrder;
     },
@@ -107,15 +74,11 @@ export default {
       return this.$store.state.paper.currentOrder;
     },
     truefalse() {
-      if (this.inPaper) {
+      
         return this.$store.state.paper.paperContent.Truefalse.topic[
           this.currentOrder - 1
         ];
-      } else if (this.editNew) {
-        return this.$store.state.qs.newTopic;
-      } else {
-        return this.$store.state.qs.qsBank[this.qsOrder].content;
-      }
+     
     },
      courses(){
       return this.$store.state.cs.myCourses;
@@ -124,6 +87,13 @@ export default {
   methods: {
     reCount(){
       this.$store.commit('countNowCount');
+    },
+     finish(type,order){
+      this.$store.commit('refreshOne',{
+        type:type,
+        order:order,
+        val:true,
+        })
     }
   },
   created() {
@@ -132,7 +102,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .tf {
   width: 100%;
   height: 100%;

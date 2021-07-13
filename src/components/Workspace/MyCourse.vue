@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:27:09
- * @LastEditTime: 2021-07-11 11:53:49
+ * @LastEditTime: 2021-07-12 19:59:44
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -58,13 +58,15 @@
             </el-select>
             <el-input
               placeholder="请输入搜索内容"
+              clearable
               v-model="searchVal"
               class="bar-search"
+              @change="noVal()"
             >
               <template #append>
                 <el-button
                   icon="el-icon-search"
-                  @click="searchTopic()"
+                  @click="searchLCourse()"
                 ></el-button>
               </template>
             </el-input>
@@ -115,7 +117,8 @@
 export default {
   data() {
     return {
-      searchType: "teacher",
+      searchType: "course",
+      searchVal:'',
     };
   },
   computed: {
@@ -141,11 +144,24 @@ export default {
       }
       return true;
     },
+    searchLCourse(){
+      this.$store.dispatch('searchAllCs',{
+        type:this.searchType,
+        val:this.searchVal,
+      });
+    },
+    //搜索框为空是
+    noVal(){
+      if(this.searchVal===''||!this.searchVal){
+        this.$store.dispatch("getCourses",{index:1,size:10000});
+      }
+    }
   },
   created() {
     this.$store.dispatch("getCourses",{index:1,size:10000});
     this.$store.dispatch("getChosen");
     console.log("我的课程");
+
   },
 };
 </script>

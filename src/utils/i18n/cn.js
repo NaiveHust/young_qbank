@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-07 14:58:22
+ * @LastEditTime: 2021-07-12 10:41:39
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -30,6 +30,11 @@ module.exports = {
         Truefalse: '判断题',
         Fill: '填空题',
         Answer: '简答题',
+    },
+    loginType:{
+        student:'学生',
+        teacher:'老师',
+        admin:'管理员'
     }
 
 }

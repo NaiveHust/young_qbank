@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:00:43
- * @LastEditTime: 2021-07-11 17:49:44
+ * @LastEditTime: 2021-07-12 15:31:30
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -89,6 +89,7 @@
                 </template>
               </el-table-column>
             </el-table>
+            
             <el-pagination
               align="center"
               @size-change="handleSizeChange"
@@ -340,7 +341,7 @@ export default {
         currentPage: this.currentPage,
         pageSize: this.pageSize,
       });
-      this.$store.commit("setEditNew", false);
+     
     },
     //取消题目,修改
     undoTopic() {
@@ -376,7 +377,7 @@ export default {
           await this.$store.dispatch("getCourses", { index: 1, size: 10000 });
         }
         await this.$store.dispatch("getNumByCs");
-      } else if (prop === "type") {
+      } else if (prop === "typeLabel") {
         await this.$store.dispatch("getNumByTp");
       } else if (prop === "level") {
         await this.$store.dispatch("getNumByLv");

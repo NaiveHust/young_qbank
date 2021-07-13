@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
- * @Date: 2021-06-29 19:33:16
- * @LastEditTime: 2021-07-12 22:03:34
+ * @Date: 2021-07-12 20:56:16
+ * @LastEditTime: 2021-07-12 23:14:16
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -16,10 +16,11 @@
       label-width="80px"
       :inline="false"
     >
-      <el-row v-if="inPaper">
+      <el-row >
         <el-form-item :label="'第' + multiples.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="multiples.score" type="number" @change="reCount()"></el-input>
+          <span>{{multiples.score}}</span>
+          
         </el-form-item>
       </el-row>
 
@@ -28,6 +29,7 @@
           type="textarea"
           style="width: 80%"
           resize="none"
+          disabled
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题干信息"
           v-model="multiples.question"
@@ -36,7 +38,9 @@
       </el-form-item>
 
       <el-scrollbar class="multiple-ones">
-        <el-checkbox-group v-model="multiples.answer">
+        <el-checkbox-group 
+        @change="finish('Multiple',multiples.order)"
+        v-model="multiples.reply">
           <div
             v-for="item in multiples.choice"
             :key="item.name"
@@ -48,64 +52,21 @@
                style="width: 40vw; margin: 0 2vw"
               type="textarea"
               resize="none"
+              disabled
               :autosize="{ minRows: 2, maxRows: 4 }"
             >
             </el-input>
 
-            <el-button
-              class="el-icon-delete"
-              size="medium"
-              @click.stop="delItem(item.order)"
-              type="danger"
-              round
-              style="float: right"
-            >
-            </el-button>
+          
           </div>
         </el-checkbox-group>
       </el-scrollbar>
 
     
     
-        <el-button type="primary" @click="addItem()">添加选项</el-button>
+        
      
-      
-       <div style="width: 100%;display:flex;justify-content:space-around;">
-       
-        <el-select
-          v-model="multiples.level"
-          placeholder="试题难度"
-          style="width: 15%"
-        >
-          <el-option label="易" value="易"></el-option>
-          <el-option label="中" value="中"></el-option>
-          <el-option label="难" value="难"></el-option>
-        </el-select>
-        
-          <el-select
-          v-model="multiples.course"
-          placeholder="所属课程"
-          style="width: 15%"
-        >
-         <el-option 
-          v-for="(course,index) in courses"
-          :key="index"
-          :label="course.cName" :value="course.cName"
-          ></el-option>
-        </el-select>
-        
 
-        <el-input
-          type="textarea"
-          style="width: 40%"
-          resize="none"
-          :autosize="{ minRows: 2, maxRows: 3 }"
-          placeholder="请输入题目解析"
-          v-model="multiples.explain"
-        >
-        </el-input>
-        
-      </div>
     </el-form>
   </div>
 </template>
@@ -116,12 +77,7 @@ export default {
     return {};
   },
   computed: {
-    editNew() {
-      return this.$store.state.qs.editNew;
-    },
-    inPaper() {
-      return this.$store.state.paper.inPaper;
-    },
+  
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
@@ -129,15 +85,11 @@ export default {
       return this.$store.state.qs.qsOrder;
     },
     multiples() {
-      if (this.inPaper) {
+     
         return this.$store.state.paper.paperContent.Multiple.topic[
           this.currentOrder - 1
         ];
-      } else if (this.editNew) {
-        return this.$store.state.qs.newTopic;
-      } else {
-        return this.$store.state.qs.qsBank[this.qsOrder].content;
-      }
+    
     },
      courses(){
       return this.$store.state.cs.myCourses;
@@ -171,7 +123,14 @@ export default {
     },
     reCount(){
       this.$store.commit('countNowCount');
-    }
+    },
+    finish(type,order){
+      this.$store.commit('refreshOne',{
+        type:type,
+        order:order,
+        val:true,
+        })
+    },
   },
   created() {
     console.log("created!");

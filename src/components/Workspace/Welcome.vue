@@ -1,19 +1,34 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-06 19:43:47
+ * @LastEditTime: 2021-07-12 10:23:38
  * @LastEditors: 肖环宇
  * @Description: 
 -->
 
 
-<template>
-  <h1>欢迎欢迎</h1>
+
+  
+  <template>
+  <el-empty  
+   style="width:100%;height:100%"
+  description="空空的主页">
+    
+    </el-empty>
 </template>
 
+
+
 <script>
-export default {};
+export default {
+  data(){
+    return{
+      
+    }
+  }
+};
 </script>
 
-<style>
+<style scoped>
+  
 </style>

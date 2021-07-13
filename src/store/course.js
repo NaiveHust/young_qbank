@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-05 09:59:40
- * @LastEditTime: 2021-07-10 20:24:00
+ * @LastEditTime: 2021-07-12 15:43:24
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -50,7 +50,7 @@ const course = {
                     context.state.courseList.push({
                         id: course.id,
                         cName: course.name,
-                        tid: course.id,
+                        tid: course.tid,
                         tName: course.tname
                     })
                 }
@@ -65,7 +65,7 @@ const course = {
                     context.state.myCourses.push({
                         id: course.id,
                         cName: course.name,
-                        tid: course.id,
+                        tid: course.tid,
                         tName: course.tname
                     })
                 }
@@ -107,7 +107,7 @@ const course = {
                     context.state.myCourses.push({
                         id: course.id,
                         cName: course.name,
-                        tid: course.id,
+                        tid: course.tid,
                         tName: course.tname
                     })
                 }
@@ -137,7 +137,36 @@ const course = {
             //刷新课程列表
                await context.dispatch('getTeaCourse');
         },
-
+        //按照搜索所有课程
+        async searchAllCs({state},data){
+            if(data.type==='course'){
+                await instance.get(`class/findByName/${data.val}`).then(res=>{
+                    state.courseList = [];
+                    for (const course of res.data) {
+                        state.courseList.push({
+                            id: course.id,
+                            cName: course.name,
+                            tid: course.tid,
+                            tName: course.tname
+                        })
+                    }
+                })
+            }
+            else if(data.type==='teacher'){
+                await instance.get(`class/findByName/${data.val}`).then(res=>{
+                    state.myCourses = [];
+                    for (const course of res.data.list) {
+                        state.myCourses.push({
+                            id: course.id,
+                            cName: course.name,
+                            tid: course.tid,
+                            tName: course.tname
+                        })
+                    }
+                })
+            }
+           
+        },
     },
     getters: {}
 }

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:34:26
- * @LastEditTime: 2021-07-11 11:52:21
+ * @LastEditTime: 2021-07-12 12:24:26
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -20,7 +20,7 @@
       <el-row v-if="inPaper">
         <el-form-item :label="'第' + fills.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="fills.score" type="number"></el-input>
+          <el-input v-model.number="fills.score" type="number" @change="reCount()"></el-input>
         </el-form-item>
       </el-row>
 
@@ -34,7 +34,7 @@
           <!-- head -->
           <el-input
             type="textarea"
-            style="width: 30%"
+            style="width: 25%"
             resize="none"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.head"
@@ -45,29 +45,34 @@
           <el-input
             type="textarea"
             resize="none"
-            style="width: 30%"
+            style="width: 25%"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.tail"
           >
           </el-input>
 
           <!-- answer -->
-          答案
+          
           <el-input
             type="textarea"
             resize="none"
-            style="width: 30%"
+            placeholder="请输入答案"
+            style="width: 25%"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.answer"
           >
           </el-input>
-
-          <el-button
-            class="el-icon-delete"
-            @click.stop="delItem(item.order)"
-            style="width: 10%; float: right"
-          >
-          </el-button>
+          
+         
+           <el-button
+              class="el-icon-delete"
+              size="medium"
+              @click.stop="delItem(item.order)"
+              type="danger"
+              round
+              style="float: right"
+            >
+            </el-button>
         </el-row>
       </el-scrollbar>
 
@@ -76,7 +81,7 @@
           >添加填空</el-button
         >
       </el-form-item>
- <div style="width: 100%;display:flex;justify-content:space-between;">
+ <div style="width: 100%;display:flex;justify-content:space-around;">
        
         <el-select
           v-model="fills.level"
@@ -99,11 +104,11 @@
           :label="course.cName" :value="course.cName"
           ></el-option>
         </el-select>
-        
+
 
         <el-input
           type="textarea"
-          style="width: 60%"
+          style="width: 40%"
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题目解析"
@@ -178,6 +183,9 @@ export default {
         },
       });
     },
+    reCount(){
+      this.$store.commit('countNowCount');
+    },
   },
   created() {
     console.log("Fill created!");
@@ -185,7 +193,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .fill {
   width: 100%;
   height: 100%;
@@ -198,9 +206,10 @@ export default {
 }
 .fill-one {
   width: 95%;
-  height: 20%;
+  height: 6vh;
   margin-bottom: 2vh;
   display: flex;
+  justify-content: space-around;
   flex-wrap: nowrap;
   flex-direction: row;
   align-items: center;

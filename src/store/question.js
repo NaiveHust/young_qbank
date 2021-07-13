@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-03 09:49:30
- * @LastEditTime: 2021-07-11 19:35:40
+ * @LastEditTime: 2021-07-12 15:32:49
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -189,7 +189,7 @@ const question = {
                 roles:['teacher','admin']
             },
             {
-                prop: "type",
+                prop: "typeLabel",
                 label: "题型",
                 chart:true,
                 roles:['teacher','admin']
@@ -257,6 +257,13 @@ const question = {
             label:'难'
         },
     ],
+    topic: {
+        Single: '单选题',
+        Multiple: '多选题',
+        Truefalse: '判断题',
+        Fill: '填空题',
+        Answer: '简答题',
+    }
     },
 
     mutations: {
@@ -385,9 +392,6 @@ const question = {
                 };
             }
         },
-       
-      
-      
 
         undoTopic(state) {
             if (state.editNew) {
@@ -501,6 +505,7 @@ const question = {
                             type: 'error'
                         });
                     }
+                    this.commit("setEditNew", false);
                 })
             }
             //改
@@ -535,6 +540,7 @@ const question = {
                             name: qs.proSimple,
                             course: qs.proClass,
                             type: qs.proType,
+                            typeLabel:context.state.topic[qs.proType],
                             level: qs.proDif,
                             content: JSON.parse(qs.proDetail),
                         })
@@ -545,6 +551,7 @@ const question = {
         },
         //得到题目
         async  getPageQs({state}, data) {
+            
             let url ='';
             if(rootStore.state.userType ==='teacher'){
                 url = `question/findByTea/${rootStore.state.userInfo.id}/${data.index}/${data.size}`;
@@ -563,6 +570,7 @@ const question = {
                             course: qs.proClass,
                             tid:qs.proTea,
                             type: qs.proType,
+                            typeLabel:state.topic[qs.proType],
                             level: qs.proDif,
                             content: JSON.parse(qs.proDetail),
                         })
