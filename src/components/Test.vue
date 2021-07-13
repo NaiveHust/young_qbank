@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 12:35:17
- * @LastEditTime: 2021-07-12 21:29:19
+ * @LastEditTime: 2021-07-12 23:02:11
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -10,12 +10,13 @@
   <div class="paper">
     <!-- 试卷主题信息 -->
     <el-row class="paper-main-info" >
-      <div >
+      
           <el-form
             :model="paperContent.Info"
             ref="form"
             :inline="true"
             size="small"
+            class = 'info-form'
           >
             <el-form-item :label="$t('paper.paperName')">
               <span>{{paperContent.Info.name}}</span>
@@ -27,12 +28,13 @@
             </el-form-item>
 
             <el-form-item :label="$t('paper.paperDuration')">
-              <el-input
+              <!-- <el-input
                 v-model.number="paperContent.Info.duration"
                 type="number"
                 style="width: 10vw"
                 ><template #append> 分钟 </template></el-input
-              >
+              > -->
+              <span>{{paperContent.Info.duration}}分钟</span>
             </el-form-item>
 
             <!-- <el-form-item>
@@ -40,7 +42,7 @@
             <el-button>取消</el-button>
           </el-form-item> -->
           </el-form>
-        </div>
+        
     </el-row>
     <el-row class="paper-main">
       <!-- 导航目录 -->
@@ -76,18 +78,13 @@
                   v-for="(topic, index) in paperContent[type.name].topic"
                   v-show="!type.fold"
                   :key="index"
-                  style="height: 5vh"
+                  :style="topic.finish?'background:#67C23A':''"
                   class="topic"
                   @click="editTopic(type.name, topic.order)"
                 >
                   第{{ topic.order }}题
 
-                  <el-button
-                    class="el-icon-delete"
-                    @click.stop="deleteTopic(type.name, topic.order)"
-                    style="float: right"
-                  >
-                  </el-button>
+                  
                 </li>
               </ul>
             </transition-group>
@@ -267,8 +264,10 @@ export default {
   justify-content: center;
   border: 1vh solid rgb(41, 86, 207, 0.3);
 }
-.paper-main-info .span{
-  
+
+.info-form .el-form-item{
+width: 10vw;
+margin:0 5vw ;
 }
 .paper-bar {
   width: 100%;
@@ -296,7 +295,7 @@ export default {
 }
 .paper-edit {
   width: 100%;
-  height: 90%;
+  height: 100%;
 }
 
 .topic-com {
@@ -315,7 +314,9 @@ export default {
 }
 .topic {
   margin: 1vh 0;
+  height: 5vh;
   border: 1vh solid #fff;
+  
 }
 .type-view {
   height: 90%;

@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:33:55
- * @LastEditTime: 2021-07-12 12:23:48
+ * @LastEditTime: 2021-07-12 22:03:45
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -132,7 +132,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .tf {
   width: 100%;
   height: 100%;

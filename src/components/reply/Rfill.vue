@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-12 20:56:29
- * @LastEditTime: 2021-07-12 20:59:15
+ * @LastEditTime: 2021-07-12 23:23:10
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -21,7 +21,7 @@
       <el-row v-if="inPaper">
         <el-form-item :label="'第' + fills.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="fills.score" type="number" @change="reCount()"></el-input>
+          <span>{{fills.score}}</span>
         </el-form-item>
       </el-row>
 
@@ -39,6 +39,7 @@
             resize="none"
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.head"
+            disabled
           >
           </el-input>
           {{ "第" + item.order + "空" }}
@@ -47,6 +48,7 @@
             type="textarea"
             resize="none"
             style="width: 25%"
+            disabled
             :autosize="{ minRows: 1, maxRows: 2 }"
             v-model="item.tail"
           >
@@ -59,65 +61,20 @@
             resize="none"
             placeholder="请输入答案"
             style="width: 25%"
+            clearable
             :autosize="{ minRows: 1, maxRows: 2 }"
-            v-model="item.answer"
+            v-model="item.reply"
+            @change="finish('Fill',fills.order,item.reply)"
           >
           </el-input>
           
          
-           <el-button
-              class="el-icon-delete"
-              size="medium"
-              @click.stop="delItem(item.order)"
-              type="danger"
-              round
-              style="float: right"
-            >
-            </el-button>
+           
         </el-row>
       </el-scrollbar>
 
-      <el-form-item>
-        <el-button type="primary" @click="addItem(currentOrder)"
-          >添加填空</el-button
-        >
-      </el-form-item>
- <div style="width: 100%;display:flex;justify-content:space-around;">
-       
-        <el-select
-          v-model="fills.level"
-          placeholder="试题难度"
-          style="width: 15%"
-        >
-          <el-option label="易" value="易"></el-option>
-          <el-option label="中" value="中"></el-option>
-          <el-option label="难" value="难"></el-option>
-        </el-select>
-        
-          <el-select
-          v-model="fills.course"
-          placeholder="所属课程"
-          style="width: 15%"
-        >
-         <el-option 
-          v-for="(course,index) in courses"
-          :key="index"
-          :label="course.cName" :value="course.cName"
-          ></el-option>
-        </el-select>
-
-
-        <el-input
-          type="textarea"
-          style="width: 40%"
-          resize="none"
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          placeholder="请输入题目解析"
-          v-model="fills.explain"
-        >
-        </el-input>
-        
-      </div>
+      
+ 
     </el-form>
   </div>
 </template>
@@ -130,12 +87,7 @@ export default {
     };
   },
   computed: {
-    editNew() {
-      return this.$store.state.qs.editNew;
-    },
-    inPaper() {
-      return this.$store.state.paper.inPaper;
-    },
+   
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
@@ -143,50 +95,25 @@ export default {
       return this.$store.state.qs.qsOrder;
     },
     fills() {
-      if (this.inPaper) {
+     
         return this.$store.state.paper.paperContent.Fill.topic[
           this.currentOrder - 1
         ];
-      } else if (this.editNew) {
-        return this.$store.state.qs.newTopic;
-      } else {
-        return this.$store.state.qs.qsBank[this.qsOrder].content;
-      }
+    
     },
      courses(){
       return this.$store.state.cs.myCourses;
     },
   },
   methods: {
-    delItem(order) {
-      this.$store.commit("delTopicItem", {
-        //题型键名
-        tType: "Fill",
-        //题条键名
-        iType: "question",
-        tOrder: this.currentOrder,
-        iOrder: order,
-      });
-    },
-    addItem(order) {
-      let i = !this.fills.question ? 0 : this.fills.question.length;
-      this.$store.commit("addTopicItem", {
-        //题型键名
-        tType: "Fill",
-        //题条键名
-        iType: "question",
-        tOrder: order,
-        content: {
-          order: i + 1,
-          head: "",
-          tail: "",
-          answer: "",
-        },
-      });
-    },
-    reCount(){
-      this.$store.commit('countNowCount');
-    },
+     finish(type,order,val){
+      this.$store.commit('refreshOne',{
+        type:type,
+        order:order,
+        val:val===''||!val?false:true,
+        })
+        console.log(val);
+    }
   },
   created() {
     console.log("Fill created!");
@@ -194,7 +121,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .fill {
   width: 100%;
   height: 100%;

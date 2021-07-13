@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-07-12 20:56:42
- * @LastEditTime: 2021-07-12 20:59:28
+ * @LastEditTime: 2021-07-12 23:26:13
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -16,10 +16,10 @@
       label-width="80px"
       :inline="false"
     >
-      <el-row v-if="inPaper">
+      <el-row >
         <el-form-item :label="'第' + answers.order + '题'"> </el-form-item>
         <el-form-item label="分值">
-          <el-input v-model.number="answers.score" type="number" @change="reCount()"></el-input>
+          <span>{{answers.score}}</span>
         </el-form-item>
       </el-row>
 
@@ -30,6 +30,7 @@
           resize="none"
           :autosize="{ minRows: 2, maxRows: 4 }"
           placeholder="请输入题干信息"
+          disabled
           v-model="answers.question"
         >
         </el-input>
@@ -43,73 +44,28 @@
             style="width: 30%"
             type="textarea"
             resize="none"
+            disabled
             :autosize="{ minRows: 2, maxRows: 4 }"
           >
           </el-input>
         
           <el-input
-            v-model="item.answer"
+            v-model="item.reply"
             style="width: 30%"
             placeholder="请输入答案"
             type="textarea"
             resize="none"
             :autosize="{ minRows: 2, maxRows: 4 }"
+            @change="finish('Answer',answers.order,item.reply)"
           >
           </el-input>
 
-           <el-button
-              class="el-icon-delete"
-              size="medium"
-              @click.stop="delItem(item.order)"
-              type="danger"
-              round
-              style="float: right"
-            >
-            </el-button>
         </div>
       </el-scrollbar>
 
-      <el-form-item>
-        <el-button type="primary" @click="addItem()">添加小问</el-button>
-        <!-- <el-button type="primary" @click="finishTopic()">完成编辑</el-button> -->
-      </el-form-item>
+    
 
-    <div style="width: 100%;display:flex;justify-content:space-around;">
-       
-        <el-select
-          v-model="answers.level"
-          placeholder="试题难度"
-          style="width: 15%"
-        >
-          <el-option label="易" value="易"></el-option>
-          <el-option label="中" value="中"></el-option>
-          <el-option label="难" value="难"></el-option>
-        </el-select>
-        
-          <el-select
-          v-model="answers.course"
-          placeholder="所属课程"
-          style="width: 15%"
-        >
-          <el-option 
-          v-for="(course,index) in courses"
-          :key="index"
-          :label="course.cName" :value="course.cName"
-          ></el-option>
-        </el-select>
-        
-
-        <el-input
-          type="textarea"
-          style="width: 40%"
-          resize="none"
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          placeholder="请输入题目解析"
-          v-model="answers.explain"
-        >
-        </el-input>
-        
-      </div>
+    
     </el-form>
   </div>
 </template>
@@ -122,12 +78,7 @@ export default {
     };
   },
   computed: {
-     editNew() {
-      return this.$store.state.qs.editNew;
-    },
-    inPaper() {
-      return this.$store.state.paper.inPaper;
-    },
+    
     currentOrder() {
       return this.$store.state.paper.currentOrder;
     },
@@ -135,48 +86,22 @@ export default {
       return this.$store.state.qs.qsOrder;
     },
     answers() {
-      if (this.inPaper) {
+     
         return this.$store.state.paper.paperContent.Answer.topic[
           this.currentOrder - 1
         ];
-      } else if (this.editNew) {
-        return this.$store.state.qs.newTopic;
-      } else {
-        return this.$store.state.qs.qsBank[this.qsOrder].content;
-      }
+     
     },
-     courses(){
-      return this.$store.state.cs.myCourses;
-    },
+   
   },
   methods: {
-    delItem(order) {
-      this.$store.commit("delTopicItem", {
-        //题型键名
-        tType: "Answer",
-        //题条键名
-        iType: "subQ",
-        tOrder: this.currentOrder,
-        iOrder: order,
-      });
-    },
-    addItem() {
-      let i = !this.answers.subQ ? 0 : this.answers.subQ.length;
-      this.$store.commit("addTopicItem", {
-        //题型键名
-        tType: "Answer",
-        //题条键名
-        iType: "subQ",
-        tOrder: this.currentOrder,
-        content: {
-          order: i + 1,
-          content: "",
-          answer: "",
-        },
-      });
-    },
-    reCount(){
-      this.$store.commit('countNowCount');
+     finish(type,order,val){
+      this.$store.commit('refreshOne',{
+        type:type,
+        order:order,
+        val:val===''||!val?false:true,
+        })
+        console.log(val);
     }
   },
   created() {
@@ -185,7 +110,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .answer {
   width: 100%;
   height: 100%;

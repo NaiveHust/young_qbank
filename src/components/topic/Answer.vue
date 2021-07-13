@@ -1,7 +1,7 @@
 <!--
  * @Author: 肖环宇
  * @Date: 2021-06-29 19:35:17
- * @LastEditTime: 2021-07-12 12:21:52
+ * @LastEditTime: 2021-07-12 22:03:22
  * @LastEditors: 肖环宇
  * @Description: 
 -->
@@ -185,7 +185,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .answer {
   width: 100%;
   height: 100%;

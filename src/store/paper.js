@@ -1,7 +1,7 @@
 /*
  * @Author: 肖环宇
  * @Date: 2021-07-01 19:40:10
- * @LastEditTime: 2021-07-12 20:51:28
+ * @LastEditTime: 2021-07-12 23:11:05
  * @LastEditors: 肖环宇
  * @Description: 
  */
@@ -458,6 +458,11 @@ const exampaper = {
             state.typeList = [];
             for (const key in state.paperContent) {
                 let tType = state.paperContent[key];
+                if(key ==='Multiple'){
+                    for (const mt of state.paperContent[key].topic) {
+                            mt.reply =[];
+                    }
+                }
                 //有该题型
                 if(Object.hasOwnProperty.call(tType, 'topic')&&tType.topic.length>0){
                     state.typeList.push({
@@ -466,13 +471,19 @@ const exampaper = {
                         fold: false,
                         num:tType.topic.length,
                     })
+                    
+                for (const tp of state.paperContent[key].topic) {
+                    tp.finish = false;
+             }
                 }
+
             }
             console.log('题型',state.typeList);
            
         },
-
-
+        refreshOne(state,data){
+            state.paperContent[data.type].topic[data.order-1].finish = data.val;
+        }
 
     },
     actions: {
